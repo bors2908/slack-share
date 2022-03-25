@@ -14,8 +14,15 @@
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
     </extensions>
-
     <actions>
-        <!-- Add your actions here -->
+        <action id="me.bors.slack.share.SlackShareSnippetAction" class="me.bors.slack.share.SlackShareSnippetAction"
+                text="Share on Slack" description="Share selected on Slack">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
+            <add-to-group group-id="ConsoleEditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
+        </action>
+        <action id="me.bors.slack.share.SlackShareFileAction" class="me.bors.slack.share.SlackShareFileAction"
+                text="Share on Slack" description="Share file on Slack">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
     </actions>
 </idea-plugin>

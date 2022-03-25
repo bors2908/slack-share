@@ -9,7 +9,6 @@ version '0.1'
 
 repositories {
     mavenCentral()
-    mavenCentral()
 }
 
 dependencies {
@@ -18,14 +17,13 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
-// See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version = '2021.3.3'
 }
 patchPluginXml {
     changeNotes = """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      0.1 - Initial version.<br>
+      """
 }
 test {
     useJUnitPlatform()
