@@ -7,9 +7,9 @@ import com.intellij.openapi.ui.Messages
 
 class SlackShareSnippetAction: AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val selectedText = getSelectedText(e)
+        val selectedText = getSelectedText(e) ?: ""
 
-        Messages.showMessageDialog(selectedText, "Text to Share", Messages.getInformationIcon())
+        ShareDialogWrapper(selectedText).showAndGet()
     }
 
     override fun update(e: AnActionEvent) {
