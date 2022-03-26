@@ -11,3 +11,5 @@ build
 logs
 
 lib/out
+
+**/application.properties
