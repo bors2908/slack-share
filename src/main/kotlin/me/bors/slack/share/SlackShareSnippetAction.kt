@@ -10,7 +10,9 @@ class SlackShareSnippetAction : AnAction() {
 
         val selectedText = getSelectedText(e) ?: ""
 
-        val conversations = slackClient.getConversations()
+        val processor = ConversationsProcessor(slackClient)
+
+        val conversations = processor.getConversations()
 
         val dialogWrapper = ShareDialogWrapper(
             conversations = conversations,

@@ -79,7 +79,7 @@ class ShareDialogWrapper(
             attachmentsPane.isEditable = false
 
             dialogPanel.add(attachmentsPane, BorderLayout.AFTER_LAST_LINE)
-        } else if (quoteCheckBox != null) {
+        } else {
             quoteCheckBox = JCheckBox("Code quote", true)
 
             dialogPanel.add(quoteCheckBox!!, BorderLayout.AFTER_LAST_LINE)

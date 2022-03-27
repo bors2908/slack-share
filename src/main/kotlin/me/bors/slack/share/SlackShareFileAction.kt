@@ -13,7 +13,9 @@ class SlackShareFileAction : AnAction() {
 
         val filenames = files.map { it.name }
 
-        val conversations = slackClient.getConversations()
+        val processor = ConversationsProcessor(slackClient)
+
+        val conversations = processor.getConversations()
 
         val dialogWrapper = ShareDialogWrapper(
             conversations = conversations,
