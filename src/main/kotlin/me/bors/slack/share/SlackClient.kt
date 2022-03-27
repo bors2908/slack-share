@@ -25,7 +25,7 @@ class SlackClient {
 
     private val nameCache = getNameCache()
 
-    fun getNameCache(): Map<String, String> {
+    private fun getNameCache(): Map<String, String> {
         val request = UsersListRequest.builder()
             .token(token)
             .build()

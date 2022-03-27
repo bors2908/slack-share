@@ -18,7 +18,7 @@ import javax.swing.text.StyleConstants
 class ShareDialogWrapper(
     private val conversations: List<SlackConversation>,
     private val text: String = "",
-    private val filenames: List<String> = emptyList()
+    private val filenames: List<String> = emptyList(),
 ) : DialogWrapper(true) {
     private lateinit var comboBox: ComboBox<SlackConversation>
     private lateinit var editorPane: JEditorPane
@@ -43,7 +43,7 @@ class ShareDialogWrapper(
     }
 
     //TODO Make editor pane border visible
-    override fun createCenterPanel(): JComponent? {
+    override fun createCenterPanel(): JComponent {
         val dialogPanel = JPanel(BorderLayout())
 
         comboBox = ComboBox(DefaultComboBoxModel(conversations.toTypedArray()))
@@ -79,10 +79,10 @@ class ShareDialogWrapper(
             attachmentsPane.isEditable = false
 
             dialogPanel.add(attachmentsPane, BorderLayout.AFTER_LAST_LINE)
-        } else {
+        } else if (quoteCheckBox != null) {
             quoteCheckBox = JCheckBox("Code quote", true)
 
-            dialogPanel.add(quoteCheckBox, BorderLayout.AFTER_LAST_LINE)
+            dialogPanel.add(quoteCheckBox!!, BorderLayout.AFTER_LAST_LINE)
         }
 
 

@@ -17,13 +17,13 @@ java {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation ("com.slack.api:slack-api-client:1.20.2") {
+    implementation("com.slack.api:slack-api-client:1.20.2") {
         //TODO Investigate IntelliJ extension logging issue
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 intellij {

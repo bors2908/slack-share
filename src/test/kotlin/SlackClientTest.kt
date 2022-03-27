@@ -4,7 +4,6 @@ import java.nio.file.Path
 import org.junit.Test
 
 class SlackClientTest {
-
     //TODO investigate tests
     @Test
     fun sendMessageTest() {
@@ -26,7 +25,7 @@ class SlackClientTest {
         val id = receiveChannels.first { it.name == "Boris Ivanov" }.id
 
         val path = Path.of("C:\\Temp\\useless.txt").toFile()
-        
+
         slackClient.sendFile(id, listOf(path, path), "No way")
     }
 }

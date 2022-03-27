@@ -3,7 +3,7 @@ package me.bors.slack.share
 class SlackConversation(
     val id: String,
     val name: String,
-    val priority: Double
+    val priority: Double,
 ) {
     override fun toString(): String {
         return name
