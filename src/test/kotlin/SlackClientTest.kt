@@ -10,9 +10,9 @@ class SlackClientTest {
     fun sendMessageTest() {
         val slackClient = SlackClient()
 
-        val receiveChannels = slackClient.receiveChannels()
+        val receiveChannels = slackClient.getConversations()
 
-        val id = receiveChannels.first { it.second == "Boris Ivanov" }.first
+        val id = receiveChannels.first { it.name == "Boris Ivanov" }.id
 
         slackClient.sendMessage(id, "whatever")
     }
@@ -21,9 +21,9 @@ class SlackClientTest {
     fun sendFileTest() {
         val slackClient = SlackClient()
 
-        val receiveChannels = slackClient.receiveChannels()
+        val receiveChannels = slackClient.getConversations()
 
-        val id = receiveChannels.first { it.second == "Boris Ivanov" }.first
+        val id = receiveChannels.first { it.name == "Boris Ivanov" }.id
 
         val path = Path.of("C:\\Temp\\useless.txt").toFile()
         

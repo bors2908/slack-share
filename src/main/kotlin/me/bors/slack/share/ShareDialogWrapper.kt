@@ -16,11 +16,11 @@ import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 
 class ShareDialogWrapper(
-    private val slackClient: SlackClient,
+    private val conversations: List<SlackConversation>,
     private val text: String = "",
     private val filenames: List<String> = emptyList()
 ) : DialogWrapper(true) {
-    private lateinit var comboBox: ComboBox<Pair<String, String>>
+    private lateinit var comboBox: ComboBox<SlackConversation>
     private lateinit var editorPane: JEditorPane
     private var quoteCheckBox: JCheckBox? = null
 
@@ -34,8 +34,8 @@ class ShareDialogWrapper(
         return editorPane.text
     }
 
-    fun getSelectedItem(): Pair<String, String> {
-        return comboBox.selectedItem as Pair<String, String>
+    fun getSelectedItem(): SlackConversation {
+        return comboBox.selectedItem as SlackConversation
     }
 
     fun isQuotedCode(): Boolean {
@@ -46,9 +46,7 @@ class ShareDialogWrapper(
     override fun createCenterPanel(): JComponent? {
         val dialogPanel = JPanel(BorderLayout())
 
-        val channels = slackClient.receiveChannels()
-
-        comboBox = ComboBox(DefaultComboBoxModel(channels.toTypedArray()))
+        comboBox = ComboBox(DefaultComboBoxModel(conversations.toTypedArray()))
         comboBox.preferredSize = Dimension(300, 30)
 
         comboBox.selectedItem

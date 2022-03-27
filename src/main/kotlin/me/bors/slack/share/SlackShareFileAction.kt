@@ -13,8 +13,10 @@ class SlackShareFileAction : AnAction() {
 
         val filenames = files.map { it.name }
 
+        val conversations = slackClient.getConversations()
+
         val dialogWrapper = ShareDialogWrapper(
-            slackClient = slackClient,
+            conversations = conversations,
             filenames = filenames
         )
 
@@ -22,7 +24,7 @@ class SlackShareFileAction : AnAction() {
 
         if (exitCode) {
             slackClient.sendFile(
-                id = dialogWrapper.getSelectedItem().first,
+                id = dialogWrapper.getSelectedItem().id,
                 files = files.map { it.toNioPath().toFile() },
                 text = dialogWrapper.getEditedText()
             )

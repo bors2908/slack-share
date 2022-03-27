@@ -10,8 +10,10 @@ class SlackShareSnippetAction: AnAction() {
 
         val selectedText = getSelectedText(e) ?: ""
 
+        val conversations = slackClient.getConversations()
+
         val dialogWrapper = ShareDialogWrapper(
-            slackClient = slackClient,
+            conversations = conversations,
             text = selectedText
         )
 
@@ -19,7 +21,7 @@ class SlackShareSnippetAction: AnAction() {
 
         if (exitCode) {
             slackClient.sendMessage(
-                dialogWrapper.getSelectedItem().first,
+                dialogWrapper.getSelectedItem().id,
                 dialogWrapper.getEditedText(),
                 dialogWrapper.isQuotedCode()
             )

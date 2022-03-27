@@ -10,6 +10,7 @@ import com.slack.api.methods.request.users.UsersInfoRequest
 import com.slack.api.methods.request.users.UsersListRequest
 import com.slack.api.model.Conversation
 import com.slack.api.model.ConversationType
+import com.slack.api.model.User
 import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
 import java.io.File
@@ -24,35 +25,41 @@ class SlackClient {
 
     private val nameCache = getNameCache()
 
-    private fun getNameCache(): Map<String, String> {
-        // TODO Add pagination support
-        return slack.methods(token).usersList(
-            UsersListRequest.builder()
-                .token(token)
-                .build()
-        )
-            .processErrors()
-            .members
-            .associate { it.id to (it.realName ?: it.name ?: it.id) }
+    fun getNameCache(): Map<String, String> {
+        val request = UsersListRequest.builder()
+            .token(token)
+            .build()
+
+        val members = processPaginatedRequest<User> { cursor, limit ->
+            request.cursor = cursor
+            request.limit = limit
+
+            val response = slack.methods(token).usersList(request)
+                .processErrors()
+
+            response.responseMetadata.nextCursor to response.members
+        }
+
+        return members.associate { it.id to (it.realName ?: it.name ?: it.id) }
     }
 
-    // TODO Sort by relevance
-    fun receiveChannels(): MutableList<Pair<String, String>> {
-        val ims = getChannels(listOf(ConversationType.IM))
-        val mpims = getChannels(listOf(ConversationType.MPIM))
-        val channels = getChannels(listOf(ConversationType.PRIVATE_CHANNEL, ConversationType.PUBLIC_CHANNEL))
+    fun getConversations(): List<SlackConversation> {
+        val result = mutableListOf<SlackConversation>()
 
-        val imMap = ims.map { it.id to getUserName(it.user) }
+        result.addAll(
+            getChannels(listOf(ConversationType.IM))
+                .map { SlackConversation(it.id, getUserName(it.user), it.priority ?: 0.0) }
+        )
+        result.addAll(
+            getChannels(listOf(ConversationType.MPIM))
+                .map { SlackConversation(it.id, getMultiUserGroupName(it.id), it.priority ?: 0.0) }
+        )
+        result.addAll(
+            getChannels(listOf(ConversationType.PRIVATE_CHANNEL, ConversationType.PUBLIC_CHANNEL))
+                .map { SlackConversation(it.id, it.nameNormalized, it.priority ?: 0.0) }
+        )
 
-        val mpimMap = mpims.map { it.id to getMultiUserGroupName(it.id) }
-        val channelMap = channels.map { it.id to it.nameNormalized }
-
-        val result = mutableListOf<Pair<String, String>>()
-        result.addAll(imMap)
-        result.addAll(mpimMap)
-        result.addAll(channelMap)
-
-        return result
+        return result.sortedByDescending { it.priority }
     }
 
     private fun getUserName(user: String): String {
@@ -80,11 +87,17 @@ class SlackClient {
             .channel(id)
             .build()
 
-        //TODO Add pagination support
-        val members = slack.methods(token).conversationsMembers(request)
-            .processErrors()
-            .members
+        val members = processPaginatedRequest<String> { cursor, limit ->
+            request.cursor = cursor
+            request.limit = limit
 
+            val response = slack.methods(token).conversationsMembers(request)
+                .processErrors()
+
+            response.responseMetadata.nextCursor to response.members
+        }
+
+        // Removing user's name
         members.removeAt(members.size - 1)
 
         return members
@@ -92,7 +105,7 @@ class SlackClient {
     }
 
     private fun getChannels(
-        requestTypes: List<ConversationType>
+        requestTypes: List<ConversationType>,
     ): List<Conversation> {
         val request = ConversationsListRequest.builder()
             .token(token)
@@ -100,14 +113,18 @@ class SlackClient {
             .types(requestTypes)
             .build()
 
-        //TODO Add pagination support
-        return slack.methods(token).conversationsList(request)
-            .processErrors()
-            .channels
+        return processPaginatedRequest<Conversation> { cursor, limit ->
+            request.cursor = cursor
+            request.limit = limit
+
+            val response = slack.methods(token).conversationsList(request)
+                .processErrors()
+
+            response.responseMetadata.nextCursor to response.channels
+        }
     }
 
     fun sendMessage(id: String, text: String, quoteCode: Boolean = false) {
-        // TODO make it quote
         val builder = ChatPostMessageRequest.builder()
             .token(token)
             .channel(id)
@@ -134,10 +151,7 @@ class SlackClient {
 
         val request = builder.build()
 
-        //TODO Remove
-        println("Sending message to channel $id")
-
-        val response = slack.methods(token).chatPostMessage(request).processErrors()
+        slack.methods(token).chatPostMessage(request).processErrors()
     }
 
     private fun processMarkdownAndQuote(text: String): String {
@@ -158,7 +172,6 @@ class SlackClient {
                 throw FileNotFoundException("File not found [$file].")
             }
 
-            //TODO make it use path instead of loading bytes
             val builder = FilesUploadRequest.builder()
                 .token(token)
                 .channels(listOf(id))
@@ -173,7 +186,7 @@ class SlackClient {
 
             val request = builder.build()
 
-            val response = slack.methods(token).filesUpload(request).processErrors()
+            slack.methods(token).filesUpload(request).processErrors()
         }
     }
 }
@@ -196,4 +209,25 @@ fun <T : SlackApiTextResponse> T.processErrors(): T {
     }
 
     return this
+}
+
+// Unfortunately Slack Java API paginated request has no extracted interface with cursor and limit fields.
+private fun <T> processPaginatedRequest(
+    processRequest: (String, Int) -> Pair<String, List<T>>,
+): MutableList<T> {
+    val limit = 200
+
+    val accumulator = mutableListOf<T>()
+
+    var cursor = ""
+
+    do {
+        val pair = processRequest.invoke(cursor, limit)
+
+        cursor = pair.first
+
+        accumulator.addAll(pair.second)
+    } while (cursor != "")
+
+    return accumulator
 }
