@@ -34,6 +34,7 @@ patchPluginXml {
     changeNotes = """
       0.1 - Initial version.
       0.2 - Pagination support, conversation names fix
+      0.3 - Improved conversations load speed
       <br>
       
       """
