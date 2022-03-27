@@ -3,13 +3,27 @@ package me.bors.slack.share
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.ui.Messages
 
 class SlackShareSnippetAction: AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
+        val slackClient = SlackClient()
+
         val selectedText = getSelectedText(e) ?: ""
 
-        ShareDialogWrapper(selectedText).showAndGet()
+        val dialogWrapper = ShareDialogWrapper(
+            slackClient = slackClient,
+            text = selectedText
+        )
+
+        val exitCode = dialogWrapper.showAndGet()
+
+        if (exitCode) {
+            slackClient.sendMessage(
+                dialogWrapper.getSelectedItem().first,
+                dialogWrapper.getEditedText(),
+                dialogWrapper.isQuotedCode()
+            )
+        }
     }
 
     override fun update(e: AnActionEvent) {

@@ -3,22 +3,30 @@ package me.bors.slack.share
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
-import java.nio.charset.Charset
-import java.nio.file.Files
 
 class SlackShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val files = getVirtualFiles(e)!!
+        val slackClient = SlackClient()
 
-        val filesContent =
-            files
-                .map { it.toNioPath() }
-                .map { Files.readAllLines(it, Charset.defaultCharset()) }
-                .joinToString()
+        val files = (getVirtualFiles(e) ?: emptyArray()).asList()
 
-        Messages.showMessageDialog(filesContent, "File Content to Share", Messages.getInformationIcon())
+        val filenames = files.map { it.name }
+
+        val dialogWrapper = ShareDialogWrapper(
+            slackClient = slackClient,
+            filenames = filenames
+        )
+
+        val exitCode = dialogWrapper.showAndGet()
+
+        if (exitCode) {
+            slackClient.sendFile(
+                id = dialogWrapper.getSelectedItem().first,
+                files = files.map { it.toNioPath().toFile() },
+                text = dialogWrapper.getEditedText()
+            )
+        }
     }
 
     override fun update(e: AnActionEvent) {
@@ -27,7 +35,7 @@ class SlackShareFileAction : AnAction() {
         e.presentation.isEnabledAndVisible = virtualFiles != null && virtualFiles.isNotEmpty()
     }
 
-    private fun getVirtualFiles(e: AnActionEvent): Array<out VirtualFile>? =
+    private fun getVirtualFiles(e: AnActionEvent): Array<VirtualFile>? =
         e.getData(PlatformDataKeys.VIRTUAL_FILE_ARRAY)
 
     override fun isDumbAware(): Boolean {
