@@ -11,13 +11,13 @@ Release to IDEA and Slack extension shops is also planned.
    https://api.slack.com/apps
 
 2. Add User scopes in Oauth & Permission tab
-channels:read
-chat:write
-files:write
-groups:read
-im:read
-mpim:read
-users:read
+- channels:read
+- chat:write
+- files:write
+- groups:read
+- im:read
+- mpim:read
+- users:read
 
 3. Install app to workspace
 
