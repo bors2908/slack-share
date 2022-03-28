@@ -2,8 +2,10 @@
 
 Currently in development.
 
-For now user token must be manually issued on Slack side. Proper auth is planned to be added later.
+For now user token must be manually issued on Slack side. 
+Proper auth is planned to be added later.
 Releases to IDEA and Slack extension shops are also planned.
+Confirmed compatibility with IDEA 2021.3.
 
 #How to install?
 
