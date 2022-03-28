@@ -22,9 +22,9 @@ Release to IDEA and Slack extension shops is also planned.
 3. Install app to workspace
 
 4. (Potentially unsafe) Create file
-   WINDOWS %LOCALAPPDATA%\slack-share\slack-share
-   MAC_OS ~/Library/Application Support/slack-share/slack-share
-   LINUX ~/.local/share/slack-share/slack-share
+   - WINDOWS %LOCALAPPDATA%\slack-share\slack-share
+   - MAC_OS ~/Library/Application Support/slack-share/slack-share
+   - LINUX ~/.local/share/slack-share/slack-share
 
 5. (Potentially unsafe) Copy Oauth User Token and paste it into created file
 
