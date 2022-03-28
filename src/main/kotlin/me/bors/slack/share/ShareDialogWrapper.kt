@@ -42,7 +42,7 @@ class ShareDialogWrapper(
         return quoteCheckBox?.isSelected ?: false
     }
 
-    //TODO Make editor pane border visible
+    //TODO Make editor pane border visible, add "Type your message here...", improve window resizing when text is wider
     override fun createCenterPanel(): JComponent {
         val dialogPanel = JPanel(BorderLayout())
 

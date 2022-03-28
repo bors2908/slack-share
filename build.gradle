@@ -32,11 +32,10 @@ intellij {
 
 patchPluginXml {
     changeNotes = """
-      0.1 - Initial version.
-      0.2 - Pagination support, conversation names fix
-      0.3 - Improved conversations load speed
-      <br>
-      
+      0.1 - Initial version.<br>
+      0.2 - Pagination support, conversation names fix.<br>
+      0.3 - Improved conversations load speed.<br>
+      0.4 - Alpha release with minor changes.<br>
       """
 }
 

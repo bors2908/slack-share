@@ -15,12 +15,11 @@ import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
 import java.io.File
 import java.io.FileNotFoundException
-import me.bors.slack.share.Utils.getProperties
+import me.bors.slack.share.Utils.getToken
 
 class SlackClient {
     private val slack = Slack.getInstance()
-    private val props = getProperties("application.properties")
-    private val token = props.getProperty("token")
+    private val token = getToken()
 
     private val nameCache = getNameCache()
 

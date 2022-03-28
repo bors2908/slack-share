@@ -1,20 +1,25 @@
 package me.bors.slack.share
 
-import java.io.FileNotFoundException
-import java.util.Properties
+import java.io.FileInputStream
+import java.nio.file.FileSystems
+import org.apache.commons.io.IOUtils
+import org.apache.commons.lang.SystemUtils
 
+// TODO Add proper auth or at least store token safely
 object Utils {
-    fun getProperties(fileName: String): Properties {
-        val properties = Properties()
+    fun getToken(): String {
+        var path = ""
 
-        val inputStream = javaClass.classLoader.getResourceAsStream(fileName)
+        if (SystemUtils.IS_OS_WINDOWS) path = "${System.getenv("LOCALAPPDATA")}\\"
+        else if (SystemUtils.IS_OS_MAC_OSX) path = "~/Library/Application Support/"
+        else if (SystemUtils.IS_OS_LINUX) path = "~/.local/share/"
 
-        if (inputStream != null) {
-            properties.load(inputStream)
-        } else {
-            throw FileNotFoundException("Could not find property file $fileName")
-        }
+        val separator = FileSystems.getDefault().separator
 
-        return properties
+        val filepath = "${path}${separator}slack-share${separator}slack-share"
+
+        val fis = FileInputStream(filepath)
+
+        return IOUtils.toString(fis, "UTF-8")
     }
 }
