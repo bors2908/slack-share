@@ -21,13 +21,13 @@ Confirmed compatibility with IDEA 2021.3.
 - mpim:read
 - users:read
 
-3. Install app to workspace
+3. Install app to Slack workspace
 
-4. (Potentially unsafe) Create file
+4. (Potentially unsafe) Create empty file
    - WINDOWS %LOCALAPPDATA%\slack-share\slack-share
    - MAC_OS ~/Library/Application Support/slack-share/slack-share
    - LINUX ~/.local/share/slack-share/slack-share
 
-5. (Potentially unsafe) Copy Oauth User Token and paste it into created file
+5. (Potentially unsafe) Copy Oauth User Token from Slack app settings and paste it into created file
 
 6. Install .zip extension file through Settings->Plugins->Gear Icon->Install Plugin From Disk...
