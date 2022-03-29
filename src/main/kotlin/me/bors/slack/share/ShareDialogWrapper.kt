@@ -2,15 +2,19 @@ package me.bors.slack.share
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.components.JBScrollPane
+import com.intellij.util.ui.UIUtil
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.lang.Boolean.TRUE
+import javax.swing.BorderFactory
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 import javax.swing.JEditorPane
 import javax.swing.JPanel
 import javax.swing.JTextPane
+import javax.swing.ScrollPaneConstants
 import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -42,22 +46,27 @@ class ShareDialogWrapper(
         return quoteCheckBox?.isSelected ?: false
     }
 
-    //TODO Make editor pane border visible, add "Type your message here...", improve window resizing when text is wider
     override fun createCenterPanel(): JComponent {
         val dialogPanel = JPanel(BorderLayout())
 
         comboBox = ComboBox(DefaultComboBoxModel(conversations.toTypedArray()))
-        comboBox.preferredSize = Dimension(300, 30)
-
-        comboBox.selectedItem
+        comboBox.toolTipText = "Select message destination"
 
         editorPane = JEditorPane("text", text)
         editorPane.minimumSize = Dimension(300, 50)
-        editorPane.preferredSize = Dimension(300, 100)
+        editorPane.background = UIUtil.getTextFieldBackground()
 
-        editorPane.text
+        editorPane.toolTipText = "Message editor"
 
-        dialogPanel.add(editorPane, BorderLayout.CENTER)
+        val scrollPane = JBScrollPane(
+            editorPane,
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+        )
+
+        scrollPane.border = BorderFactory.createEmptyBorder()
+
+        dialogPanel.add(scrollPane, BorderLayout.CENTER)
         dialogPanel.add(comboBox, BorderLayout.BEFORE_FIRST_LINE)
 
         if (filenames.isNotEmpty()) {
@@ -77,6 +86,7 @@ class ShareDialogWrapper(
             val attachmentsPane = JTextPane(document)
 
             attachmentsPane.isEditable = false
+            attachmentsPane.toolTipText = "Attached files"
 
             dialogPanel.add(attachmentsPane, BorderLayout.AFTER_LAST_LINE)
         } else {
@@ -84,7 +94,6 @@ class ShareDialogWrapper(
 
             dialogPanel.add(quoteCheckBox!!, BorderLayout.AFTER_LAST_LINE)
         }
-
 
         dialogPanel.minimumSize = Dimension(300, 150)
         dialogPanel.maximumSize = Dimension(1500, 500)
