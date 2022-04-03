@@ -59,7 +59,6 @@ open class SlackClient {
     fun sendFile(id: String, files: List<File>, text: String) {
         var tagged = false
 
-        // TODO Switch to File blocks message markdown
         for (file: File in files) {
             if (!file.exists()) {
                 throw FileNotFoundException("File not found [$file].")
