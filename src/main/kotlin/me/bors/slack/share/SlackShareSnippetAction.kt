@@ -37,7 +37,7 @@ class SlackShareSnippetAction : AnAction() {
     }
 
     private fun getSelectedText(e: AnActionEvent): String? {
-        val editor = e.getData(PlatformDataKeys.EDITOR)!!
+        val editor = e.getData(PlatformDataKeys.EDITOR) ?: return ""
 
         return editor.selectionModel.selectedText
     }
