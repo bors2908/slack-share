@@ -1,6 +1,7 @@
 plugins {
     id 'org.jetbrains.intellij' version '1.4.0'
     id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'io.gitlab.arturbosch.detekt' version '1.19.0'
     id 'java'
 }
 
@@ -16,8 +17,8 @@ java {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation("com.slack.api:slack-api-client:1.20.2") {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation('com.slack.api:slack-api-client:1.20.2') {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
 
@@ -38,6 +39,11 @@ patchPluginXml {
       0.5 - UI Improvements.<br>
       0.6 - Bug fixes, logging and test improvements.<br>
       """
+}
+
+detekt {
+    config = files("src/main/resources/detekt.yml")
+    buildUponDefaultConfig = true
 }
 
 test {

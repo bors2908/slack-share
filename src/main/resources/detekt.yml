@@ -1,0 +1,15 @@
+complexity:
+  LongParameterList:
+    ignoreAnnotated: [ 'Bean', 'Component', 'Entity', 'SpringBootTest']
+    ignoreDefaultParameters: true
+  NestedBlockDepth:
+    active: true
+    threshold: 5
+
+style:
+  MagicNumber:
+    active: false
+
+formatting:
+  NoMultipleSpaces:
+    active: false

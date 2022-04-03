@@ -202,7 +202,7 @@ open class SlackClient {
             val provided = if (this.provided != null) "Provided: ${this.provided}" else ""
 
 
-            throw RuntimeException(
+            throw SlackClientException(
                 "Error occurred, during Slack request execution: " +
                         "${this.error} ${System.lineSeparator()} $needed ${System.lineSeparator()} $provided"
             )
@@ -211,3 +211,5 @@ open class SlackClient {
         return this
     }
 }
+
+class SlackClientException(message: String) : RuntimeException(message)

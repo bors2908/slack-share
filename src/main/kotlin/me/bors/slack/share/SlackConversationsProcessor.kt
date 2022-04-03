@@ -40,7 +40,8 @@ open class SlackConversationsProcessor(protected val slackClient: SlackClient) {
                 .map { SlackConversation(it.id, it.nameNormalized, it.priority ?: 0.0) }
         )
 
-        // Await moved lower to allow main thread to process more streamlined IMs and channels while MLIMs are processed in the pool.
+        // Await moved lower to allow main thread to process more streamlined IMs and channels while MLIMs are
+        // processed in the pool.
         latch.await()
 
         pool.shutdown()
