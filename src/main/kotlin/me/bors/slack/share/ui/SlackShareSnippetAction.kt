@@ -1,8 +1,10 @@
-package me.bors.slack.share
+package me.bors.slack.share.ui
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import me.bors.slack.share.SlackClient
+import me.bors.slack.share.SlackConversationsProcessor
 
 class SlackShareSnippetAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
