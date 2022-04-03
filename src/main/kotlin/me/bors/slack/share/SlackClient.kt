@@ -1,5 +1,6 @@
 package me.bors.slack.share
 
+import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.Slack
 import com.slack.api.methods.SlackApiTextResponse
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
@@ -16,10 +17,6 @@ import com.slack.api.model.block.composition.MarkdownTextObject
 import java.io.File
 import java.io.FileNotFoundException
 import me.bors.slack.share.Utils.getToken
-import com.intellij.openapi.diagnostic.Logger
-import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 private const val PAGE_SIZE = 200
 
@@ -30,34 +27,6 @@ open class SlackClient {
     private val token = getToken()
 
     private val nameCache = getNameCache()
-
-    fun auth() {
-        val url = HttpUrl.Builder()
-            .scheme("https")
-            .host("slack.com")
-            .addPathSegment("openid")
-            .addPathSegment("connect")
-            .addPathSegment("authorize")
-            .addQueryParameter("response_type", "code")
-            .addQueryParameter("scope", "openid profile email")
-            .addQueryParameter("client_id", clientId)
-            .addQueryParameter("state", "whatever")
-            //.addQueryParameter("team", "T1234")
-            .addQueryParameter("nonce", "whatever")
-            //.addQueryParameter("redirect_uri", "https%3A%2F%2Fclient.example.org%2Fcb HTTP/1.1")
-            .build()
-
-        val request = Request.Builder()
-            .get()
-            .url(url)
-            .build()
-
-        val okClient = OkHttpClient()
-
-        val response = okClient.newCall(request).execute()
-
-        println(response)
-    }
 
     fun sendMessage(id: String, text: String, quoteCode: Boolean = false) {
         val builder = ChatPostMessageRequest.builder()
