@@ -16,6 +16,9 @@ import com.slack.api.model.block.composition.MarkdownTextObject
 import java.io.File
 import java.io.FileNotFoundException
 import me.bors.slack.share.Utils.getToken
+import com.intellij.openapi.diagnostic.Logger
+
+private val logger : Logger = Logger.getInstance(SlackClient::class.java)
 
 open class SlackClient {
     private val slack = Slack.getInstance()
@@ -192,8 +195,7 @@ open class SlackClient {
 
     private fun <T : SlackApiTextResponse> T.processErrors(): T {
         if (this.warning != null) {
-            //TODO Uncomment after logging stuff is resolved
-            //log.warn { "Warining received from Slack: ${this.warning}" }
+            logger.warn("Warining received from Slack: ${this.warning}")
         }
 
         if (this.error != null) {
