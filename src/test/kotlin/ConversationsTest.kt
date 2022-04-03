@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test
 class ConversationsTest {
     @Test
     fun sendMessageTest() {
-        val slackClient = SlackClient()
+        val slackClient = SlackTestClient()
 
-        val conversationsProcessor = ConversationsProcessor(slackClient)
+        val conversationsProcessor = SlackConversationsProcessor(slackClient)
 
         val receiveChannels = conversationsProcessor.getConversations()
 
@@ -21,9 +21,9 @@ class ConversationsTest {
 
     @Test
     fun sendFileTest() {
-        val slackClient = SlackClient()
+        val slackClient = SlackTestClient()
 
-        val conversationsProcessor = ConversationsProcessor(slackClient)
+        val conversationsProcessor = SlackConversationsProcessor(slackClient)
 
         val receiveChannels = conversationsProcessor.getConversations()
 
@@ -38,9 +38,9 @@ class ConversationsTest {
 
     @Test
     fun testCompareMultiThreaded() {
-        val slackClient = SlackClient()
+        val slackClient = SlackTestClient()
 
-        val conversationsProcessor = ConversationsProcessor(slackClient)
+        val conversationsProcessor = SlackTestConversationsProcessor(slackClient)
 
         val times: MutableList<Long> = ArrayList(3)
 

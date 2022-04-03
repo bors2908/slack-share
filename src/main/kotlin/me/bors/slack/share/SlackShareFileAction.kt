@@ -13,7 +13,7 @@ class SlackShareFileAction : AnAction() {
 
         val filenames = files.map { it.name }
 
-        val processor = ConversationsProcessor(slackClient)
+        val processor = SlackConversationsProcessor(slackClient)
 
         val conversations = processor.getConversations()
 

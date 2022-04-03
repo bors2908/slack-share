@@ -17,7 +17,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import me.bors.slack.share.Utils.getToken
 
-class SlackClient {
+open class SlackClient {
     private val slack = Slack.getInstance()
     private val token = getToken()
 
