@@ -18,6 +18,8 @@ import java.io.FileNotFoundException
 import me.bors.slack.share.Utils.getToken
 import com.intellij.openapi.diagnostic.Logger
 
+private const val PAGE_SIZE = 200
+
 private val logger : Logger = Logger.getInstance(SlackClient::class.java)
 
 open class SlackClient {
@@ -175,7 +177,7 @@ open class SlackClient {
     private fun <T> processPaginatedRequest(
         processRequest: (String, Int) -> Pair<String, List<T>>,
     ): MutableList<T> {
-        val limit = 200
+        val limit = PAGE_SIZE
 
         val accumulator = mutableListOf<T>()
 
@@ -202,7 +204,7 @@ open class SlackClient {
             val provided = if (this.provided != null) "Provided: ${this.provided}" else ""
 
 
-            throw RuntimeException(
+            throw SlackClientException(
                 "Error occurred, during Slack request execution: " +
                         "${this.error} ${System.lineSeparator()} $needed ${System.lineSeparator()} $provided"
             )
@@ -211,3 +213,5 @@ open class SlackClient {
         return this
     }
 }
+
+class SlackClientException(message: String) : RuntimeException(message)

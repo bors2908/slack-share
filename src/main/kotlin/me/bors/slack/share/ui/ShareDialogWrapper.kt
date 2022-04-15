@@ -1,4 +1,4 @@
-package me.bors.slack.share
+package me.bors.slack.share.ui
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
@@ -18,6 +18,7 @@ import javax.swing.ScrollPaneConstants
 import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
+import me.bors.slack.share.SlackConversation
 
 class ShareDialogWrapper(
     private val conversations: List<SlackConversation>,
