@@ -2,6 +2,7 @@ package me.bors.slack.share
 
 import java.io.FileInputStream
 import java.nio.file.FileSystems
+import java.util.Properties
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang.SystemUtils
 
@@ -21,5 +22,13 @@ object Utils {
         val fis = FileInputStream(filepath)
 
         return IOUtils.toString(fis, "UTF-8")
+    }
+
+    fun getProperties(path: String): Properties {
+        val props = Properties()
+
+        props.load(javaClass.classLoader.getResourceAsStream(path))
+
+        return props
     }
 }
