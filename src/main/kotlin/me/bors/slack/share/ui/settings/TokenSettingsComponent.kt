@@ -11,6 +11,9 @@ class TokenSettingsComponent {
     val panel: JPanel
     private val slackShareUserTokenField = JBTextField()
     private val addTokenManuallyCheckBox = JBCheckBox("Add token manually")
+    private val infoLabel = JBLabel(
+        "Open Slack App's settings on \"OAuth & Permissions\" tab, copy User OAuth Token and paste here."
+    )
 
     val preferredFocusedComponent: JComponent
         get() = slackShareUserTokenField
@@ -31,6 +34,7 @@ class TokenSettingsComponent {
         panel = FormBuilder.createFormBuilder()
             .addComponent(addTokenManuallyCheckBox, 1)
             .addLabeledComponent(JBLabel("Token: "), slackShareUserTokenField, 1, false)
+            .addComponent(infoLabel)
             .addComponentFillVertically(JPanel(), 0)
             .panel
     }

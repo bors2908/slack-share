@@ -14,7 +14,7 @@ interface SlackClientAction {
      */
     fun validateTokenAndGetSlackClient(): SlackClient? {
         if (!SlackUserTokenSecretState.exists()) {
-            showSettings("No token.")
+            showSettings("No token")
 
             return null
         }
