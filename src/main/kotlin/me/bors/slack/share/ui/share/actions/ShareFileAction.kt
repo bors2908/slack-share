@@ -1,12 +1,13 @@
-package me.bors.slack.share.ui.share
+package me.bors.slack.share.ui.share.actions
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.vfs.VirtualFile
-import me.bors.slack.share.SlackClient
 import me.bors.slack.share.ConversationsProcessor
+import me.bors.slack.share.SlackClient
 import me.bors.slack.share.persistence.SlackUserTokenSecretState
+import me.bors.slack.share.ui.share.ShareDialogWrapper
 
 class ShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
