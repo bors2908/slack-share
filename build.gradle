@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'me.bors'
-version '0.7'
+version '0.8'
 
 repositories {
     mavenCentral()
@@ -39,6 +39,7 @@ patchPluginXml {
       0.5 - UI Improvements.<br>
       0.6 - Bug fixes, logging and test improvements.<br>
       0.7 - Improve conversations loading speed further.<br>
+      0.8 - Add safe token storage. Improve loading speed again.<br>
       """
 }
 

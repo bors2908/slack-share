@@ -1,15 +1,17 @@
 package me.bors.slack.share
 
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
 
 class ConversationsTest {
+    val token = properties.getProperty("token")
+
     @Test
     fun sendMessageTest() {
-        val slackClient = SlackTestClient()
+        val slackClient = SlackTestClient(token)
 
-        val conversationsProcessor = SlackConversationsProcessor(slackClient)
+        val conversationsProcessor = ConversationsProcessor(slackClient)
 
         val receiveChannels = conversationsProcessor.getConversations()
 
@@ -21,9 +23,9 @@ class ConversationsTest {
 
     @Test
     fun sendFileTest() {
-        val slackClient = SlackTestClient()
+        val slackClient = SlackTestClient(token)
 
-        val conversationsProcessor = SlackConversationsProcessor(slackClient)
+        val conversationsProcessor = ConversationsProcessor(slackClient)
 
         val receiveChannels = conversationsProcessor.getConversations()
 
@@ -38,7 +40,7 @@ class ConversationsTest {
 
     @Test
     fun testCompareMultiThreaded() {
-        val slackClient = SlackTestClient()
+        val slackClient = SlackTestClient(token)
 
         val conversationsProcessor = SlackTestConversationsProcessor(slackClient)
 
