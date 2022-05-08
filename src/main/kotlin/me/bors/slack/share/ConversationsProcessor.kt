@@ -1,12 +1,12 @@
 package me.bors.slack.share
 
 import com.slack.api.model.ConversationType
+import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingQueue
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.bors.slack.share.entity.Conversation
-import java.util.concurrent.Executors
-import java.util.concurrent.LinkedBlockingQueue
 
 open class ConversationsProcessor(protected val slackClient: SlackClient) {
     fun getConversations(): List<Conversation> {
@@ -32,14 +32,14 @@ open class ConversationsProcessor(protected val slackClient: SlackClient) {
                 }
             }
 
-            launch {
+            launch(dispatcher) {
                 result.addAll(
                     slackClient.getChannels(listOf(ConversationType.IM))
                         .map { Conversation(it.id, slackClient.getUserName(it.user), it.priority ?: 0.0) }
                 )
             }
 
-            launch {
+            launch(dispatcher) {
                 result.addAll(
                     slackClient.getChannels(listOf(ConversationType.PRIVATE_CHANNEL, ConversationType.PUBLIC_CHANNEL))
                         .map { Conversation(it.id, it.nameNormalized, it.priority ?: 0.0) }
