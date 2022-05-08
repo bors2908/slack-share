@@ -1,14 +1,14 @@
 package me.bors.slack.share.ui.settings
 
 import com.intellij.openapi.options.Configurable
-import javax.swing.JComponent
 import me.bors.slack.share.persistence.SettingsState
 import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.Nls.Capitalization.Title
+import javax.swing.JComponent
 
-class SettingsConfigurable : Configurable {
-    private lateinit var slackShareSettingsComponent: SettingsComponent
+class TokenSettingsConfigurable : Configurable {
+    private lateinit var slackShareSettingsComponent: TokenSettingsComponent
 
     @Nls(capitalization = Title)
     override fun getDisplayName(): String {
@@ -20,7 +20,7 @@ class SettingsConfigurable : Configurable {
     }
 
     override fun createComponent(): JComponent {
-        slackShareSettingsComponent = SettingsComponent()
+        slackShareSettingsComponent = TokenSettingsComponent()
 
         return slackShareSettingsComponent.panel
     }

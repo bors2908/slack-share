@@ -3,6 +3,7 @@ package me.bors.slack.share
 import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.Slack
 import com.slack.api.methods.SlackApiTextResponse
+import com.slack.api.methods.request.auth.AuthTestRequest
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
 import com.slack.api.methods.request.conversations.ConversationsListRequest
 import com.slack.api.methods.request.conversations.ConversationsMembersRequest
@@ -24,7 +25,13 @@ private val logger: Logger = Logger.getInstance(SlackClient::class.java)
 open class SlackClient(private val token: String) {
     private val slack = Slack.getInstance()
 
-    private val nameCache = getNameCache()
+    private val nameCache: Map<String, String>
+
+    init {
+        validateToken()
+
+        nameCache = getNameCache()
+    }
 
     fun sendMessage(id: String, text: String, quoteCode: Boolean = false) {
         val builder = ChatPostMessageRequest.builder()
@@ -144,6 +151,12 @@ open class SlackClient(private val token: String) {
         }
     }
 
+    private fun validateToken() {
+        val tokenStatus = slack.methods().authTest(AuthTestRequest.builder().token(token).build())
+
+        if (!tokenStatus.isOk) throw SlackTokenValidationException("Error: ${tokenStatus.error}")
+    }
+
     private fun processMarkdownAndQuote(text: String): String {
         val result = text
             .replace("<", "&lt;")
@@ -203,7 +216,7 @@ open class SlackClient(private val token: String) {
 
             throw SlackClientException(
                 "Error occurred, during Slack request execution: " +
-                    "${this.error} ${System.lineSeparator()} $needed ${System.lineSeparator()} $provided"
+                        "${this.error} ${System.lineSeparator()} $needed ${System.lineSeparator()} $provided"
             )
         }
 
@@ -211,4 +224,6 @@ open class SlackClient(private val token: String) {
     }
 }
 
-class SlackClientException(message: String) : RuntimeException(message)
+open class SlackClientException(message: String) : RuntimeException(message)
+
+class SlackTokenValidationException(message: String) : SlackClientException(message)

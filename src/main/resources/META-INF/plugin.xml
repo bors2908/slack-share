@@ -12,8 +12,8 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable parentId="tools" instance="me.bors.slack.share.ui.settings.SettingsConfigurable"
-                                 id="me.bors.slack.share.ui.settings.SettingsConfigurable"
+        <applicationConfigurable parentId="tools" instance="me.bors.slack.share.ui.settings.TokenSettingsConfigurable"
+                                 id="me.bors.slack.share.ui.settings.TokenSettingsConfigurable"
                                  displayName="Slack Share"/>
         <applicationService serviceImplementation="me.bors.slack.share.persistence.SettingsState"/>
     </extensions>
