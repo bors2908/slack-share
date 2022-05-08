@@ -1,11 +1,11 @@
 package me.bors.slack.share.ui.settings
 
 import com.intellij.openapi.options.Configurable
+import javax.swing.JComponent
 import me.bors.slack.share.persistence.SettingsState
 import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.Nls.Capitalization.Title
-import javax.swing.JComponent
 
 class SettingsConfigurable : Configurable {
     private lateinit var slackShareSettingsComponent: SettingsComponent
@@ -26,26 +26,18 @@ class SettingsConfigurable : Configurable {
     }
 
     override fun isModified(): Boolean {
-        val settings = SettingsState
-        val tokenSecretState = SlackUserTokenSecretState
-
-        return (slackShareSettingsComponent.addTokenManually != settings.addTokenManually) ||
-                (slackShareSettingsComponent.slackShareUserToken != tokenSecretState.get())
+        return (slackShareSettingsComponent.addTokenManually != SettingsState.addTokenManually) ||
+                (slackShareSettingsComponent.slackShareUserToken != SlackUserTokenSecretState.get())
     }
 
     override fun apply() {
-        val settings = SettingsState
-
         SlackUserTokenSecretState.set(slackShareSettingsComponent.slackShareUserToken)
-        settings.addTokenManually = slackShareSettingsComponent.addTokenManually
+        SettingsState.addTokenManually = slackShareSettingsComponent.addTokenManually
     }
 
     override fun reset() {
-        val settings = SettingsState
-        val tokenSecretState = SlackUserTokenSecretState
-
-        slackShareSettingsComponent.slackShareUserToken = tokenSecretState.get() ?: ""
-        slackShareSettingsComponent.addTokenManually = settings.addTokenManually
+        slackShareSettingsComponent.slackShareUserToken = SlackUserTokenSecretState.get() ?: ""
+        slackShareSettingsComponent.addTokenManually = SettingsState.addTokenManually
     }
 
     override fun disposeUIResources() {
