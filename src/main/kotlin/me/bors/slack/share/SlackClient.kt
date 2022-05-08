@@ -21,7 +21,6 @@ private const val PAGE_SIZE = 200
 
 private val logger: Logger = Logger.getInstance(SlackClient::class.java)
 
-// TODO make singleton
 open class SlackClient(private val token: String) {
     private val slack = Slack.getInstance()
 
@@ -173,7 +172,7 @@ open class SlackClient(private val token: String) {
     }
 
     // Unfortunately Slack Java API paginated request has no extracted interface with cursor and limit fields.
-    private fun <T> processPaginatedRequest(
+    private inline fun <reified T> processPaginatedRequest(
         processRequest: (String, Int) -> Pair<String, List<T>>,
     ): MutableList<T> {
         val limit = PAGE_SIZE
@@ -193,7 +192,7 @@ open class SlackClient(private val token: String) {
         return accumulator
     }
 
-    private fun <T : SlackApiTextResponse> T.processErrors(): T {
+    private inline fun <reified T : SlackApiTextResponse> T.processErrors(): T {
         if (this.warning != null) {
             logger.warn("Warining received from Slack: ${this.warning}")
         }
