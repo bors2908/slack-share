@@ -4,7 +4,7 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.UIUtil
-import me.bors.slack.share.SlackConversation
+import me.bors.slack.share.entity.Conversation
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.lang.Boolean.TRUE
@@ -21,11 +21,11 @@ import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 
 class ShareDialogWrapper(
-    private val conversations: List<SlackConversation>,
+    private val conversations: List<Conversation>,
     private val text: String = "",
     private val filenames: List<String> = emptyList(),
 ) : DialogWrapper(true) {
-    private lateinit var comboBox: ComboBox<SlackConversation>
+    private lateinit var comboBox: ComboBox<Conversation>
     private lateinit var editorPane: JEditorPane
     private var quoteCheckBox: JCheckBox? = null
 
@@ -39,8 +39,8 @@ class ShareDialogWrapper(
         return editorPane.text
     }
 
-    fun getSelectedItem(): SlackConversation {
-        return comboBox.selectedItem as SlackConversation
+    fun getSelectedItem(): Conversation {
+        return comboBox.selectedItem as Conversation
     }
 
     fun isQuotedCode(): Boolean {

@@ -18,13 +18,13 @@
         <applicationService serviceImplementation="me.bors.slack.share.persistence.SettingsState"/>
     </extensions>
     <actions>
-        <action id="me.bors.slack.share.ui.share.SlackShareSnippetAction"
-                class="me.bors.slack.share.ui.share.SlackShareSnippetAction"
+        <action id="me.bors.slack.share.ui.share.ShareSnippetAction"
+                class="me.bors.slack.share.ui.share.ShareSnippetAction"
                 text="Share to Slack" description="Share selected to Slack">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
             <add-to-group group-id="ConsoleEditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
         </action>
-        <action id="me.bors.slack.share.ui.share.SlackShareFileAction" class="me.bors.slack.share.ui.share.SlackShareFileAction"
+        <action id="me.bors.slack.share.ui.share.ShareFileAction" class="me.bors.slack.share.ui.share.ShareFileAction"
                 text="Share to Slack" description="Share file to Slack">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </action>

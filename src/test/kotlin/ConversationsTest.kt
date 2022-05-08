@@ -11,7 +11,7 @@ class ConversationsTest {
     fun sendMessageTest() {
         val slackClient = SlackTestClient(token)
 
-        val conversationsProcessor = SlackConversationsProcessor(slackClient)
+        val conversationsProcessor = ConversationsProcessor(slackClient)
 
         val receiveChannels = conversationsProcessor.getConversations()
 
@@ -25,7 +25,7 @@ class ConversationsTest {
     fun sendFileTest() {
         val slackClient = SlackTestClient(token)
 
-        val conversationsProcessor = SlackConversationsProcessor(slackClient)
+        val conversationsProcessor = ConversationsProcessor(slackClient)
 
         val receiveChannels = conversationsProcessor.getConversations()
 

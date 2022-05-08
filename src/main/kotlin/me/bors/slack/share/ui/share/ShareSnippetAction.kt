@@ -4,10 +4,10 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import me.bors.slack.share.SlackClient
-import me.bors.slack.share.SlackConversationsProcessor
+import me.bors.slack.share.ConversationsProcessor
 import me.bors.slack.share.persistence.SlackUserTokenSecretState
 
-class SlackShareSnippetAction : AnAction() {
+class ShareSnippetAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val token = SlackUserTokenSecretState.get() ?: ""
 
@@ -15,7 +15,7 @@ class SlackShareSnippetAction : AnAction() {
 
         val selectedText = getSelectedText(e) ?: ""
 
-        val processor = SlackConversationsProcessor(slackClient)
+        val processor = ConversationsProcessor(slackClient)
 
         val conversations = processor.getConversations()
 

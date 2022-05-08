@@ -1,6 +1,6 @@
-package me.bors.slack.share
+package me.bors.slack.share.entity
 
-class SlackConversation(
+class Conversation(
     val id: String,
     val name: String,
     val priority: Double,
@@ -13,7 +13,7 @@ class SlackConversation(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as SlackConversation
+        other as Conversation
 
         if (id != other.id) return false
         if (name != other.name) return false
