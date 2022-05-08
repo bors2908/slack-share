@@ -16,4 +16,4 @@ Confirmed compatibility with IDEA 2021.3.
 
 4. Install .zip extension file through Settings->Plugins->Gear Icon->Install Plugin From Disk...
 
-5. Try to share anything with extension or open extension settings (Settings->Tools->Slack Share) and paste your token
+5. Share anything with extension or open extension settings (Settings->Tools->Slack Share) and paste your token
