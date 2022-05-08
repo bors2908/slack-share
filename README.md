@@ -8,8 +8,7 @@ Releases to IDEA and Slack extension shops are also planned.
 Confirmed compatibility with IDEA 2021.3.
 
 #How to install?
-1. Create new Slack app from manifest:
-https://api.slack.com/apps?new_app=1&manifest_json={"display_information":{"name":"Share%20from%20JetBrains"},"oauth_config":{"scopes":{"user":["channels:read","chat:write","files:write","groups:read","im:read","mpim:read","users:read"]}},"settings":{"org_deploy_enabled":false,"socket_mode_enabled":false,"token_rotation_enabled":false}}
+1. Create new Slack app from manifest: [Link to app creation with pre-configured app manifest](https://api.slack.com/apps?new_app=1&manifest_json={"display_information":{"name":"Share%20from%20JetBrains"},"oauth_config":{"scopes":{"user":["channels:read","chat:write","files:write","groups:read","im:read","mpim:read","users:read"]}},"settings":{"org_deploy_enabled":false,"socket_mode_enabled":false,"token_rotation_enabled":false}})
 
 2. Install app to Slack workspace
 
