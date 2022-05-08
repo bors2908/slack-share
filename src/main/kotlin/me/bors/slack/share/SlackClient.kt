@@ -1,5 +1,6 @@
 package me.bors.slack.share
 
+import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.Slack
 import com.slack.api.methods.SlackApiTextResponse
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
@@ -15,16 +16,14 @@ import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
 import java.io.File
 import java.io.FileNotFoundException
-import me.bors.slack.share.Utils.getToken
-import com.intellij.openapi.diagnostic.Logger
 
 private const val PAGE_SIZE = 200
 
-private val logger : Logger = Logger.getInstance(SlackClient::class.java)
+private val logger: Logger = Logger.getInstance(SlackClient::class.java)
 
-open class SlackClient {
+// TODO make singleton
+open class SlackClient(private val token: String) {
     private val slack = Slack.getInstance()
-    private val token = getToken()
 
     private val nameCache = getNameCache()
 
@@ -203,10 +202,9 @@ open class SlackClient {
             val needed = if (this.needed != null) "Needed: ${this.needed}" else ""
             val provided = if (this.provided != null) "Provided: ${this.provided}" else ""
 
-
             throw SlackClientException(
                 "Error occurred, during Slack request execution: " +
-                        "${this.error} ${System.lineSeparator()} $needed ${System.lineSeparator()} $provided"
+                    "${this.error} ${System.lineSeparator()} $needed ${System.lineSeparator()} $provided"
             )
         }
 

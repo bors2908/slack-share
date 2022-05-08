@@ -1,4 +1,4 @@
-package me.bors.slack.share.ui
+package me.bors.slack.share.ui.share
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -6,10 +6,13 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.vfs.VirtualFile
 import me.bors.slack.share.SlackClient
 import me.bors.slack.share.SlackConversationsProcessor
+import me.bors.slack.share.persistence.SlackUserTokenSecretState
 
 class SlackShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val slackClient = SlackClient()
+        val token = SlackUserTokenSecretState.get() ?: ""
+
+        val slackClient = SlackClient(token)
 
         val files = (getVirtualFiles(e) ?: emptyArray()).asList()
 

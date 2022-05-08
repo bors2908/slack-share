@@ -12,14 +12,19 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable parentId="tools" instance="me.bors.slack.share.ui.settings.SettingsConfigurable"
+                                 id="me.bors.slack.share.ui.settings.SettingsConfigurable"
+                                 displayName="Slack Share"/>
+        <applicationService serviceImplementation="me.bors.slack.share.persistence.SettingsState"/>
     </extensions>
     <actions>
-        <action id="me.bors.slack.share.ui.SlackShareSnippetAction" class="me.bors.slack.share.ui.SlackShareSnippetAction"
+        <action id="me.bors.slack.share.ui.share.SlackShareSnippetAction"
+                class="me.bors.slack.share.ui.share.SlackShareSnippetAction"
                 text="Share to Slack" description="Share selected to Slack">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
             <add-to-group group-id="ConsoleEditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
         </action>
-        <action id="me.bors.slack.share.ui.SlackShareFileAction" class="me.bors.slack.share.ui.SlackShareFileAction"
+        <action id="me.bors.slack.share.ui.share.SlackShareFileAction" class="me.bors.slack.share.ui.share.SlackShareFileAction"
                 text="Share to Slack" description="Share file to Slack">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </action>

@@ -1,6 +1,6 @@
 package me.bors.slack.share
 
 @Suppress("EmptyClassBlock")
-class SlackTestClient : SlackClient() {
-    //TOOD test methods to be added here.
+class SlackTestClient(token: String) : SlackClient(token) {
+    // TOOD test methods to be added here.
 }

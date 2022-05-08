@@ -1,14 +1,17 @@
-package me.bors.slack.share.ui
+package me.bors.slack.share.ui.share
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import me.bors.slack.share.SlackClient
 import me.bors.slack.share.SlackConversationsProcessor
+import me.bors.slack.share.persistence.SlackUserTokenSecretState
 
 class SlackShareSnippetAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val slackClient = SlackClient()
+        val token = SlackUserTokenSecretState.get() ?: ""
+
+        val slackClient = SlackClient(token)
 
         val selectedText = getSelectedText(e) ?: ""
 
