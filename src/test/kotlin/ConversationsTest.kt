@@ -16,7 +16,7 @@ class ConversationsTest {
         val receiveChannels = conversationsProcessor.getConversations()
 
         // TODO Replace with user info request
-        val id = receiveChannels.first { it.name == "Boris Ivanov" }.id
+        val id = receiveChannels.first { it.name == "bors2908" }.id
 
         slackClient.sendMessage(id, "whatever")
     }
@@ -30,7 +30,7 @@ class ConversationsTest {
         val receiveChannels = conversationsProcessor.getConversations()
 
         // TODO Replace with user info request
-        val id = receiveChannels.first { it.name == "Boris Ivanov" }.id
+        val id = receiveChannels.first { it.name == "bors2908" }.id
 
         // Todo add file creation
         val path = Path.of("C:\\Temp\\useless.txt").toFile()
