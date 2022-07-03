@@ -1,7 +1,7 @@
 plugins {
-    id("org.jetbrains.intellij") version "1.4.0"
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
-    id("io.gitlab.arturbosch.detekt") version "1.19.0"
+    id("org.jetbrains.intellij") version "1.6.0"
+    id("org.jetbrains.kotlin.jvm") version "1.6.21"
+    id("io.gitlab.arturbosch.detekt") version "1.20.0"
     id("java")
 }
 
@@ -12,14 +12,10 @@ repositories {
     mavenCentral()
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-}
-
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
-    implementation("com.slack.api:slack-api-client:1.20.2") {
+    implementation("com.slack.api:slack-api-client:1.22.2") {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
 
@@ -32,7 +28,14 @@ intellij {
 }
 
 tasks {
+    withType<JavaCompile> {
+        sourceCompatibility = JavaVersion.VERSION_11.toString()
+        targetCompatibility = JavaVersion.VERSION_11.toString()
+    }
+
     patchPluginXml {
+        sinceBuild.set("203")
+
         changeNotes.set(
             """ 0.1 - Initial version.<br>
                 0.2 - Pagination support, conversation names fix.<br>
