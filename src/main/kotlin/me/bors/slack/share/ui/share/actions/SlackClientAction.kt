@@ -10,7 +10,7 @@ import me.bors.slack.share.ui.share.TokenDialogWrapper
 
 interface SlackClientAction {
     /***
-     * @return SlackClient ot null if unsucessful.
+     * @return SlackClient or null if unsuccessful.
      */
     fun validateTokenAndGetSlackClient(): SlackClient? {
         if (!SlackUserTokenSecretState.exists()) {

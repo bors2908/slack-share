@@ -17,7 +17,7 @@ class TokenDialogWrapper(private val error: String) : DialogWrapper(true) {
     override fun createCenterPanel(): JComponent {
         val dialogPanel = JPanel(BorderLayout())
 
-        val label = JLabel("User token error: ($error). Press OK to open settings.")
+        val label = JLabel("User token error: $error. Press OK to open settings.")
 
         label.preferredSize = Dimension(100, 30)
 

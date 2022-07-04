@@ -2,27 +2,36 @@ package me.bors.slack.share
 
 import com.slack.api.Slack
 import com.slack.api.methods.request.oauth.OAuthV2AccessRequest
+import me.bors.slack.share.Utils.getProperties
+import okhttp3.HttpUrl
+import okhttp3.mockwebserver.MockWebServer
+import okhttp3.tls.HandshakeCertificates
+import okhttp3.tls.HeldCertificate
 import java.awt.Desktop
 import java.io.IOException
 import java.net.DatagramSocket
 import java.net.ServerSocket
 import java.net.URI
 import java.util.concurrent.TimeUnit
-import me.bors.slack.share.Utils.getProperties
-import okhttp3.HttpUrl
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.tls.HandshakeCertificates
-import okhttp3.tls.HeldCertificate
 
-private val props = getProperties("auth.properties")
+private val props = getProperties("secret.properties")
+
+private val scopeList = listOf(
+    "channels:read",
+    "chat:write",
+    "files:write",
+    "groups:read",
+    "im:read",
+    "mpim:read",
+    "users:read"
+)
 
 private val slack = Slack.getInstance()
 
 @Suppress("MaxLineLength", "UnusedPrivateMember")
 class SlackAuthenticator {
-    fun auth() {
+    fun auth(): String {
         val clientId = props.getProperty("client.id")
-        // TODO Totally unsafe. Remove
         val clientSecret = props.getProperty("client.secret")
 
         val schema = "https://"
@@ -37,15 +46,7 @@ class SlackAuthenticator {
 
         val server = startHttpsServer(ip, port)
 
-        val scopes = listOf(
-            "channels:read",
-            "chat:write",
-            "files:write",
-            "groups:read",
-            "im:read",
-            "mpim:read",
-            "users:read"
-        ).joinToString(" ")
+        val scopes = scopeList.joinToString(" ")
 
         val uri = HttpUrl.Builder()
             .scheme("https")
@@ -64,9 +65,11 @@ class SlackAuthenticator {
 
         openInBrowser(uri)
 
-        val incomingRequest = server.takeRequest(45, TimeUnit.SECONDS)
+        val incomingRequest = server.takeRequest(300, TimeUnit.SECONDS) ?: throw AuthenticationException("Auth timeout.")
 
-        val code = incomingRequest?.requestUrl?.queryParameter("code")
+        val requestUrl = incomingRequest.requestUrl ?: throw AuthenticationException("Request URL was null.")
+
+        val code = requestUrl.queryParameter("code")
 
         server.shutdown()
 
@@ -79,14 +82,19 @@ class SlackAuthenticator {
             .code(code)
             .build()
 
-        val res = slack.methods().oauthV2Access(oauthRequest).authedUser
+        val response = slack.methods().oauthV2Access(oauthRequest).authedUser
 
-        println(res)
+        scopeList.forEach {
+            if (!response.scope.contains(it))
+                throw AuthenticationException("Scopes does not match. [expected=$scopeList], [provided=${response.scope}]")
+        }
+
+        return response.accessToken ?: throw AuthenticationException("Null access token.")
     }
 
     private fun openInBrowser(uri: URI) {
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Desktop.getDesktop().browse(uri);
+            Desktop.getDesktop().browse(uri)
         }
     }
 
@@ -141,3 +149,5 @@ class SlackAuthenticator {
         return false
     }
 }
+
+class AuthenticationException(msg: String) : RuntimeException(msg)
