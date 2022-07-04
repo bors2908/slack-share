@@ -1,4 +1,4 @@
-package me.bors.slack.share.ui.share
+package me.bors.slack.share.ui.share.dialog
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper

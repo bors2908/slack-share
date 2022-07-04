@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.vfs.VirtualFile
 import me.bors.slack.share.ConversationsProcessor
-import me.bors.slack.share.ui.share.ShareDialogWrapper
+import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
 
 class ShareFileAction : AnAction(), SlackClientAction {
     override fun actionPerformed(e: AnActionEvent) {

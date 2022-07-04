@@ -4,7 +4,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import me.bors.slack.share.ConversationsProcessor
-import me.bors.slack.share.ui.share.ShareDialogWrapper
+import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
 
 class ShareSnippetAction : AnAction(), SlackClientAction {
     override fun actionPerformed(e: AnActionEvent) {

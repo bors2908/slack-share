@@ -1,4 +1,4 @@
-package me.bors.slack.share.ui.share
+package me.bors.slack.share.ui.share.dialog
 
 import com.intellij.openapi.ui.DialogWrapper
 import java.awt.BorderLayout
@@ -7,7 +7,7 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class TokenDialogWrapper(private val error: String) : DialogWrapper(true) {
+class TokenErrorDialogWrapper(private val error: String) : DialogWrapper(true) {
     init {
         title = "Invalid Token"
 

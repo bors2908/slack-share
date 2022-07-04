@@ -6,7 +6,7 @@ import me.bors.slack.share.SlackClient
 import me.bors.slack.share.SlackTokenValidationException
 import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import me.bors.slack.share.ui.settings.TokenSettingsConfigurable
-import me.bors.slack.share.ui.share.TokenDialogWrapper
+import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
 
 interface SlackClientAction {
     /***
@@ -31,7 +31,7 @@ interface SlackClientAction {
     }
 
     private fun showSettings(error: String) {
-        if (TokenDialogWrapper(error).showAndGet()) {
+        if (TokenErrorDialogWrapper(error).showAndGet()) {
             ShowSettingsUtil.getInstance()
                 .editConfigurable(ProjectManager.getInstance().defaultProject, TokenSettingsConfigurable())
         }

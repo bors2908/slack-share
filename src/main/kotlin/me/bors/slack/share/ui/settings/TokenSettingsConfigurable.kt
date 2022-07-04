@@ -1,14 +1,37 @@
 package me.bors.slack.share.ui.settings
 
 import com.intellij.openapi.options.Configurable
-import me.bors.slack.share.persistence.SettingsState
 import me.bors.slack.share.persistence.SlackUserTokenSecretState
+import me.bors.slack.share.ui.settings.dialog.AddTokenAutomaticDialogController
+import me.bors.slack.share.ui.settings.dialog.AddTokenManualDialogController
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.Nls.Capitalization.Title
+import java.awt.event.ActionEvent
 import javax.swing.JComponent
+import kotlin.properties.Delegates
 
 class TokenSettingsConfigurable : Configurable {
     private lateinit var slackShareSettingsComponent: TokenSettingsComponent
+
+    private var previousState by Delegates.notNull<Boolean>()
+
+    private fun getManualActionListener(): (ActionEvent) -> Unit {
+        return {
+            AddTokenManualDialogController().show()
+        }
+    }
+
+    private fun getAutomaticActionListener(): (ActionEvent) -> Unit {
+        return {
+            AddTokenAutomaticDialogController().show()
+        }
+    }
+
+    private fun getRemoveTokenAction(): (ActionEvent) -> Unit {
+        return {
+            SlackUserTokenSecretState.remove()
+        }
+    }
 
     @Nls(capitalization = Title)
     override fun getDisplayName(): String {
@@ -20,24 +43,28 @@ class TokenSettingsConfigurable : Configurable {
     }
 
     override fun createComponent(): JComponent {
-        slackShareSettingsComponent = TokenSettingsComponent()
+        previousState = SlackUserTokenSecretState.exists()
+
+        slackShareSettingsComponent =
+            TokenSettingsComponent(getManualActionListener(), getAutomaticActionListener(), getRemoveTokenAction())
 
         return slackShareSettingsComponent.panel
     }
 
     override fun isModified(): Boolean {
-        return (slackShareSettingsComponent.addTokenManually != SettingsState.addTokenManually) ||
-                (slackShareSettingsComponent.slackShareUserToken != SlackUserTokenSecretState.get())
+        val exists = SlackUserTokenSecretState.exists()
+
+        slackShareSettingsComponent.setStatus(exists)
+
+        return exists == previousState
     }
 
     override fun apply() {
-        SlackUserTokenSecretState.set(slackShareSettingsComponent.slackShareUserToken)
-        SettingsState.addTokenManually = slackShareSettingsComponent.addTokenManually
+        previousState = SlackUserTokenSecretState.exists()
     }
 
     override fun reset() {
-        slackShareSettingsComponent.slackShareUserToken = SlackUserTokenSecretState.get() ?: ""
-        slackShareSettingsComponent.addTokenManually = SettingsState.addTokenManually
+        slackShareSettingsComponent.setStatus(previousState)
     }
 
     override fun disposeUIResources() {
