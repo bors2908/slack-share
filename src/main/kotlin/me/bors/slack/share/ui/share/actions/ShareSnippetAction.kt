@@ -1,18 +1,18 @@
-package me.bors.slack.share.ui
+package me.bors.slack.share.ui.share.actions
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import me.bors.slack.share.SlackClient
-import me.bors.slack.share.SlackConversationsProcessor
+import me.bors.slack.share.ConversationsProcessor
+import me.bors.slack.share.ui.share.ShareDialogWrapper
 
-class SlackShareSnippetAction : AnAction() {
+class ShareSnippetAction : AnAction(), SlackClientAction {
     override fun actionPerformed(e: AnActionEvent) {
-        val slackClient = SlackClient()
+        val slackClient = validateTokenAndGetSlackClient() ?: return
 
         val selectedText = getSelectedText(e) ?: ""
 
-        val processor = SlackConversationsProcessor(slackClient)
+        val processor = ConversationsProcessor(slackClient)
 
         val conversations = processor.getConversations()
 

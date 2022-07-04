@@ -1,34 +1,36 @@
 package me.bors.slack.share
 
-import java.nio.file.Path
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
 
 class ConversationsTest {
+    val token = properties.getProperty("token")
+
     @Test
     fun sendMessageTest() {
-        val slackClient = SlackTestClient()
+        val slackClient = SlackTestClient(token)
 
-        val conversationsProcessor = SlackConversationsProcessor(slackClient)
+        val conversationsProcessor = ConversationsProcessor(slackClient)
 
         val receiveChannels = conversationsProcessor.getConversations()
 
         // TODO Replace with user info request
-        val id = receiveChannels.first { it.name == "Boris Ivanov" }.id
+        val id = receiveChannels.first { it.name == "bors2908" }.id
 
         slackClient.sendMessage(id, "whatever")
     }
 
     @Test
     fun sendFileTest() {
-        val slackClient = SlackTestClient()
+        val slackClient = SlackTestClient(token)
 
-        val conversationsProcessor = SlackConversationsProcessor(slackClient)
+        val conversationsProcessor = ConversationsProcessor(slackClient)
 
         val receiveChannels = conversationsProcessor.getConversations()
 
         // TODO Replace with user info request
-        val id = receiveChannels.first { it.name == "Boris Ivanov" }.id
+        val id = receiveChannels.first { it.name == "bors2908" }.id
 
         // Todo add file creation
         val path = Path.of("C:\\Temp\\useless.txt").toFile()
@@ -38,7 +40,7 @@ class ConversationsTest {
 
     @Test
     fun testCompareMultiThreaded() {
-        val slackClient = SlackTestClient()
+        val slackClient = SlackTestClient(token)
 
         val conversationsProcessor = SlackTestConversationsProcessor(slackClient)
 

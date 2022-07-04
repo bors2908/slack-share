@@ -3,6 +3,7 @@ package me.bors.slack.share
 import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.Slack
 import com.slack.api.methods.SlackApiTextResponse
+import com.slack.api.methods.request.auth.AuthTestRequest
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
 import com.slack.api.methods.request.conversations.ConversationsListRequest
 import com.slack.api.methods.request.conversations.ConversationsMembersRequest
@@ -16,17 +17,21 @@ import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
 import java.io.File
 import java.io.FileNotFoundException
-import me.bors.slack.share.Utils.getToken
 
 private const val PAGE_SIZE = 200
 
-private val logger : Logger = Logger.getInstance(SlackClient::class.java)
+private val logger: Logger = Logger.getInstance(SlackClient::class.java)
 
-open class SlackClient {
+open class SlackClient(private val token: String) {
     private val slack = Slack.getInstance()
-    private val token = getToken()
 
-    private val nameCache = getNameCache()
+    private val nameCache: Map<String, String>
+
+    init {
+        validateToken()
+
+        nameCache = getNameCache()
+    }
 
     fun sendMessage(id: String, text: String, quoteCode: Boolean = false) {
         val builder = ChatPostMessageRequest.builder()
@@ -146,6 +151,12 @@ open class SlackClient {
         }
     }
 
+    private fun validateToken() {
+        val tokenStatus = slack.methods().authTest(AuthTestRequest.builder().token(token).build())
+
+        if (!tokenStatus.isOk) throw SlackTokenValidationException("Error: ${tokenStatus.error}")
+    }
+
     private fun processMarkdownAndQuote(text: String): String {
         val result = text
             .replace("<", "&lt;")
@@ -174,7 +185,7 @@ open class SlackClient {
     }
 
     // Unfortunately Slack Java API paginated request has no extracted interface with cursor and limit fields.
-    private fun <T> processPaginatedRequest(
+    private inline fun <reified T> processPaginatedRequest(
         processRequest: (String, Int) -> Pair<String, List<T>>,
     ): MutableList<T> {
         val limit = PAGE_SIZE
@@ -194,7 +205,7 @@ open class SlackClient {
         return accumulator
     }
 
-    private fun <T : SlackApiTextResponse> T.processErrors(): T {
+    private inline fun <reified T : SlackApiTextResponse> T.processErrors(): T {
         if (this.warning != null) {
             logger.warn("Warining received from Slack: ${this.warning}")
         }
@@ -214,4 +225,6 @@ open class SlackClient {
     }
 }
 
-class SlackClientException(message: String) : RuntimeException(message)
+open class SlackClientException(message: String) : RuntimeException(message)
+
+class SlackTokenValidationException(message: String) : SlackClientException(message)

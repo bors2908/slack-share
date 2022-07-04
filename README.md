@@ -8,26 +8,12 @@ Releases to IDEA and Slack extension shops are also planned.
 Confirmed compatibility with IDEA 2021.3.
 
 #How to install?
+1. Create new Slack app from manifest: [Link to app creation with pre-configured app manifest](https://api.slack.com/apps?new_app=1&manifest_json={"display_information":{"name":"Share%20from%20JetBrains"},"oauth_config":{"scopes":{"user":["channels:read","chat:write","files:write","groups:read","im:read","mpim:read","users:read"]}},"settings":{"org_deploy_enabled":false,"socket_mode_enabled":false,"token_rotation_enabled":false}})
 
-1. Create new Slack app
-   https://api.slack.com/apps
+2. Install app to Slack workspace
 
-2. Add User scopes in Oauth & Permission tab
-- channels:read
-- chat:write
-- files:write
-- groups:read
-- im:read
-- mpim:read
-- users:read
+3. Open Slack App's settings on "OAuth & Permissions" tab and copy User OAuth Token
 
-3. Install app to Slack workspace
+4. Install .zip extension file through Settings->Plugins->Gear Icon->Install Plugin From Disk...
 
-4. (Potentially unsafe) Create empty file
-   - WINDOWS %LOCALAPPDATA%\slack-share\slack-share
-   - MAC_OS ~/Library/Application Support/slack-share/slack-share
-   - LINUX ~/.local/share/slack-share/slack-share
-
-5. (Potentially unsafe) Copy Oauth User Token from Slack app settings and paste it into created file
-
-6. Install .zip extension file through Settings->Plugins->Gear Icon->Install Plugin From Disk...
+5. Share anything with extension or open extension settings (Settings->Tools->Slack Share) and paste your token
