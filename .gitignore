@@ -12,6 +12,6 @@ logs
 
 lib/out
 
-**/auth.properties
+**/application-store.properties
 
 **/secret.properties

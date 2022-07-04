@@ -1,9 +1,10 @@
-package me.bors.slack.share
+package me.bors.slack.share.auth
 
 import com.slack.api.Slack
 import com.slack.api.methods.request.oauth.OAuthV2AccessRequest
 import me.bors.slack.share.Utils.getProperties
 import okhttp3.HttpUrl
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.tls.HandshakeCertificates
 import okhttp3.tls.HeldCertificate
@@ -65,7 +66,22 @@ class SlackAuthenticator {
 
         openInBrowser(uri)
 
-        val incomingRequest = server.takeRequest(300, TimeUnit.SECONDS) ?: throw AuthenticationException("Auth timeout.")
+        //TODO Add proper message afterwards
+        server.enqueue(
+            MockResponse()
+                .setStatus("HTTP/1.1 200")
+                .addHeader("content-type: text/html; charset=utf-8")
+                .setBody("<!DOCTYPE html>\n" +
+                        "<html>\n" +
+                        "<body>\n" +
+                        "<h1>Please, Clode the Browser</h1>\n" +
+                        "<p>Your Slack App was successfully authenticated.</p>\n" +
+                        "</body>\n" +
+                        "</html>")
+        )
+
+        val incomingRequest =
+            server.takeRequest(300, TimeUnit.SECONDS) ?: throw AuthenticationException("Auth timeout.")
 
         val requestUrl = incomingRequest.requestUrl ?: throw AuthenticationException("Request URL was null.")
 

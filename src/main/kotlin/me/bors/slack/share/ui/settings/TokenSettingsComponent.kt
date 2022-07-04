@@ -28,9 +28,6 @@ class TokenSettingsComponent(manualAction: ActionListener, automaticAction: Acti
 
         manualSetButton.text = "$opName manually"
         automaticSetButton.text = "$opName automatically"
-
-        panel.isVisible = false
-        panel.isVisible = true
     }
 
     init {

@@ -1,5 +1,6 @@
 package me.bors.slack.share
 
+import me.bors.slack.share.auth.SlackAuthenticator
 import org.junit.jupiter.api.Test
 
 class TestAuth {
