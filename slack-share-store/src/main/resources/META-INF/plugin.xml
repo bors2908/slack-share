@@ -15,6 +15,10 @@
         <applicationConfigurable parentId="tools" instance="me.bors.slack.share.ui.settings.TokenSettingsConfigurableAutomatic"
                                  id="me.bors.slack.share.ui.settings.TokenSettingsConfigurableAutomatic"
                                  displayName="Slack Share"/>
+
+        <applicationService
+                serviceInterface="me.bors.slack.share.service.InitializationService"
+                serviceImplementation="me.bors.slack.share.service.InitializationServiceAutomatic"/>
     </extensions>
     <actions>
         <action id="me.bors.slack.share.ui.share.actions.ShareSnippetAction"

@@ -8,15 +8,15 @@ import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import me.bors.slack.share.ui.settings.TokenSettingsConfigurable
 import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
 
-abstract class InitializationService {
-    abstract fun getTokenSettingsConfigurable(): TokenSettingsConfigurable
+interface InitializationService {
+    fun getTokenSettingsConfigurable(): TokenSettingsConfigurable
 
     /***
      * @return SlackClient or null if unsuccessful.
      */
     fun initializeAndGetClient() : SlackClient? {
         if (!SlackUserTokenSecretState.exists()) {
-            showSettings("No token")
+            showSettings("No token found")
 
             return null
         }
