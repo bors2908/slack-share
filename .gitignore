@@ -12,6 +12,4 @@ logs
 
 lib/out
 
-**/application-store.properties
-
-**/secret.properties
+**/secret.bin

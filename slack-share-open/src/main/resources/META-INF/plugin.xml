@@ -1,0 +1,33 @@
+<idea-plugin>
+    <id>me.bors.slack-share</id>
+    <name>Slack Share</name>
+    <vendor email="bors2908@gmail.com" url="https://github.com/bors2908">Bors2908</vendor>
+
+    <description><![CDATA[
+    Simple plugin to share code snippets and files in Slack.<br>
+    ]]></description>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable parentId="tools"
+                                 instance="me.bors.slack.share.ui.settings.TokenSettingsConfigurableBasic"
+                                 id="me.bors.slack.share.ui.settings.TokenSettingsConfigurableBasic"
+                                 displayName="Slack Share"/>
+    </extensions>
+    <actions>
+        <action id="me.bors.slack.share.ui.share.actions.ShareSnippetAction"
+                class="me.bors.slack.share.ui.share.actions.ShareSnippetAction"
+                text="Share to Slack" description="Share selected to Slack">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
+            <add-to-group group-id="ConsoleEditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
+        </action>
+        <action id="me.bors.slack.share.ui.share.actions.ShareFileAction"
+                class="me.bors.slack.share.ui.share.actions.ShareFileAction"
+                text="Share to Slack" description="Share file to Slack">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>
