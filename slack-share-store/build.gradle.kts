@@ -1,3 +1,5 @@
+import me.bors.slack.share.secret.*
+
 plugins {
     kotlin("jvm")
     id("org.jetbrains.intellij")
@@ -17,11 +19,13 @@ intellij {
 
 dependencies {
     implementation(project(":slack-share-base"))
-
+    implementation("org.refcodes:refcodes-properties-ext-obfuscation:2.2.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("org.slf4j:slf4j-api:1.7.36")
 }
+
+task<ExportSecretTask>("export")
 
 tasks {
     test {
@@ -31,6 +35,10 @@ tasks {
     patchPluginXml {
         sinceBuild.set(sinceIdeaVersion)
         changeNotes.set(changelog)
+    }
+
+    classes {
+        finalizedBy("export")
     }
 }
 

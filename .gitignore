@@ -12,4 +12,6 @@ logs
 
 lib/out
 
-**/secret.bin
+**/secret.properties
+**/tmp.properties
+**/data.bin

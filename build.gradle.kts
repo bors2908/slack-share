@@ -1,6 +1,6 @@
 plugins {
     id("io.gitlab.arturbosch.detekt") version "1.20.0" apply true
-    id("org.jetbrains.kotlin.jvm") version "1.6.21" apply false
+    id("org.jetbrains.kotlin.jvm") version "1.6.21"
     id("org.jetbrains.intellij") version "1.6.0" apply false
     id("java")
 }

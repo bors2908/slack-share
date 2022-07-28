@@ -12,7 +12,7 @@ import me.bors.slack.share.entity.Conversation
 open class ConversationsProcessor(protected val slackClient: SlackClient) {
     fun getConversations(): List<Conversation> {
         /* Multi-User conversations require a lot of requests to receive members and form a readable conversation name
-           Concurrent execution helps to reduce execution time up to 4x
+           Concurrent execution helps to reduce execution time up to 6x
          */
         val result = LinkedBlockingQueue<Conversation>()
 

@@ -2,7 +2,7 @@ package me.bors.slack.share.auth
 
 import com.slack.api.Slack
 import com.slack.api.methods.request.oauth.OAuthV2AccessRequest
-import me.bors.slack.share.configuration
+import me.bors.slack.share.Configuration
 import me.bors.slack.share.persistence.SlackShareClientId
 import me.bors.slack.share.persistence.SlackShareSecret
 import okhttp3.HttpUrl
@@ -29,9 +29,8 @@ private val scopeList = listOf(
 
 private val slack = Slack.getInstance()
 
-//TODO Make a service
 @Suppress("MaxLineLength", "UnusedPrivateMember")
-class SlackAuthenticator {
+object SlackAuthenticator {
     fun auth(): String {
         val clientId = SlackShareClientId.get()
         val clientSecret = SlackShareSecret.get()
@@ -76,7 +75,7 @@ class SlackAuthenticator {
                     "<!DOCTYPE html>\n" +
                             "<html>\n" +
                             "<body>\n" +
-                            "<h1>Please, Clode the Browser</h1>\n" +
+                            "<h1>Please, Close the Browser</h1>\n" +
                             "<p>Your Slack App was successfully authenticated.</p>\n" +
                             "</body>\n" +
                             "</html>"
@@ -137,7 +136,7 @@ class SlackAuthenticator {
     }
 
     private fun getFreePort(): Int {
-        val range = configuration.startPort!!..configuration.endPort!!
+        val range = Configuration.startPort..Configuration.endPort
 
         for (i in range) {
             if (available(i)) return i

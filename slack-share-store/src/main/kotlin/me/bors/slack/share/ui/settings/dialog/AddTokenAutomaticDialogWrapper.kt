@@ -44,9 +44,7 @@ class AddTokenAutomaticDialogController : DialogWrapperController {
         val wrapper = AddTokenAutomaticDialogWrapper()
 
         if (wrapper.showAndGet()) {
-            val authenticator = SlackAuthenticator()
-
-            SlackUserTokenSecretState.set(authenticator.auth())
+            SlackUserTokenSecretState.set(SlackAuthenticator.auth())
         }
     }
 }

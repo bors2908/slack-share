@@ -8,7 +8,6 @@ class TestAuth {
     @Disabled
     @Test
     fun testAuth() {
-        val auth = SlackAuthenticator()
-        auth.auth()
+        SlackAuthenticator.auth()
     }
 }
