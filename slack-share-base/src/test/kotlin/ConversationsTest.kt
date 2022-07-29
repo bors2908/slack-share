@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import java.nio.file.Path
 
 class ConversationsTest {
-    val token = ""
+    private val token = ""
 
     @Disabled
     @Test

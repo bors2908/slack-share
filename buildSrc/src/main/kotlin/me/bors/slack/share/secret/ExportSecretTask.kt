@@ -16,9 +16,9 @@ open class ExportSecretTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        val I = System.getProperty("file.separator")
+        val l = System.getProperty("file.separator")
 
-        val originalPath = "${project.rootDir}${I}secret.properties"
+        val originalPath = "${project.rootDir}${l}secret.properties"
 
         val originalFile = File(originalPath)
 
@@ -28,13 +28,13 @@ open class ExportSecretTask : DefaultTask() {
 
         val originalProps = properties.entries.associate { it.key to it.value }
 
-        val dirPath = "${project.projectDir}${I}build${I}classes${I}kotlin${I}main"
+        val dirPath = "${project.projectDir}${l}build${l}classes${l}kotlin${l}main"
 
         val dir = File(dirPath)
 
         dir.mkdirs()
 
-        val path = "$dirPath${I}data.bin"
+        val path = "$dirPath${l}data.bin"
 
         val file = File(path)
 

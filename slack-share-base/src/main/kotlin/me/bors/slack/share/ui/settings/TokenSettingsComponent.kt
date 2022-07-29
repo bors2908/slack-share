@@ -1,7 +1,6 @@
 package me.bors.slack.share.ui.settings
 
 import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.panels.HorizontalLayout
 import com.intellij.util.ui.FormBuilder
 import java.awt.event.ActionListener
 import javax.swing.JButton

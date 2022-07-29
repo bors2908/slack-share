@@ -2,7 +2,6 @@ package me.bors.slack.share.ui.settings
 
 import com.intellij.ui.components.panels.HorizontalLayout
 import java.awt.event.ActionListener
-import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
 

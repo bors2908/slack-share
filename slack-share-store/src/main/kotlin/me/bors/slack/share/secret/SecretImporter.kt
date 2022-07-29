@@ -3,7 +3,9 @@ package me.bors.slack.share.secret
 import me.bors.slack.share.persistence.SlackShareClientId
 import me.bors.slack.share.persistence.SlackShareSecret
 import org.refcodes.properties.ext.obfuscation.ObfuscationPropertiesSugar
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
 import java.util.*
 
 // No fancy-pants encryption. Simple obfuscation to prevent automatic grabbing.
@@ -11,21 +13,9 @@ object SecretImporter {
     fun checkAndImport(force: Boolean = false) {
         if (SlackShareClientId.exists() && SlackShareSecret.exists() && !force) return
 
-        val fullPath =
-            SecretImporter::class.java.getResource("SecretImporter.class")?.path
-                ?: throw UnsupportedOperationException("No File.")
+        val fullPath = SecretImporter::class.java.getResource("SecretImporter.class")?.toURI().toString()
 
-        val className = this.javaClass.name.replace(".", "/") + ".class"
-
-        val path = fullPath
-            .replace("file:/", "")
-            .replace(className, "")
-
-        val file = File("${path}data.bin")
-
-        if (!file.exists()) throw IllegalStateException("No file.")
-
-        val decoded = String(Base64.getDecoder().decode(file.readBytes()))
+        val decoded = String(Base64.getDecoder().decode(readFileContent(fullPath)))
 
         val delimiters = arrayOf("=")
 
@@ -49,4 +39,35 @@ object SecretImporter {
         SlackShareClientId.set(decrypted["client_id"])
         SlackShareSecret.set(decrypted["secret"])
     }
+
+    private fun readFileContent(path: String): String {
+        return if (path.startsWith("jar:")) {
+            readFileContentJar(path)
+        } else {
+            readFileContentFS(path)
+        }
+    }
+
+    private fun readFileContentFS(path: String): String {
+        val className = this.javaClass.name.replace(".", "/") + ".class"
+
+        val resultPath = path.replace(className, "")
+
+        val file = File("${resultPath}data.bin")
+
+        if (!file.exists()) throw SlackShareBundledFileException()
+
+        return file.readText(Charsets.UTF_8)
+    }
+
+    private fun readFileContentJar(path: String): String {
+        return (javaClass.getResourceAsStream("/data.bin") ?: throw SlackShareBundledFileException())
+            .use {
+                val bufferedReader = BufferedReader(InputStreamReader(it))
+                bufferedReader.readLines()
+            }.joinToString(System.lineSeparator())
+    }
 }
+
+class SlackShareBundledFileException :
+    RuntimeException("Data file, bundled with plugin, required for authentication was not found.")
