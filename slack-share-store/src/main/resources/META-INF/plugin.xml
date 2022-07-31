@@ -19,6 +19,9 @@
         <applicationService
                 serviceInterface="me.bors.slack.share.service.InitializationService"
                 serviceImplementation="me.bors.slack.share.service.InitializationServiceAutomatic"/>
+        <applicationService
+                serviceInterface="me.bors.slack.share.auth.Authenticator"
+                serviceImplementation="me.bors.slack.share.auth.AutomaticAuthenticator"/>
     </extensions>
     <actions>
         <action id="me.bors.slack.share.ui.share.actions.ShareSnippetAction"

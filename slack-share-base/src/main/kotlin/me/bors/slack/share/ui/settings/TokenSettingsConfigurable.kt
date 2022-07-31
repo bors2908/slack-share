@@ -1,8 +1,8 @@
 package me.bors.slack.share.ui.settings
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.options.Configurable
-import me.bors.slack.share.persistence.SlackUserTokenSecretState
-import me.bors.slack.share.ui.settings.dialog.AddTokenManualDialogController
+import me.bors.slack.share.auth.Authenticator
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.Nls.Capitalization.Title
 import java.awt.event.ActionEvent
@@ -14,17 +14,19 @@ abstract class TokenSettingsConfigurable : Configurable {
 
     private var previousState by Delegates.notNull<Boolean>()
 
+    protected val authenticator : Authenticator = service()
+
     abstract fun getComponent(): TokenSettingsComponent
 
     protected fun getManualActionListener(): (ActionEvent) -> Unit {
         return {
-            AddTokenManualDialogController().show()
+            authenticator.authManually()
         }
     }
 
     protected fun getRemoveTokenAction(): (ActionEvent) -> Unit {
         return {
-            SlackUserTokenSecretState.remove()
+            authenticator.remove()
         }
     }
 
@@ -38,7 +40,7 @@ abstract class TokenSettingsConfigurable : Configurable {
     }
 
     override fun createComponent(): JComponent {
-        previousState = SlackUserTokenSecretState.exists()
+        previousState = authenticator.isTokenPresent()
 
         slackShareSettingsComponent = getComponent()
 
@@ -46,7 +48,7 @@ abstract class TokenSettingsConfigurable : Configurable {
     }
 
     override fun isModified(): Boolean {
-        val exists = SlackUserTokenSecretState.exists()
+        val exists = authenticator.isTokenPresent()
 
         slackShareSettingsComponent.setStatus(exists)
 
@@ -54,7 +56,7 @@ abstract class TokenSettingsConfigurable : Configurable {
     }
 
     override fun apply() {
-        previousState = SlackUserTokenSecretState.exists()
+        previousState = authenticator.isTokenPresent()
     }
 
     override fun reset() {

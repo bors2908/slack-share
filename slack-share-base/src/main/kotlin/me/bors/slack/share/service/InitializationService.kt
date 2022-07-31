@@ -1,10 +1,11 @@
 package me.bors.slack.share.service
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.ProjectManager
+import me.bors.slack.share.auth.Authenticator
 import me.bors.slack.share.client.SlackClient
 import me.bors.slack.share.client.SlackTokenValidationException
-import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import me.bors.slack.share.ui.settings.TokenSettingsConfigurable
 import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
 
@@ -21,13 +22,15 @@ interface InitializationService {
     fun initializeAndGetClient() : SlackClient? {
         beforeInit()
 
-        if (!SlackUserTokenSecretState.exists()) {
+        val authenticator : Authenticator = service()
+
+        if (!authenticator.isTokenPresent()) {
             showSettings("No token found")
 
             return null
         }
 
-        val token = SlackUserTokenSecretState.get() ?: throw IllegalArgumentException("No token provided.")
+        val token = authenticator.getToken() ?: throw IllegalArgumentException("No token provided.")
 
         return try {
             SlackClient(token)

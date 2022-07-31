@@ -21,6 +21,9 @@ dependencies {
     implementation(project(":slack-share-base"))
     implementation("org.refcodes:refcodes-properties-ext-obfuscation:2.2.2")
 
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    implementation("com.squareup.okhttp3:okhttp-tls")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("org.slf4j:slf4j-api:1.7.36")
 }

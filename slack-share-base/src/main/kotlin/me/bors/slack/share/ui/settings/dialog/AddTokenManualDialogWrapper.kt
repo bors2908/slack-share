@@ -3,7 +3,6 @@ package me.bors.slack.share.ui.settings.dialog
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.FormBuilder
-import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -33,12 +32,3 @@ class AddTokenManualDialogWrapper : DialogWrapper(true) {
     }
 }
 
-class AddTokenManualDialogController : DialogWrapperController {
-    override fun show() {
-        val wrapper = AddTokenManualDialogWrapper()
-
-        if (wrapper.showAndGet()) {
-            SlackUserTokenSecretState.set(wrapper.field.text)
-        }
-    }
-}

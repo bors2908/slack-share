@@ -42,7 +42,7 @@ object SecretImporter {
 
     private fun readFileContent(path: String): String {
         return if (path.startsWith("jar:")) {
-            readFileContentJar(path)
+            readFileContentJar()
         } else {
             readFileContentFS(path)
         }
@@ -60,7 +60,7 @@ object SecretImporter {
         return file.readText(Charsets.UTF_8)
     }
 
-    private fun readFileContentJar(path: String): String {
+    private fun readFileContentJar(): String {
         return (javaClass.getResourceAsStream("/data.bin") ?: throw SlackShareBundledFileException())
             .use {
                 val bufferedReader = BufferedReader(InputStreamReader(it))
