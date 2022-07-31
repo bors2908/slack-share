@@ -1,8 +1,8 @@
 import me.bors.slack.share.secret.*
 
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.intellij")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.intellij)
     java
 }
 
@@ -18,14 +18,14 @@ intellij {
 }
 
 dependencies {
-    implementation(project(":slack-share-base"))
-    implementation("org.refcodes:refcodes-properties-ext-obfuscation:2.2.2")
+    implementation(projects.slackShareBase)
+    implementation(libs.refcodes.obfuscation)
 
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
-    implementation("com.squareup.okhttp3:okhttp-tls")
+    implementation(libs.okhttp.tls)
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    testImplementation("org.slf4j:slf4j-api:1.7.36")
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.platform.launcher)
+    testImplementation(libs.slf4j.api)
 }
 
 task<ExportSecretTask>("export")

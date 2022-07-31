@@ -1,0 +1,20 @@
+[versions]
+kotlin = "1.7.10"
+
+[libraries]
+junit-jupiter = "org.junit.jupiter:junit-jupiter:5.9.0"
+junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.9.0"
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+okhttp-tls = "com.squareup.okhttp3:okhttp-tls:4.10.0"
+refcodes-obfuscation = "org.refcodes:refcodes-properties-ext-obfuscation:2.2.2"
+slack-api-client = "com.slack.api:slack-api-client:1.24.0"
+slf4j-api = "org.slf4j:slf4j-api:1.7.36"
+
+
+[bundles]
+
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.21.0" }
+intellij = { id = "org.jetbrains.intellij", version = "1.7.0" }

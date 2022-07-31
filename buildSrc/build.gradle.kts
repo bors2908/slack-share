@@ -1,14 +1,10 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.21"
+    alias(libs.plugins.kotlin.jvm)
     "kotlin-dsl"
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    implementation("org.refcodes:refcodes-properties-ext-obfuscation:2.2.2")
+    implementation(libs.refcodes.obfuscation)
 }
 
 

@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.intellij")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.intellij)
     java
 }
 
@@ -16,7 +16,7 @@ intellij {
 }
 
 dependencies {
-    implementation(project(":slack-share-base"))
+    implementation(projects.slackShareBase)
 }
 
 tasks {

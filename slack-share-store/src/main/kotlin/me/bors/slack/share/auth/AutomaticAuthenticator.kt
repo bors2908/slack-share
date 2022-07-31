@@ -138,7 +138,9 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
                 scopeList.forEach()
                 {
                     if (!response.scope.contains(it))
-                        throw AuthenticationException("Scopes does not match. [expected=$scopeList], [provided=${response.scope}]")
+                        throw AuthenticationException(
+                            "Scopes does not match. [expected=$scopeList], [provided=${response.scope}]"
+                        )
                 }
 
                 resultExchanger.exchange(

@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.intellij")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.intellij)
     java
 }
 
@@ -14,14 +14,15 @@ intellij {
 }
 
 dependencies {
-    api("org.jetbrains.kotlin:kotlin-stdlib")
+    api(libs.kotlin.stdlib)
 
-    api("com.slack.api:slack-api-client:1.22.2") {
+    api(libs.slack.api.client) {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    testImplementation("org.slf4j:slf4j-api:1.7.36")
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.platform.launcher)
+    testImplementation(libs.slf4j.api)
 }
 
 tasks {

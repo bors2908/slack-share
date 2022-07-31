@@ -1,14 +1,14 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    id("io.gitlab.arturbosch.detekt") version "1.20.0" apply true
-    id("org.jetbrains.kotlin.jvm") version "1.6.21"
-    id("org.jetbrains.intellij") version "1.6.0" apply false
-    id("java")
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.kotlin.jvm)
 }
 
 group = "me.bors"
 version = "0.9.5"
 
-val intellijVersion by extra { "2021.3.3" }
+val intellijVersion by extra { "2022.2" }
 val sinceIdeaVersion by extra { "203" }
 val changelog by extra { """ 0.1 - Initial version.<br>
                 0.2 - Pagination support, conversation names fix.<br>
@@ -18,7 +18,8 @@ val changelog by extra { """ 0.1 - Initial version.<br>
                 0.6 - Bug fixes, logging and test improvements.<br>
                 0.7 - Improve conversations loading speed further.<br>
                 0.8 - Add safe token storage. Improve loading speed again.<br>
-                0.9 - Code cleanup, release candidate.<br>""" }
+                0.9 - Code cleanup, release candidate.<br>
+                0.9.5 - Complete automatic auth. Massive refactoring.""" }
 
 tasks {
     detekt {
@@ -36,6 +37,12 @@ allprojects {
         withType<JavaCompile> {
             sourceCompatibility = JavaVersion.VERSION_11.toString()
             targetCompatibility = JavaVersion.VERSION_11.toString()
+        }
+
+        withType<KotlinCompile> {
+            kotlinOptions {
+                jvmTarget = JavaVersion.VERSION_11.toString()
+            }
         }
     }
 }

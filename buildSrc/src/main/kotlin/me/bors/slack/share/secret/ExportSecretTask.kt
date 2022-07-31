@@ -42,7 +42,7 @@ open class ExportSecretTask : DefaultTask() {
 
         val obfuscateProperties = ObfuscationPropertiesSugar.obfuscate(
             properties,
-            this.javaClass.packageName
+            this.javaClass.`package`.name
         )
 
         val obfuscatedMap = obfuscateProperties.entries.associate { it.key to it.value }
