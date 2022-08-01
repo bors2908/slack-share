@@ -220,32 +220,6 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
 
                 if (code != null) codeExchanger.exchange(code)
 
-                val result = resultExchanger.exchange(null)
-
-                val message = getMessage(result)
-
-                val response = "<!DOCTYPE html>\n" +
-                        "<html>\n" +
-                        "<body>\n" +
-                        message +
-                        "</body>\n" +
-                        "</html>"
-
-                exchange.responseHeaders.add("Access-Control-Allow-Origin", "*")
-                exchange.responseHeaders.add("content-type", "text/html; charset=utf-8")
-
-                exchange.sendResponseHeaders(
-                    if (result.success) OK.code() else INTERNAL_SERVER_ERROR.code(),
-                    response.toByteArray().size.toLong()
-                )
-
-                val outputStream: OutputStream = exchange.responseBody
-
-                outputStream.write(response.toByteArray())
-
-                outputStream.close()
-
-                finishResponseLatch!!.countDown()
             } catch (e: Exception) {
                 cancelAuth()
 
@@ -253,6 +227,33 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
 
                 finishResponseLatch!!.countDown()
             }
+
+            val result = resultExchanger.exchange(null)
+
+            val message = getMessage(result)
+
+            val response = "<!DOCTYPE html>\n" +
+                    "<html>\n" +
+                    "<body>\n" +
+                    message +
+                    "</body>\n" +
+                    "</html>"
+
+            exchange.responseHeaders.add("Access-Control-Allow-Origin", "*")
+            exchange.responseHeaders.add("content-type", "text/html; charset=utf-8")
+
+            exchange.sendResponseHeaders(
+                if (result.success) OK.code() else INTERNAL_SERVER_ERROR.code(),
+                response.toByteArray().size.toLong()
+            )
+
+            val outputStream: OutputStream = exchange.responseBody
+
+            outputStream.write(response.toByteArray())
+
+            outputStream.close()
+
+            finishResponseLatch!!.countDown()
         }
     }
 }
