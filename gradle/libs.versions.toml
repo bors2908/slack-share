@@ -10,9 +10,7 @@ refcodes-obfuscation = "org.refcodes:refcodes-properties-ext-obfuscation:2.2.2"
 slack-api-client = "com.slack.api:slack-api-client:1.24.0"
 slf4j-api = "org.slf4j:slf4j-api:1.7.36"
 
-
 [bundles]
-
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

@@ -49,6 +49,14 @@ tasks {
     classes {
         finalizedBy("export")
     }
+
+    kotlin {
+        jar {
+            from("build/classes/kotlin/main/") {
+                include("**/data.bin")
+            }
+        }
+    }
 }
 
 tasks.getByName<Test>("test") {
