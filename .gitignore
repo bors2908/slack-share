@@ -12,5 +12,4 @@ logs
 
 lib/out
 
-**/secret.properties
-**/data.bin
+secrets/**

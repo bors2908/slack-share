@@ -59,13 +59,17 @@ tasks {
     }
 
     signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
         password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        certificateChain.set(
+            File("${project.rootDir}/secrets/chain.crt").readText(Charsets.UTF_8)
+        )
+        certificateChain.set(
+            File("${project.rootDir}/secrets/private.pem").readText(Charsets.UTF_8)
+        )
     }
 
     publishPlugin {
-       // token.set(System.getenv("PUBLISH_TOKEN"))
+        token.set(File("${project.rootDir}/secrets/publish.tkn").readText(Charsets.UTF_8))
     }
 }
 

@@ -18,7 +18,7 @@ open class ExportSecretTask : DefaultTask() {
     fun run() {
         val l = System.getProperty("file.separator")
 
-        val originalPath = "${project.rootDir}${l}secret.properties"
+        val originalPath = "${project.rootDir}${l}secrets${l}secret.properties"
 
         val originalFile = File(originalPath)
 
