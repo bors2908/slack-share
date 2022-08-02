@@ -33,7 +33,7 @@ object SecretImporter {
 
         val decrypted = ObfuscationPropertiesSugar.obfuscate(
             builder,
-            this.javaClass.packageName
+            this.javaClass.`package`.name
         )
 
         SlackShareClientId.set(decrypted["client_id"])
