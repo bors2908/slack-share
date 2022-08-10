@@ -3,7 +3,7 @@
 Currently in development.
 
 If plugin is loaded from github, the token must be manually issued on Slack side[1].
-Releases to IDEA and Slack extension shops are planned. (Under review)
+Release to JetBrains Marketplace is on its way (under review).
 Confirmed compatibility with IDEA 2020.3-2022.2.
 
 #How to install from .zip distribution?
