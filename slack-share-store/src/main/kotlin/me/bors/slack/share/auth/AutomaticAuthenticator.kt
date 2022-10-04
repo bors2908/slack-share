@@ -3,7 +3,6 @@ package me.bors.slack.share.auth
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.TimeoutUtil.sleep
-import com.intellij.util.queryParameters
 import com.slack.api.Slack
 import com.slack.api.methods.request.oauth.OAuthV2AccessRequest
 import com.sun.net.httpserver.HttpExchange
@@ -20,12 +19,12 @@ import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import me.bors.slack.share.ui.settings.dialog.AddTokenAutomaticDialogWrapper
 import okhttp3.HttpUrl
 import java.io.OutputStream
-import java.util.*
+import java.net.URI
+import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Exchanger
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
-import kotlin.random.Random
 
 private val slack = Slack.getInstance()
 
@@ -214,8 +213,6 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
                 throw AuthenticationException("Wrong auth state. May be a sign of a MiTM attack.")
         }
 
-
-
         override fun handle(exchange: HttpExchange) {
             logger.info("Handling HTTPS request ${exchange.requestURI}.")
 
@@ -224,11 +221,13 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
             try {
                 exchange as HttpsExchange
 
-                val receivedState = exchange.requestURI.queryParams()["state"]
+                val queryParams = exchange.requestURI.queryParams()
+
+                val receivedState = queryParams["state"]
 
                 checkState(receivedState)
 
-                val code = exchange.requestURI.queryParams()["code"]
+                val code = queryParams["code"]
 
                 if (code != null) codeExchanger.exchange(code)
 
