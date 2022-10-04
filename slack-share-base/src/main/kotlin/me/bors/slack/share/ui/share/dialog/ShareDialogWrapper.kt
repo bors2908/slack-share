@@ -5,6 +5,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.UIUtil
 import me.bors.slack.share.entity.Conversation
+import me.bors.slack.share.entity.FileExclusion
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.lang.Boolean.TRUE
@@ -24,6 +25,7 @@ class ShareDialogWrapper(
     private val conversations: List<Conversation>,
     private val text: String = "",
     private val filenames: List<String> = emptyList(),
+    private val fileExclusions: List<FileExclusion> = emptyList()
 ) : DialogWrapper(true) {
     private lateinit var comboBox: ComboBox<Conversation>
     private lateinit var editorPane: JEditorPane
@@ -54,7 +56,7 @@ class ShareDialogWrapper(
         comboBox.toolTipText = "Select message destination"
 
         editorPane = JEditorPane("text", text)
-        editorPane.minimumSize = Dimension(300, 50)
+        editorPane.minimumSize = Dimension(400, 100)
         editorPane.background = UIUtil.getTextFieldBackground()
 
         editorPane.toolTipText = "Message editor"
@@ -70,19 +72,30 @@ class ShareDialogWrapper(
         dialogPanel.add(scrollPane, BorderLayout.CENTER)
         dialogPanel.add(comboBox, BorderLayout.BEFORE_FIRST_LINE)
 
-        if (filenames.isNotEmpty()) {
-            val attachments = filenames.joinToString(
-                System.lineSeparator(),
-                "\uD83D\uDCCE Attachments: ${System.lineSeparator()}",
+        val s = System.lineSeparator()
+
+        val attachments = if (filenames.isNotEmpty()) {
+            filenames.joinToString(
+                s,
+                "\uD83D\uDCCE Attachments: $s",
                 ""
             )
+        } else ""
 
+        val conditionalSeparator = if (attachments.isNotEmpty()) "$s$s" else ""
+
+        val exclusionText = if (fileExclusions.isNotEmpty()) {
+            "$conditionalSeparator\u274C Exclusions (Files that cannot be attached): $s " +
+                    fileExclusions.joinToString(s)
+        } else ""
+
+        if (attachments.isNotEmpty() || exclusionText.isNotEmpty()) {
             val document = DefaultStyledDocument()
 
             val attributes = SimpleAttributeSet()
             attributes.addAttribute(StyleConstants.CharacterConstants.Italic, TRUE)
 
-            document.insertString(document.length, attachments, attributes)
+            document.insertString(document.length, attachments + exclusionText, attributes)
 
             val attachmentsPane = JTextPane(document)
 
@@ -96,8 +109,8 @@ class ShareDialogWrapper(
             dialogPanel.add(quoteCheckBox!!, BorderLayout.AFTER_LAST_LINE)
         }
 
-        dialogPanel.minimumSize = Dimension(300, 150)
-        dialogPanel.maximumSize = Dimension(1500, 500)
+        dialogPanel.minimumSize = Dimension(400, 200)
+        dialogPanel.maximumSize = Dimension(1500, 600)
 
         return dialogPanel
     }

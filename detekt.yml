@@ -6,10 +6,16 @@ complexity:
     active: true
     threshold: 5
 
+naming:
+  TopLevelPropertyNaming:
+    active: false
+
 style:
   MagicNumber:
     active: false
+  MaxLineLength:
+    maxLineLength: 135
 
-formatting:
-  NoMultipleSpaces:
+exceptions:
+  TooGenericExceptionCaught:
     active: false

@@ -15,4 +15,4 @@ slf4j-api = "org.slf4j:slf4j-api:1.7.36"
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.21.0" }
-intellij = { id = "org.jetbrains.intellij", version = "1.7.0" }
+intellij = { id = "org.jetbrains.intellij", version = "1.9.0" }

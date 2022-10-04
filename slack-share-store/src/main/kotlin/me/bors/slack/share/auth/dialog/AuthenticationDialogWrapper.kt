@@ -10,7 +10,12 @@ import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
 import java.net.URI
-import javax.swing.*
+import javax.swing.BoxLayout
+import javax.swing.JButton
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JTextArea
 
 class AuthenticationDialogWrapper : DialogWrapper(true) {
     private var sliderTextField: JBTextField? = null
@@ -40,18 +45,20 @@ class AuthenticationDialogWrapper : DialogWrapper(true) {
 
         area.font = panel.font
         area.background = panel.background
-        area.preferredSize = Dimension(550, 35)
+        area.preferredSize = Dimension(700, 35)
 
+        val eLabel = JLabel("If you've encountered problems with client_id or secret on Slack side, try to use Reload Caches option.")
         val label = JLabel("Click OK if authentication process is finished or click Cancel Auth if you want to stop it.")
 
         val resultingPanel = FormBuilder.createFormBuilder()
             .addComponent(area)
             .addComponent(getTextSlider())
+            .addComponent(eLabel)
             .addComponent(label)
             .addComponentFillVertically(panel, 0)
             .panel
 
-        resultingPanel.preferredSize = Dimension(550, 100)
+        resultingPanel.preferredSize = Dimension(700, 100)
 
         return resultingPanel
     }
@@ -61,13 +68,13 @@ class AuthenticationDialogWrapper : DialogWrapper(true) {
 
         sliderTextField = textField
 
-        textField.preferredSize = Dimension(500, 30)
+        textField.preferredSize = Dimension(650, 30)
         textField.caretPosition = 0
         textField.isEditable = false
 
         val scrollBar = JBScrollBar(JBScrollBar.HORIZONTAL)
 
-        scrollBar.preferredSize = Dimension(500, 3)
+        scrollBar.preferredSize = Dimension(650, 3)
 
         val panel = JPanel()
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
@@ -76,10 +83,10 @@ class AuthenticationDialogWrapper : DialogWrapper(true) {
         panel.add(textField)
         panel.add(scrollBar)
 
-        panel.preferredSize = Dimension(500, 35)
+        panel.preferredSize = Dimension(650, 35)
 
         val copyButton = JButton("Copy")
-        copyButton.preferredSize = Dimension(50, 35)
+        copyButton.preferredSize = Dimension(75, 35)
 
         val linkPanel = JPanel()
 

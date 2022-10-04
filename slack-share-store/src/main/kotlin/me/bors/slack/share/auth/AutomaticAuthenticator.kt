@@ -20,6 +20,7 @@ import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import me.bors.slack.share.ui.settings.dialog.AddTokenAutomaticDialogWrapper
 import okhttp3.HttpUrl
 import java.io.OutputStream
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Exchanger
 import java.util.concurrent.Executors
@@ -47,8 +48,6 @@ private val scopeList = listOf(
 object AutomaticAuthenticator : Authenticator, AutoCloseable {
     private lateinit var server: DummySslHttpsServer
 
-    private lateinit var redirectUrl: String
-
     private lateinit var state: String
 
     private var authJob: Future<String?>? = null
@@ -57,8 +56,6 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
 
     private val codeExchanger = Exchanger<String>()
     private val resultExchanger = Exchanger<AuthResult>()
-
-    private val random = Random(31)
 
     fun authAutomatically() {
         val wrapper = AddTokenAutomaticDialogWrapper()
@@ -74,6 +71,8 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
 
     private fun cancelAuth() {
         if (authJob != null) {
+            logger.info("Cancelling auth.")
+
             authJob!!.cancel(true)
 
             resultExchanger.exchange(
@@ -85,45 +84,52 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
         }
     }
 
+    @Suppress("LongMethod")
     private fun requestTokenFromSlack(): String? {
         val clientId = SlackShareClientId.get()!!
         val clientSecret = SlackShareSecret.get()
 
-        val authenticationDialogWrapper = AuthenticationDialogWrapper()
+        val port = getFreePort()
+
+        val redirectUrl = "${schema}${ip}:$port${innerPath}"
+
+        val scopes = scopeList.joinToString(" ")
+
+        state = UUID.randomUUID().toString()
+
+        val uri = HttpUrl.Builder()
+            .scheme("https")
+            .host("slack.com")
+            .addPathSegment("oauth")
+            .addPathSegment("v2")
+            .addPathSegment("authorize")
+            .addQueryParameter("user_scope", scopes)
+            .addQueryParameter("client_id", clientId)
+            .addQueryParameter("state", state)
+            .addQueryParameter("redirect_uri", redirectUrl)
+            .build()
+            .toUrl()
+            .toURI()
 
         val pool = Executors.newFixedThreadPool(1)
 
+        val authenticationDialogWrapper = AuthenticationDialogWrapper()
+
+        authenticationDialogWrapper.setUri(uri)
+
         authJob = pool.submit<String?> {
             try {
-                val port = getFreePort()
-
-                redirectUrl = "${schema}${ip}:$port${innerPath}"
-
-                state = (random.nextInt() * 31).toString()
+                logger.info("Starting dummy HTTPS server on $redirectUrl")
 
                 startServer(port)
 
-                val scopes = scopeList.joinToString(" ")
-
-                val uri = HttpUrl.Builder()
-                    .scheme("https")
-                    .host("slack.com")
-                    .addPathSegment("oauth")
-                    .addPathSegment("v2")
-                    .addPathSegment("authorize")
-                    .addQueryParameter("user_scope", scopes)
-                    .addQueryParameter("client_id", clientId)
-                    .addQueryParameter("state", state)
-                    .addQueryParameter("redirect_uri", redirectUrl)
-                    .build()
-                    .toUrl()
-                    .toURI()
-
-                authenticationDialogWrapper.setUri(uri)
+                logger.info("Opening browser on $uri.")
 
                 BrowserUtil.browse(uri)
 
                 val code = codeExchanger.exchange(null)
+
+                logger.info("Code received from HTTPS server.")
 
                 val oauthRequest = OAuthV2AccessRequest.builder()
                     .redirectUri(redirectUrl)
@@ -142,6 +148,8 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
                             "Scopes does not match. [expected=$scopeList], [provided=${response.scope}]"
                         )
                 }
+
+                logger.info("Auth Success.")
 
                 resultExchanger.exchange(
                     AuthResult(true)
@@ -162,6 +170,8 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
                 authenticationDialogWrapper.isOKActionEnabled = true
             }
         }
+
+        Thread.sleep(1000)
 
         if (!authenticationDialogWrapper.showAndGet()) {
             cancelAuth()
@@ -207,6 +217,8 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
         }
 
         override fun handle(exchange: HttpExchange) {
+            logger.info("Handling HTTPS request ${exchange.requestURI}.")
+
             finishResponseLatch = CountDownLatch(1)
 
             try {

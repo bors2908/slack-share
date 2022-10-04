@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class TestAuth {
     @Disabled
     @Test
-    fun testAuth() {
+    fun test() {
         AutomaticAuthenticator.authAutomatically()
     }
 }
