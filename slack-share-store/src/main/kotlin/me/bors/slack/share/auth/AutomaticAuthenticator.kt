@@ -171,8 +171,6 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
             }
         }
 
-        Thread.sleep(1000)
-
         if (!authenticationDialogWrapper.showAndGet()) {
             cancelAuth()
 
@@ -216,6 +214,8 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
                 throw AuthenticationException("Wrong auth state. May be a sign of a MiTM attack.")
         }
 
+
+
         override fun handle(exchange: HttpExchange) {
             logger.info("Handling HTTPS request ${exchange.requestURI}.")
 
@@ -224,11 +224,11 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
             try {
                 exchange as HttpsExchange
 
-                val receivedState = exchange.requestURI.queryParameters["state"]
+                val receivedState = exchange.requestURI.queryParams()["state"]
 
                 checkState(receivedState)
 
-                val code = exchange.requestURI.queryParameters["code"]
+                val code = exchange.requestURI.queryParams()["code"]
 
                 if (code != null) codeExchanger.exchange(code)
 
@@ -268,6 +268,23 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
             finishResponseLatch!!.countDown()
         }
     }
+}
+
+private fun URI.queryParams(): Map<String, String> {
+    if (this.query.isNullOrBlank()) return emptyMap()
+
+    return this.query
+        .split("&")
+        .mapNotNull {
+            val entry = it.split(delimiters = arrayOf("="), limit = 2)
+
+            if (entry.size != 2) {
+                return@mapNotNull null
+            }
+
+            entry[0] to entry[1]
+        }
+        .toMap()
 }
 
 data class AuthResult(
