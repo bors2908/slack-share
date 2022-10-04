@@ -1,6 +1,7 @@
 package me.bors.slack.share.auth.server
 
 import me.bors.slack.share.Configuration
+import org.apache.http.HttpException
 import java.io.IOException
 import java.net.DatagramSocket
 import java.net.ServerSocket
@@ -12,7 +13,7 @@ fun getFreePort(): Int {
         if (available(i)) return i
     }
 
-    throw IllegalStateException("No ports available in range $range")
+    throw HttpException("No ports available in range $range")
 }
 
 private fun available(port: Int): Boolean {

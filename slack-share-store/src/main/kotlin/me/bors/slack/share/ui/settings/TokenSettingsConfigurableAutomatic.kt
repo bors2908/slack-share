@@ -13,11 +13,18 @@ class TokenSettingsConfigurableAutomatic : TokenSettingsConfigurable() {
         }
     }
 
+    private fun getReloadCachesListener(): (ActionEvent) -> Unit {
+        return {
+            SecretImporter.checkAndImport(force = true)
+        }
+    }
+
     override fun getComponent(): TokenSettingsComponent {
         return TokenSettingsComponentAutomatic(
             getManualActionListener(),
             getAutomaticActionListener(),
-            getRemoveTokenAction()
+            getRemoveTokenListener(),
+            getReloadCachesListener()
         )
     }
 }

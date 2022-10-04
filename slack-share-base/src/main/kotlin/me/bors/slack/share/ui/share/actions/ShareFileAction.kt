@@ -5,19 +5,25 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.VirtualFile
+import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.processor.ConversationsProcessor
 import me.bors.slack.share.service.InitializationService
 import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
+import java.io.File
 
 class ShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val initService : InitializationService = service()
+        val initService: InitializationService = service()
 
         val slackClient = initService.initializeAndGetClient() ?: return
 
         val files = (getVirtualFiles(e) ?: emptyArray()).asList()
+            .map { it.toNioPath().toFile() }
+            .toMutableList()
 
-        val filenames = files.map { it.name }
+        val (validFiles, exclusions) = excludeInvalidFiles(files)
+
+        val filenames = validFiles.map { it.name }
 
         val processor = ConversationsProcessor(slackClient)
 
@@ -25,7 +31,8 @@ class ShareFileAction : AnAction() {
 
         val dialogWrapper = ShareDialogWrapper(
             conversations = conversations,
-            filenames = filenames
+            filenames = filenames,
+            fileExclusions = exclusions
         )
 
         val exitCode = dialogWrapper.showAndGet()
@@ -33,16 +40,33 @@ class ShareFileAction : AnAction() {
         if (exitCode) {
             slackClient.sendFile(
                 id = dialogWrapper.getSelectedItem().id,
-                files = files.map { it.toNioPath().toFile() },
+                files = validFiles,
                 text = dialogWrapper.getEditedText()
             )
         }
     }
 
+    fun excludeInvalidFiles(files: MutableList<File>): Pair<List<File>, List<FileExclusion>> {
+        val exclusions = mutableListOf<FileExclusion>()
+        val validFiles = mutableListOf<File>()
+
+        files.forEach {
+            if (!it.exists()) {
+                exclusions.add(FileExclusion(it, "File not found."))
+            } else if (it.isDirectory) {
+                exclusions.add(FileExclusion(it, "Cannot send directory."))
+            } else {
+                validFiles.add(it)
+            }
+        }
+
+        return validFiles to exclusions
+    }
+
     override fun update(e: AnActionEvent) {
         val virtualFiles = getVirtualFiles(e)
 
-        e.presentation.isEnabledAndVisible = virtualFiles != null && virtualFiles.isNotEmpty()
+        e.presentation.isEnabledAndVisible = !virtualFiles.isNullOrEmpty()
     }
 
     private fun getVirtualFiles(e: AnActionEvent): Array<VirtualFile>? =

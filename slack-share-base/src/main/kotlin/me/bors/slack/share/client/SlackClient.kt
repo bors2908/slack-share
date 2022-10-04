@@ -16,7 +16,6 @@ import com.slack.api.model.User
 import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
 import java.io.File
-import java.io.FileNotFoundException
 
 private const val PAGE_SIZE = 200
 
@@ -67,10 +66,6 @@ open class SlackClient(private val token: String) {
         var tagged = false
 
         for (file: File in files) {
-            if (!file.exists()) {
-                throw FileNotFoundException("File not found [$file].")
-            }
-
             val builder = FilesUploadRequest.builder()
                 .token(token)
                 .channels(listOf(id))

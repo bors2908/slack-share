@@ -14,13 +14,13 @@ import javax.net.ssl.SSLParameters
 
 private val logger: Logger = Logger.getInstance(DummySslHttpsServer::class.java)
 
-class DummySslHttpsServer(URL: String, path: String, port: Int, requestHandler: HttpHandler) :
+class DummySslHttpsServer(url: String, path: String, port: Int, requestHandler: HttpHandler) :
     AutoCloseable {
     private val httpsServer = HttpsServer.create(InetSocketAddress(port), 0)
 
     init {
         val localhostCertificate = HeldCertificate.Builder()
-            .addSubjectAlternativeName(URL)
+            .addSubjectAlternativeName(url)
             .duration(10 * 365, TimeUnit.DAYS)
             .build()
 
@@ -60,6 +60,4 @@ class DummySslHttpsServer(URL: String, path: String, port: Int, requestHandler: 
     override fun close() {
         httpsServer.stop(0)
     }
-
-
 }

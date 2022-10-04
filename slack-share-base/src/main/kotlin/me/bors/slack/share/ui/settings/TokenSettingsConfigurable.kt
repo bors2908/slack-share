@@ -24,7 +24,7 @@ abstract class TokenSettingsConfigurable : Configurable {
         }
     }
 
-    protected fun getRemoveTokenAction(): (ActionEvent) -> Unit {
+    protected fun getRemoveTokenListener(): (ActionEvent) -> Unit {
         return {
             authenticator.remove()
         }

@@ -12,11 +12,12 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.5"
+version = "0.9.7"
 
-val intellijVersion by extra { "2022.2" }
+val intellijVersion by extra { "2022.2.2" }
 val sinceIdeaVersion by extra { "203" }
-val changelog by extra { """ 0.1 - Initial version.<br>
+val changelog by extra {
+    """         0.1 - Initial version.<br>
                 0.2 - Pagination support, conversation names fix.<br>
                 0.3 - Improved conversations load speed.<br>
                 0.4 - Alpha release with minor changes.<br>
@@ -24,17 +25,17 @@ val changelog by extra { """ 0.1 - Initial version.<br>
                 0.6 - Bug fixes, logging and test improvements.<br>
                 0.7 - Improve conversations loading speed further.<br>
                 0.8 - Add safe token storage. Improve loading speed again.<br>
-                0.9 - Code cleanup, release candidate.<br>
-                0.9.5 - Complete automatic auth. Massive refactoring.""" }
-
-tasks {
-    detekt {
-        config = files("detekt.yml")
-        buildUponDefaultConfig = true
-    }
+                0.9 - Code cleanup, release candidate.
+                0.9.5 - Complete automatic auth. Massive refactoring.<br>
+                0.9.6 - Compatibility issues fixes.<br>
+                0.9.7 - Cache reloading (when wrong client_id is cached). File attachment improvements.
+                Dependency updates. IDEA 2022.2.2 Compatibility.<br>
+                """
 }
 
 allprojects {
+    apply(plugin = "io.gitlab.arturbosch.detekt")
+
     repositories {
         mavenCentral()
     }
@@ -49,6 +50,11 @@ allprojects {
             kotlinOptions {
                 jvmTarget = JavaVersion.VERSION_11.toString()
             }
+        }
+
+        detekt {
+            config = files("$rootDir/detekt.yml")
+            buildUponDefaultConfig = true
         }
     }
 }
