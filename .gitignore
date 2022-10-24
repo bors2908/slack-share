@@ -13,3 +13,5 @@ logs
 lib/out
 
 secrets/**
+
+pluginIcon.svg

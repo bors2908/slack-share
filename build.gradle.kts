@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.7"
+version = "0.9.8"
 
 val intellijVersion by extra { "2022.2.2" }
 val sinceIdeaVersion by extra { "203" }
@@ -30,6 +30,7 @@ val changelog by extra {
                 0.9.6 - Compatibility issues fixes.<br>
                 0.9.7 - Cache reloading (when wrong client_id is cached). File attachment improvements.
                 Dependency updates. IDEA 2022.2.2 Compatibility.<br>
+                0.9.8 - Add logo.<br>
                 """
 }
 

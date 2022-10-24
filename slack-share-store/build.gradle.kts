@@ -1,3 +1,4 @@
+import me.bors.slack.share.logo.ExportLogoTask
 import me.bors.slack.share.secret.ExportSecretTask
 
 @Suppress(
@@ -34,7 +35,9 @@ dependencies {
     testImplementation(libs.slf4j.api)
 }
 
-task<ExportSecretTask>("export")
+
+task<ExportLogoTask>("exportLogo")
+task<ExportSecretTask>("exportSecret")
 
 tasks {
     test {
@@ -47,7 +50,11 @@ tasks {
     }
 
     classes {
-        finalizedBy("export")
+        finalizedBy("exportSecret")
+    }
+
+    assemble {
+        dependsOn("exportLogo")
     }
 
     kotlin {

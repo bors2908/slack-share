@@ -1,3 +1,5 @@
+import me.bors.slack.share.logo.ExportLogoTask
+
 @Suppress(
     "DSL_SCOPE_VIOLATION",
     "MISSING_DEPENDENCY_CLASS",
@@ -25,9 +27,15 @@ dependencies {
     implementation(projects.slackShareBase)
 }
 
+task<ExportLogoTask>("exportLogo")
+
 tasks {
     patchPluginXml {
         sinceBuild.set(sinceIdeaVersion)
         changeNotes.set(changelog)
+    }
+
+    assemble {
+        dependsOn("exportLogo")
     }
 }
