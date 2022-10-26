@@ -14,6 +14,7 @@ plugins {
 
 val intellijVersion: String by rootProject.extra
 val sinceIdeaVersion: String by rootProject.extra
+val userDescription: String by rootProject.extra
 val changelog: String by rootProject.extra
 
 group = rootProject.group
@@ -32,6 +33,7 @@ task<ExportLogoTask>("exportLogo")
 tasks {
     patchPluginXml {
         sinceBuild.set(sinceIdeaVersion)
+        pluginDescription.set(userDescription)
         changeNotes.set(changelog)
     }
 
