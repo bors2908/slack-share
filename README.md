@@ -2,8 +2,10 @@
 
 Currently in development.
 
+[Download From JetBrains Marketplace.](https://plugins.jetbrains.com/plugin/19621-slack-share)
+
 If plugin is loaded from github, the token must be manually issued on Slack side[1].
-Release to JetBrains Marketplace is on its way (under review).
+
 Confirmed compatibility with IDEA 2020.3-2022.2.
 
 #How to install from .zip distribution?
