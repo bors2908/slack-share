@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.8"
+version = "0.9.9"
 
 val intellijVersion by extra { "2022.2.2" }
 val sinceIdeaVersion by extra { "203" }
