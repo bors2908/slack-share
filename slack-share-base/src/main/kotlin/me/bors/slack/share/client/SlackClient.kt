@@ -45,7 +45,7 @@ open class SlackClient(private val token: String) {
                         SectionBlock.builder()
                             .text(
                                 MarkdownTextObject.builder()
-                                    .text(processMarkdownAndQuote(text))
+                                    .text("```$text```")
                                     .build()
                             )
                             .build()
@@ -152,15 +152,6 @@ open class SlackClient(private val token: String) {
         if (!tokenStatus.isOk) throw SlackTokenValidationException("Error: ${tokenStatus.error}")
     }
 
-    private fun processMarkdownAndQuote(text: String): String {
-        val result = text
-            .replace("<", "&lt;")
-            .replace(">", "&rt;")
-            .replace("&", "&amp;")
-
-        return "```$result```"
-    }
-
     private fun getNameCache(): Map<String, String> {
         val request = UsersListRequest.builder()
             .token(token)
@@ -212,7 +203,7 @@ open class SlackClient(private val token: String) {
 
             throw SlackClientException(
                 "Error occurred, during Slack request execution: " +
-                        "${this.error} ${System.lineSeparator()} $needed ${System.lineSeparator()} $provided"
+                    "${this.error} ${System.lineSeparator()} $needed ${System.lineSeparator()} $provided"
             )
         }
 

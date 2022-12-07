@@ -1,4 +1,4 @@
-package me.bors.slack.share.auth.dialog
+package me.bors.slack.share.ui.settings.dialog
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.util.ui.FormBuilder

@@ -14,8 +14,7 @@ import javax.net.ssl.SSLParameters
 
 private val logger: Logger = Logger.getInstance(DummySslHttpsServer::class.java)
 
-class DummySslHttpsServer(url: String, path: String, port: Int, requestHandler: HttpHandler) :
-    AutoCloseable {
+class DummySslHttpsServer(url: String, path: String, port: Int, requestHandler: HttpHandler) : AutoCloseable {
     private val httpsServer = HttpsServer.create(InetSocketAddress(port), 0)
 
     init {
