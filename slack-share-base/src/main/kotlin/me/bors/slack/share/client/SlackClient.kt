@@ -3,13 +3,16 @@ package me.bors.slack.share.client
 import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.Slack
 import com.slack.api.methods.SlackApiTextResponse
+import com.slack.api.methods.request.PaginatedRequest
 import com.slack.api.methods.request.auth.AuthTestRequest
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
-import com.slack.api.methods.request.conversations.ConversationsListRequest
-import com.slack.api.methods.request.conversations.ConversationsMembersRequest
+import com.slack.api.methods.request.conversations.ConversationsListRequestPaginated
+import com.slack.api.methods.request.conversations.ConversationsMembersRequestPaginated
 import com.slack.api.methods.request.files.FilesUploadRequest
 import com.slack.api.methods.request.users.UsersInfoRequest
-import com.slack.api.methods.request.users.UsersListRequest
+import com.slack.api.methods.request.users.UsersListRequestPaginated
+import com.slack.api.methods.response.PaginatedExtractor
+import com.slack.api.methods.response.users.UsersListExtractor
 import com.slack.api.model.Conversation
 import com.slack.api.model.ConversationType
 import com.slack.api.model.User
@@ -104,20 +107,12 @@ open class SlackClient(private val token: String) {
     }
 
     fun getMultiUserGroupName(id: String): String {
-        val request = ConversationsMembersRequest.builder()
+        val request = ConversationsMembersRequestPaginated.builder()
             .token(token)
             .channel(id)
             .build()
 
-        val members = processPaginatedRequest<String> { cursor, limit ->
-            request.cursor = cursor
-            request.limit = limit
-
-            val response = slack.methods(token).conversationsMembers(request)
-                .processErrors()
-
-            response.responseMetadata.nextCursor to response.members
-        }
+        val members = processPaginatedRequest<String>(request) { slack.methods(token).conversationsMembers(it) }
 
         // Removing user's name
         members.removeAt(members.size - 1)
@@ -129,21 +124,13 @@ open class SlackClient(private val token: String) {
     fun getChannels(
         requestTypes: List<ConversationType>,
     ): List<Conversation> {
-        val request = ConversationsListRequest.builder()
+        val request = ConversationsListRequestPaginated.builder()
             .token(token)
             .excludeArchived(true)
             .types(requestTypes)
             .build()
 
-        return processPaginatedRequest<Conversation> { cursor, limit ->
-            request.cursor = cursor
-            request.limit = limit
-
-            val response = slack.methods(token).conversationsList(request)
-                .processErrors()
-
-            response.responseMetadata.nextCursor to response.channels
-        }
+        return processPaginatedRequest<Conversation>(request) { slack.methods(token).conversationsList(it) }
     }
 
     private fun validateToken() {
@@ -153,26 +140,20 @@ open class SlackClient(private val token: String) {
     }
 
     private fun getNameCache(): Map<String, String> {
-        val request = UsersListRequest.builder()
+        val request = UsersListRequestPaginated.builder()
             .token(token)
             .build()
 
-        val members = processPaginatedRequest<User> { cursor, limit ->
-            request.cursor = cursor
-            request.limit = limit
-
-            val response = slack.methods(token).usersList(request)
-                .processErrors()
-
-            response.responseMetadata.nextCursor to response.members
-        }
+        val members =
+            processPaginatedRequest<User>(request) { UsersListExtractor(slack.methods(token).usersList(it as UsersListRequestPaginated)) }
 
         return members.associate { it.id to (it.realName ?: it.name ?: it.id) }
     }
 
     // Unfortunately Slack Java API paginated request has no extracted interface with cursor and limit fields.
     private inline fun <reified T> processPaginatedRequest(
-        processRequest: (String, Int) -> Pair<String, List<T>>,
+        request: PaginatedRequest,
+        process: (PaginatedRequest) -> PaginatedExtractor<*, T>,
     ): MutableList<T> {
         val limit = PAGE_SIZE
 
@@ -181,11 +162,14 @@ open class SlackClient(private val token: String) {
         var cursor = ""
 
         do {
-            val pair = processRequest.invoke(cursor, limit)
+            request.setCursor(cursor)
+            request.setLimit(limit)
 
-            cursor = pair.first
+            val response = process.invoke(request)
 
-            accumulator.addAll(pair.second)
+            cursor = response.nextCursor
+
+            accumulator.addAll(response.collection)
         } while (cursor != "")
 
         return accumulator
