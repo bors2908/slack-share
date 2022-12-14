@@ -28,7 +28,10 @@ class AddTokenManualDialogWrapper(val createApp: ActionListener) : DialogWrapper
 
         val panel = JPanel(BorderLayout())
 
-        panel.add(JLabel("Create a new slack App if you haven't already. Install app to Slack workspace afterwards."), BorderLayout.WEST)
+        panel.add(
+            JLabel("Create a new slack App if you haven't already. Install app to Slack workspace afterwards."),
+            BorderLayout.WEST
+        )
         panel.add(button, BorderLayout.EAST)
 
         field = JBTextField()

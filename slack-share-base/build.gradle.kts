@@ -26,6 +26,8 @@ dependencies {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
 
+    implementation(libs.kotlinx.serialization.json.jvm)
+
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.platform.launcher)
     testImplementation(libs.slf4j.api)
