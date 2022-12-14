@@ -10,7 +10,7 @@ import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
 
 class ShareSnippetAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
-        val initService : InitializationService = service()
+        val initService: InitializationService = service()
 
         val slackClient = initService.initializeAndGetClient() ?: return
 

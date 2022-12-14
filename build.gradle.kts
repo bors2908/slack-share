@@ -14,8 +14,9 @@ plugins {
 group = "me.bors"
 version = "0.9.9"
 
-val intellijVersion by extra { "2022.2.2" }
+val intellijVersion by extra { "2022.2.4" }
 val sinceIdeaVersion by extra { "203" }
+val untilIdeaVersion by extra { "223" }
 val userDescription by extra {
     """
         <![CDATA[
@@ -45,7 +46,9 @@ val changelog by extra {
                 0.9.6 - Compatibility issues fixes.<br>
                 0.9.7 - Cache reloading (when wrong client_id is cached). File attachment improvements.
                 Dependency updates. IDEA 2022.2.2 Compatibility.<br>
-                0.9.8 - Add logo.<br>
+                0.9.8 - Add logo.
+                0.9.9 - Add app creation link in manual auth. Add code highlighting. Update dependencies. Fixes.
+                <br>
                 """
 }
 

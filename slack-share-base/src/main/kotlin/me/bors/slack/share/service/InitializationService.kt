@@ -19,10 +19,10 @@ interface InitializationService {
     /***
      * @return SlackClient or null if unsuccessful.
      */
-    fun initializeAndGetClient() : SlackClient? {
+    fun initializeAndGetClient(): SlackClient? {
         beforeInit()
 
-        val authenticator : Authenticator = service()
+        val authenticator: Authenticator = service()
 
         if (!authenticator.isTokenPresent()) {
             showSettings("No token found")

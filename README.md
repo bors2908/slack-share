@@ -6,7 +6,7 @@ Currently in development.
 
 If plugin is loaded from GitHub, the token must be manually issued on Slack side[1].
 
-Confirmed compatibility with IDEA 2020.3-2022.2.
+Confirmed compatibility with IDEA 2020.3-2022.3.
 
 #How to install from .zip distribution?
 1. Install .zip extension file through Settings->Plugins->Gear Icon->Install Plugin From Disk...
