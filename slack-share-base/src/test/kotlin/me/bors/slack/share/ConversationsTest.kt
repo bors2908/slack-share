@@ -1,36 +1,37 @@
 package me.bors.slack.share
 
+import me.bors.slack.share.entity.MessageFormatType
 import me.bors.slack.share.processor.ConversationsProcessor
+import me.bors.slack.share.processor.MessageProcessor
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
 
+@Disabled
 class ConversationsTest {
     private val token = ""
+
+    private val slackClient = SlackTestClient(token)
+
+    private val messageProcessor = MessageProcessor(slackClient)
+
+    private val conversationsProcessor = SlackTestConversationsProcessor(slackClient)
 
     @Disabled
     @Test
     fun sendMessageTest() {
-        val slackClient = SlackTestClient(token)
-
-        val conversationsProcessor = ConversationsProcessor(slackClient)
-
         val receiveChannels = conversationsProcessor.getConversations()
 
         // TODO Replace with user info request
         val id = receiveChannels.first { it.name == "bors2908" }.id
 
-        slackClient.sendMessage(id, "whatever")
+        messageProcessor.sendMessage(id, "whatever", MessageFormatType.DEFAULT)
     }
 
     @Disabled
     @Test
     fun sendFileTest() {
-        val slackClient = SlackTestClient(token)
-
-        val conversationsProcessor = ConversationsProcessor(slackClient)
-
         val receiveChannels = conversationsProcessor.getConversations()
 
         // TODO Replace with user info request
@@ -39,16 +40,12 @@ class ConversationsTest {
         // Todo add file creation
         val path = Path.of("C:\\Temp\\useless.txt").toFile()
 
-        slackClient.sendFile(id, listOf(path, path), "No way")
+        messageProcessor.sendFile(id, listOf(path, path), "No way")
     }
 
     @Disabled
     @Test
     fun testCompareMultiThreaded() {
-        val slackClient = SlackTestClient(token)
-
-        val conversationsProcessor = SlackTestConversationsProcessor(slackClient)
-
         val times: MutableList<Long> = ArrayList(3)
 
         times.add(System.currentTimeMillis())

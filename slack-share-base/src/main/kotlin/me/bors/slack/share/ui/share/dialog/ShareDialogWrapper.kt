@@ -6,6 +6,7 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.UIUtil
 import me.bors.slack.share.entity.Conversation
 import me.bors.slack.share.entity.FileExclusion
+import me.bors.slack.share.entity.MessageFormatType
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.lang.Boolean.TRUE
@@ -27,9 +28,9 @@ class ShareDialogWrapper(
     private val filenames: List<String> = emptyList(),
     private val fileExclusions: List<FileExclusion> = emptyList()
 ) : DialogWrapper(true) {
-    private lateinit var comboBox: ComboBox<Conversation>
+    private lateinit var conversationComboBox: ComboBox<Conversation>
     private lateinit var editorPane: JEditorPane
-    private var quoteCheckBox: JCheckBox? = null
+    private lateinit var messageFormatComboBox: ComboBox<MessageFormatType>
 
     init {
         title = "Share to Slack"
@@ -42,18 +43,18 @@ class ShareDialogWrapper(
     }
 
     fun getSelectedItem(): Conversation {
-        return comboBox.selectedItem as Conversation
+        return conversationComboBox.selectedItem as Conversation
     }
 
-    fun isQuotedCode(): Boolean {
-        return quoteCheckBox?.isSelected ?: false
+    fun getMessageFormatType(): MessageFormatType {
+        return messageFormatComboBox.selectedItem as MessageFormatType
     }
 
     override fun createCenterPanel(): JComponent {
         val dialogPanel = JPanel(BorderLayout())
 
-        comboBox = ComboBox(DefaultComboBoxModel(conversations.toTypedArray()))
-        comboBox.toolTipText = "Select message destination"
+        conversationComboBox = ComboBox(DefaultComboBoxModel(conversations.toTypedArray()))
+        conversationComboBox.toolTipText = "Select message destination"
 
         editorPane = JEditorPane("text", text)
         editorPane.minimumSize = Dimension(400, 100)
@@ -70,7 +71,7 @@ class ShareDialogWrapper(
         scrollPane.border = BorderFactory.createEmptyBorder()
 
         dialogPanel.add(scrollPane, BorderLayout.CENTER)
-        dialogPanel.add(comboBox, BorderLayout.BEFORE_FIRST_LINE)
+        dialogPanel.add(conversationComboBox, BorderLayout.BEFORE_FIRST_LINE)
 
         val s = System.lineSeparator()
 
@@ -86,7 +87,7 @@ class ShareDialogWrapper(
 
         val exclusionText = if (fileExclusions.isNotEmpty()) {
             "$conditionalSeparator\u274C Exclusions (Files that cannot be attached): $s " +
-                    fileExclusions.joinToString(s)
+                fileExclusions.joinToString(s)
         } else ""
 
         if (attachments.isNotEmpty() || exclusionText.isNotEmpty()) {
@@ -104,9 +105,10 @@ class ShareDialogWrapper(
 
             dialogPanel.add(attachmentsPane, BorderLayout.AFTER_LAST_LINE)
         } else {
-            quoteCheckBox = JCheckBox("Code quote", true)
+            messageFormatComboBox = ComboBox(DefaultComboBoxModel(MessageFormatType.values()))
+            messageFormatComboBox.toolTipText = "Message formatting"
 
-            dialogPanel.add(quoteCheckBox!!, BorderLayout.AFTER_LAST_LINE)
+            dialogPanel.add(messageFormatComboBox, BorderLayout.AFTER_LAST_LINE)
         }
 
         dialogPanel.minimumSize = Dimension(400, 200)
