@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.util.DocumentUtil
 import me.bors.slack.share.service.InitializationService
 import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
 
@@ -23,7 +22,8 @@ class ShareSnippetAction : AnAction() {
 
         val dialogWrapper = ShareDialogWrapper(
             conversations = conversations,
-            text = selectedText
+            text = selectedText,
+            snippetFileExtension = getSnippetFileExtension(e)
         )
 
         val exitCode = dialogWrapper.showAndGet()
@@ -35,7 +35,7 @@ class ShareSnippetAction : AnAction() {
                 dialogWrapper.getSelectedItem().id,
                 dialogWrapper.getEditedText(),
                 dialogWrapper.getMessageFormatType(),
-                getFileExtension(e)
+                dialogWrapper.getEditedSnippetFileExtension()
             )
         }
     }
@@ -52,7 +52,7 @@ class ShareSnippetAction : AnAction() {
         return editor.selectionModel.selectedText
     }
 
-    private fun getFileExtension(e: AnActionEvent): String {
+    private fun getSnippetFileExtension(e: AnActionEvent): String {
         val editor = e.getData(PlatformDataKeys.EDITOR) ?: return ""
 
         return FileDocumentManager.getInstance().getFile(editor.document)?.extension ?: ""

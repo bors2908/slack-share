@@ -1,7 +1,6 @@
 package me.bors.slack.share
 
-import me.bors.slack.share.entity.MessageFormatType
-import me.bors.slack.share.processor.ConversationsProcessor
+import me.bors.slack.share.entity.MessageStyle
 import me.bors.slack.share.processor.MessageProcessor
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
@@ -26,7 +25,7 @@ class ConversationsTest {
         // TODO Replace with user info request
         val id = receiveChannels.first { it.name == "bors2908" }.id
 
-        messageProcessor.sendMessage(id, "whatever", MessageFormatType.DEFAULT)
+        messageProcessor.sendMessage(id, "whatever", MessageStyle.NONE)
     }
 
     @Disabled

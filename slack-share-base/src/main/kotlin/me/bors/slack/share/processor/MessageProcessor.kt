@@ -6,23 +6,25 @@ import com.slack.api.methods.request.files.FilesUploadRequest.FilesUploadRequest
 import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
 import me.bors.slack.share.client.SlackClient
-import me.bors.slack.share.entity.MessageFormatType
+import me.bors.slack.share.entity.MessageStyle
 import java.io.File
 
 class MessageProcessor(val client: SlackClient) {
-    fun sendMessage(id: String, text: String, formatType: MessageFormatType, fileExtension: String? = null) {
+    fun sendMessage(id: String, text: String, formatType: MessageStyle, fileExtension: String = "") {
         val builder = ChatPostMessageRequest.builder()
+            .channel(id)
 
         when (formatType) {
-            MessageFormatType.DEFAULT -> {
+            MessageStyle.NONE -> {
                 builder
                     .mrkdwn(false)
                     .text(text)
             }
 
-            MessageFormatType.QUOTED -> {
+            MessageStyle.QUOTED -> {
                 builder
                     .mrkdwn(true)
+                    .text("")
                     .blocks(
                         listOf(
                             SectionBlock.builder()
@@ -36,9 +38,10 @@ class MessageProcessor(val client: SlackClient) {
                     )
             }
 
-            MessageFormatType.HIGHLIGHTED -> {
-                // TODO Double check if file headers and other stuff are necessary
+            MessageStyle.CODE_SNIPPET -> {
                 sendSingleFile(id, text.toByteArray(), "snippet.$fileExtension", FilesUploadRequest.builder())
+
+                return
             }
         }
 
@@ -49,9 +52,6 @@ class MessageProcessor(val client: SlackClient) {
         var tagged = false
 
         for (file: File in files) {
-            val fileBytes = file.readBytes()
-            val fileName = file.name
-
             val builder = FilesUploadRequest.builder()
 
             if (text.isNotEmpty() && !tagged) {
@@ -60,7 +60,7 @@ class MessageProcessor(val client: SlackClient) {
                 tagged = true
             }
 
-            sendSingleFile(id, fileBytes, fileName, builder)
+            sendSingleFile(id, file.readBytes(), file.name, builder)
         }
     }
 
@@ -74,7 +74,7 @@ class MessageProcessor(val client: SlackClient) {
             .channels(listOf(id))
             .fileData(fileBytes)
             .filename(fileName)
-
+            .filetype("auto")
 
         client.sendFile(builder)
     }
