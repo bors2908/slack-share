@@ -27,13 +27,15 @@ import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 
+private const val UNKNOWN = "Unknown"
+
 @Suppress("TooManyFunctions")
 class ShareDialogWrapper(
     private val conversations: List<Conversation>,
     private val text: String = "",
     private val filenames: List<String> = emptyList(),
     private val fileExclusions: List<FileExclusion> = emptyList(),
-    private val snippetFileExtension: String = "UNKNOWN"
+    private val snippetFileExtension: String = ""
 ) : DialogWrapper(true) {
     private lateinit var conversationComboBox: ComboBox<Conversation>
     private lateinit var editorPane: JEditorPane
@@ -51,7 +53,7 @@ class ShareDialogWrapper(
     }
 
     fun getEditedSnippetFileExtension(): String {
-        return extensionTextField.text.replace(".", "")
+        return extensionTextField.text.replace(".", "").replace(UNKNOWN, "")
     }
 
     fun getSelectedItem(): Conversation {
@@ -198,8 +200,8 @@ class ShareDialogWrapper(
 
     private fun createMessageFormatPanel(): JPanel {
         extensionTextField = JBTextField("Show Hide Example")
-        extensionTextField.text = ".$snippetFileExtension"
-        extensionTextField.preferredSize = Dimension(50, 30)
+        extensionTextField.text = if (snippetFileExtension.isEmpty()) UNKNOWN else ".$snippetFileExtension"
+        extensionTextField.preferredSize = Dimension(extensionTextField.text.length * 15, 30)
         extensionTextField.isVisible = false
 
         val extensionLabel = JLabel("Highlighting format:")
