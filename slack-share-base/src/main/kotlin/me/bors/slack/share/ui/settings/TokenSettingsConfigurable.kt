@@ -14,7 +14,7 @@ abstract class TokenSettingsConfigurable : Configurable {
 
     private var previousState by Delegates.notNull<Boolean>()
 
-    protected val authenticator : Authenticator = service()
+    protected val authenticator: Authenticator = service()
 
     abstract fun getComponent(): TokenSettingsComponent
 

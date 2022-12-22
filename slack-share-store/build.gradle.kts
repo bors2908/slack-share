@@ -15,6 +15,7 @@ plugins {
 
 val intellijVersion: String by rootProject.extra
 val sinceIdeaVersion: String by rootProject.extra
+val untilIdeaVersion: String by rootProject.extra
 val userDescription: String by rootProject.extra
 val changelog: String by rootProject.extra
 
@@ -47,6 +48,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set(sinceIdeaVersion)
+        untilBuild.set(untilIdeaVersion)
         pluginDescription.set(userDescription)
         changeNotes.set(changelog)
     }

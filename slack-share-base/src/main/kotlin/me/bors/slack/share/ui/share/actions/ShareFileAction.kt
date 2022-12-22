@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.VirtualFile
 import me.bors.slack.share.entity.FileExclusion
-import me.bors.slack.share.processor.ConversationsProcessor
 import me.bors.slack.share.service.InitializationService
 import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
 import java.io.File
@@ -15,7 +14,9 @@ class ShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val initService: InitializationService = service()
 
-        val slackClient = initService.initializeAndGetClient() ?: return
+        if (!initService.initializeIfNot()) return
+
+        val conversationsProcessor = initService.getConversationsProcessor()
 
         val files = (getVirtualFiles(e) ?: emptyArray()).asList()
             .map { it.toNioPath().toFile() }
@@ -25,9 +26,7 @@ class ShareFileAction : AnAction() {
 
         val filenames = validFiles.map { it.name }
 
-        val processor = ConversationsProcessor(slackClient)
-
-        val conversations = processor.getConversations()
+        val conversations = conversationsProcessor.getConversations()
 
         val dialogWrapper = ShareDialogWrapper(
             conversations = conversations,
@@ -37,8 +36,10 @@ class ShareFileAction : AnAction() {
 
         val exitCode = dialogWrapper.showAndGet()
 
+        val messageProcessor = initService.getMessageProcessor()
+
         if (exitCode) {
-            slackClient.sendFile(
+            messageProcessor.sendFile(
                 id = dialogWrapper.getSelectedItem().id,
                 files = validFiles,
                 text = dialogWrapper.getEditedText()

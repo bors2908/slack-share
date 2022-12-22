@@ -17,13 +17,13 @@ class AddTokenAutomaticDialogWrapper : DialogWrapper(true) {
     override fun createCenterPanel(): JComponent {
         val text = JTextArea(
             "Warning! This functionality is still beta. " +
-                    "${System.lineSeparator()}It is using OAuth 2.0 token sequence. " +
-                    "${System.lineSeparator()}You will be redirected to Slack website to confirm app integration." +
-                    "${System.lineSeparator()}Due to Slack API limitations, OAuth redirect URL should be HTTPS, " +
-                    "${System.lineSeparator()}but it is impossible to properly sign localhost certificate, so you would " +
-                    "${System.lineSeparator()}have to accept the fake certificate in your browser. " +
-                    "${System.lineSeparator()}It is safe, since HTTPS request never leaves your device." +
-                    "${System.lineSeparator()}You can close the browser afterwards."
+                "${System.lineSeparator()}It is using OAuth 2.0 token sequence. " +
+                "${System.lineSeparator()}You will be redirected to Slack website to confirm app integration." +
+                "${System.lineSeparator()}Due to Slack API limitations, OAuth redirect URL should be HTTPS, " +
+                "${System.lineSeparator()}but it is impossible to properly sign localhost certificate, so you would " +
+                "${System.lineSeparator()}have to accept the fake certificate in your browser. " +
+                "${System.lineSeparator()}It is safe, since HTTPS request never leaves your device." +
+                "${System.lineSeparator()}You can close the browser afterwards."
         )
 
         val panel = JPanel()

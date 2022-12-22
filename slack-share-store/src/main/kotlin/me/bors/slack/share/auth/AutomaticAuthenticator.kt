@@ -10,13 +10,14 @@ import com.sun.net.httpserver.HttpHandler
 import com.sun.net.httpserver.HttpsExchange
 import io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR
 import io.netty.handler.codec.http.HttpResponseStatus.OK
-import me.bors.slack.share.auth.dialog.AuthenticationDialogWrapper
+import me.bors.slack.share.auth.Authenticator.Companion.SCOPE_LIST
 import me.bors.slack.share.auth.server.DummySslHttpsServer
 import me.bors.slack.share.auth.server.getFreePort
 import me.bors.slack.share.persistence.SlackShareClientId
 import me.bors.slack.share.persistence.SlackShareSecret
 import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import me.bors.slack.share.ui.settings.dialog.AddTokenAutomaticDialogWrapper
+import me.bors.slack.share.ui.settings.dialog.AuthenticationDialogWrapper
 import okhttp3.HttpUrl
 import java.io.OutputStream
 import java.net.URI
@@ -33,15 +34,6 @@ private val logger: Logger = Logger.getInstance(AutomaticAuthenticator::class.ja
 private const val schema = "https://"
 private const val ip = "127.0.0.1"
 private const val innerPath = "/slack-share/auth"
-private val scopeList = listOf(
-    "channels:read",
-    "chat:write",
-    "files:write",
-    "groups:read",
-    "im:read",
-    "mpim:read",
-    "users:read"
-)
 
 @Suppress("MaxLineLength", "UnusedPrivateMember")
 object AutomaticAuthenticator : Authenticator, AutoCloseable {
@@ -92,7 +84,7 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
 
         val redirectUrl = "${schema}${ip}:$port${innerPath}"
 
-        val scopes = scopeList.joinToString(" ")
+        val scopes = SCOPE_LIST.joinToString(" ")
 
         state = UUID.randomUUID().toString()
 
@@ -140,11 +132,11 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
                 val response = slack.methods().oauthV2Access(oauthRequest)
                     .authedUser
 
-                scopeList.forEach()
+                SCOPE_LIST.forEach()
                 {
                     if (!response.scope.contains(it))
                         throw AuthenticationException(
-                            "Scopes does not match. [expected=$scopeList], [provided=${response.scope}]"
+                            "Scopes does not match. [expected=$SCOPE_LIST], [provided=${response.scope}]"
                         )
                 }
 
@@ -203,9 +195,9 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
             }
 
             return "<h1>${header}</h1>\n" +
-                    "<p>${result.extraMessage ?: ""}</p>\n" +
-                    "<p>${result.error?.message ?: ""}</p>\n" +
-                    "<p>You can close your browser now.</p>\n"
+                "<p>${result.extraMessage ?: ""}</p>\n" +
+                "<p>${result.error?.message ?: ""}</p>\n" +
+                "<p>You can close your browser now.</p>\n"
         }
 
         private fun checkState(receivedState: String?) {
@@ -244,11 +236,11 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
             val message = getMessage(result)
 
             val response = "<!DOCTYPE html>\n" +
-                    "<html>\n" +
-                    "<body>\n" +
-                    message +
-                    "</body>\n" +
-                    "</html>"
+                "<html>\n" +
+                "<body>\n" +
+                message +
+                "</body>\n" +
+                "</html>"
 
             exchange.responseHeaders.add("Access-Control-Allow-Origin", "*")
             exchange.responseHeaders.add("content-type", "text/html; charset=utf-8")
