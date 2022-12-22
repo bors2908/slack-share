@@ -41,7 +41,7 @@ val changelog by extra {
                 0.6 - Bug fixes, logging and test improvements.<br>
                 0.7 - Improve conversations loading speed further.<br>
                 0.8 - Add safe token storage. Improve loading speed again.<br>
-                0.9 - Code cleanup, release candidate.
+                0.9 - Code cleanup, release candidate.<br>
                 0.9.5 - Complete automatic auth. Massive refactoring.<br>
                 0.9.6 - Compatibility issues fixes.<br>
                 0.9.7 - Cache reloading (when wrong client_id is cached). File attachment improvements.
