@@ -16,18 +16,15 @@ version = "0.9.9"
 
 val intellijVersion by extra { "2022.2.4" }
 val sinceIdeaVersion by extra { "203" }
-val untilIdeaVersion by extra { "223" }
+val untilIdeaVersion by extra { "223.*" }
 val userDescription by extra {
     """
         <![CDATA[
-        Plugin to share code snippets and files in Slack.<br>
-        <br>
+        Plugin to share code snippets and files in Slack.
         Select any desired text snippet in any editor or any file in file editor, 
         right-click and share it to Slack.
-        <br>
         Select the Slack conversation, make necessary edits or type additional message,
         add quoting or code highlighting and send it.
-        <br>
         You can either authorize in Slack automatically via oauth, 
         or paste Slack token manually in the plugin options. 
     """
