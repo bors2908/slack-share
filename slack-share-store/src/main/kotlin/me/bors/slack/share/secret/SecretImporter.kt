@@ -1,7 +1,7 @@
 package me.bors.slack.share.secret
 
-import me.bors.slack.share.persistence.SlackShareClientId
-import me.bors.slack.share.persistence.SlackShareSecret
+import me.bors.slack.share.persistence.ShareClientId
+import me.bors.slack.share.persistence.SlackShareBasicSecret
 import org.refcodes.properties.ext.obfuscation.ObfuscationPropertiesSugar
 import java.io.BufferedReader
 import java.io.File
@@ -11,7 +11,7 @@ import java.util.*
 // No fancy-pants encryption. Simple obfuscation to prevent automatic grabbing.
 object SecretImporter {
     fun checkAndImport(force: Boolean = false) {
-        if (SlackShareClientId.exists() && SlackShareSecret.exists() && !force) return
+        if (ShareClientId.exists() && SlackShareBasicSecret.exists() && !force) return
 
         val fullPath = SecretImporter::class.java.getResource("SecretImporter.class")?.toURI().toString()
 
@@ -36,8 +36,8 @@ object SecretImporter {
             this.javaClass.`package`.name
         )
 
-        SlackShareClientId.set(decrypted["client_id"])
-        SlackShareSecret.set(decrypted["secret"])
+        ShareClientId.set(decrypted["client_id"])
+        SlackShareBasicSecret.set(decrypted["secret"])
     }
 
     private fun readFileContent(path: String): String {

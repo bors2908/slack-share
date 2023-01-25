@@ -6,33 +6,36 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import me.bors.slack.share.service.InitializationService
+import me.bors.slack.share.service.WorkspaceService
 import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
 
 class ShareSnippetAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val initService: InitializationService = service()
 
-        if (!initService.initializeIfNot()) return
-
         val selectedText = getSelectedText(e) ?: ""
 
-        val conversationsProcessor = initService.getConversationsProcessor()
+        val workspaceProcessor: WorkspaceService = service()
 
-        val conversations = conversationsProcessor.getConversations()
+        workspaceProcessor.refresh()
+
+        val conversationsProcessor = initService.conversationsProcessor
 
         val dialogWrapper = ShareDialogWrapper(
-            conversations = conversations,
+            workspaces = workspaceProcessor.getAvailableWorkspaces(),
             text = selectedText,
-            snippetFileExtension = getSnippetFileExtension(e)
+            snippetFileExtension = getSnippetFileExtension(e),
+            conversationProcessing = { conversationsProcessor.getConversations(it) }
         )
 
         val exitCode = dialogWrapper.showAndGet()
 
-        val messageProcessor = initService.getMessageProcessor()
+        val messageProcessor = initService.messageProcessor
 
         if (exitCode) {
             messageProcessor.sendMessage(
-                dialogWrapper.getSelectedItem().id,
+                dialogWrapper.getSelectedWorkspace(),
+                dialogWrapper.getSelectedConversation().id,
                 dialogWrapper.getEditedText(),
                 dialogWrapper.getMessageFormatType(),
                 dialogWrapper.getEditedSnippetFileExtension()

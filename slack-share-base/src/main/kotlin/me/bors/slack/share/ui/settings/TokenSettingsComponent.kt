@@ -1,48 +1,69 @@
 package me.bors.slack.share.ui.settings
 
-import com.intellij.ui.components.JBLabel
-import com.intellij.util.ui.FormBuilder
+import com.intellij.ui.CollectionListModel
+import com.intellij.ui.components.JBList
+import com.intellij.ui.components.JBPanel
+import me.bors.slack.share.entity.Workspace
+import java.awt.*
 import java.awt.event.ActionListener
-import javax.swing.JButton
-import javax.swing.JComponent
-import javax.swing.JPanel
+import javax.swing.*
 
 abstract class TokenSettingsComponent(
     manualAction: ActionListener,
-    removeAction: ActionListener
+    removeAction: ActionListener,
+    upAction: ActionListener,
+    downAction: ActionListener
 ) {
     abstract var panel: JPanel
     abstract val preferredFocusedComponent: JComponent
-    private val tokenStatusLabel = JBLabel("Token status: ")
 
     protected val manualSetButton = JButton("Add manually")
-    protected val removeTokenButton = JButton("Remove token")
+    protected val removeButton = JButton("Remove")
+    protected val moveUpButton = JButton("Move up")
+    protected val moveDownButton = JButton("Move down")
+
+    protected val workspacesList = JBList<Workspace>()
 
     protected val buttonJPanel = JPanel()
 
     init {
-        setPanel(manualAction, removeAction)
+        setPanel(manualAction, removeAction, upAction, downAction)
     }
 
     abstract fun extraButtonActions(opName: String)
 
-    fun setStatus(exists: Boolean) {
-        tokenStatusLabel.text = "Token status: " + if (exists) "\u2705 Token is present" else "\u26A0 No token"
-
-        val opName = if (exists) "Renew" else "Add"
-
-        manualSetButton.text = "$opName manually"
-        extraButtonActions(opName)
+    fun setWorkspaces(workspaces: List<Workspace>) {
+        workspacesList.model = CollectionListModel(workspaces)
     }
 
-    private fun setPanel(manualAction: ActionListener, removeAction: ActionListener) {
-        manualSetButton.addActionListener(manualAction)
-        removeTokenButton.addActionListener(removeAction)
+    fun getSelectedWorkspace(): Workspace? {
+        return workspacesList.selectedValue
+    }
 
-        panel = FormBuilder.createFormBuilder()
-            .addComponent(tokenStatusLabel)
-            .addComponent(buttonJPanel)
-            .addComponentFillVertically(JPanel(), 0)
-            .panel
+    private fun setPanel(manualAction: ActionListener, removeAction: ActionListener, upAction: ActionListener, downAction: ActionListener) {
+        manualSetButton.addActionListener(manualAction)
+        removeButton.addActionListener(removeAction)
+        moveUpButton.addActionListener(upAction)
+        moveDownButton.addActionListener(downAction)
+
+        workspacesList.background = JTextArea().background
+
+        buttonJPanel.preferredSize = Dimension(150, 300)
+
+        panel = JBPanel<Nothing>(BorderLayout())
+
+        val innerPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        innerPanel.alignmentX = Component.LEFT_ALIGNMENT
+        innerPanel.componentOrientation = ComponentOrientation.LEFT_TO_RIGHT
+
+        innerPanel.add(buttonJPanel)
+        innerPanel.add(createFiller())
+
+        panel.add(innerPanel, BorderLayout.WEST)
+        panel.add(workspacesList, BorderLayout.CENTER)
+    }
+
+    private fun createFiller(): Box.Filler {
+        return Box.Filler(Dimension(5, 100), Dimension(5, 300), Dimension(5, 1000))
     }
 }

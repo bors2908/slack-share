@@ -13,15 +13,14 @@ import io.netty.handler.codec.http.HttpResponseStatus.OK
 import me.bors.slack.share.auth.Authenticator.Companion.SCOPE_LIST
 import me.bors.slack.share.auth.server.DummySslHttpsServer
 import me.bors.slack.share.auth.server.getFreePort
-import me.bors.slack.share.persistence.SlackShareClientId
-import me.bors.slack.share.persistence.SlackShareSecret
-import me.bors.slack.share.persistence.SlackUserTokenSecretState
+import me.bors.slack.share.persistence.ShareClientId
+import me.bors.slack.share.persistence.SlackShareBasicSecret
 import me.bors.slack.share.ui.settings.dialog.AddTokenAutomaticDialogWrapper
 import me.bors.slack.share.ui.settings.dialog.AuthenticationDialogWrapper
 import okhttp3.HttpUrl
 import java.io.OutputStream
 import java.net.URI
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Exchanger
 import java.util.concurrent.Executors
@@ -48,16 +47,14 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
     private val codeExchanger = Exchanger<String>()
     private val resultExchanger = Exchanger<AuthResult>()
 
-    fun authAutomatically() {
+    fun authAutomatically(): String? {
         val wrapper = AddTokenAutomaticDialogWrapper()
 
         if (!wrapper.showAndGet()) {
-            return
+            return null
         }
 
-        val token = requestTokenFromSlack()
-
-        if (token != null) SlackUserTokenSecretState.set(token)
+        return requestTokenFromSlack()
     }
 
     private fun cancelAuth() {
@@ -77,8 +74,8 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
 
     @Suppress("LongMethod")
     private fun requestTokenFromSlack(): String? {
-        val clientId = SlackShareClientId.get()!!
-        val clientSecret = SlackShareSecret.get()
+        val clientId = ShareClientId.get()!!
+        val clientSecret = SlackShareBasicSecret.get()
 
         val port = getFreePort()
 

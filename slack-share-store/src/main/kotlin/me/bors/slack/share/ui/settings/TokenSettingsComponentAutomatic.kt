@@ -1,7 +1,7 @@
 package me.bors.slack.share.ui.settings
 
-import com.intellij.ui.components.panels.HorizontalLayout
-import com.intellij.ui.components.panels.HorizontalLayout.LEFT
+import com.intellij.ui.components.panels.VerticalLayout
+import com.intellij.ui.components.panels.VerticalLayout.TOP
 import java.awt.event.ActionListener
 import javax.swing.JButton
 import javax.swing.JComponent
@@ -11,8 +11,10 @@ class TokenSettingsComponentAutomatic(
     manualAction: ActionListener,
     automaticAction: ActionListener,
     removeAction: ActionListener,
-    reloadCachesAction: ActionListener
-) : TokenSettingsComponent(manualAction, removeAction) {
+    reloadCachesAction: ActionListener,
+    moveUpAction: ActionListener,
+    moveDownAction: ActionListener
+) : TokenSettingsComponent(manualAction, removeAction, moveUpAction, moveDownAction) {
     override lateinit var panel: JPanel
 
     private val automaticSetButton = JButton("Add automatically")
@@ -22,11 +24,13 @@ class TokenSettingsComponentAutomatic(
         get() = automaticSetButton
 
     init {
-        buttonJPanel.layout = HorizontalLayout(5)
-        buttonJPanel.add(automaticSetButton, LEFT)
-        buttonJPanel.add(manualSetButton, LEFT)
-        buttonJPanel.add(removeTokenButton, LEFT)
-        buttonJPanel.add(reloadCachesButton, LEFT)
+        buttonJPanel.layout = VerticalLayout(5)
+        buttonJPanel.add(automaticSetButton, TOP)
+        buttonJPanel.add(manualSetButton, TOP)
+        buttonJPanel.add(removeButton, TOP)
+        buttonJPanel.add(moveUpButton, TOP)
+        buttonJPanel.add(moveDownButton, TOP)
+        buttonJPanel.add(reloadCachesButton, TOP)
 
         automaticSetButton.addActionListener(automaticAction)
         reloadCachesButton.addActionListener(reloadCachesAction)

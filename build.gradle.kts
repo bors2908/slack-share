@@ -12,8 +12,9 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.9"
+version = "0.9.9.1"
 
+val javaVersion = JavaVersion.VERSION_11.toString()
 val intellijVersion by extra { "2022.2.4" }
 val sinceIdeaVersion by extra { "203" }
 val untilIdeaVersion by extra { "223.*" }
@@ -44,7 +45,8 @@ val changelog by extra {
                 0.9.7 - Cache reloading (when wrong client_id is cached). File attachment improvements.
                 Dependency updates. IDEA 2022.2.2 Compatibility.<br>
                 0.9.8 - Add logo.<br>
-                0.9.9 - App creation link in manual auth. Code highlighting. Dependencies update. Fixes.
+                0.9.9 - App creation link in manual auth. Code highlighting. Dependencies update. Fixes.<br>
+                0.9.9.1 - Workspace selection.<br>
                 <br>
                 """
 }
@@ -58,13 +60,13 @@ allprojects {
 
     tasks {
         withType<JavaCompile> {
-            sourceCompatibility = JavaVersion.VERSION_11.toString()
-            targetCompatibility = JavaVersion.VERSION_11.toString()
+            sourceCompatibility = javaVersion
+            targetCompatibility = javaVersion
         }
 
         withType<KotlinCompile> {
             kotlinOptions {
-                jvmTarget = JavaVersion.VERSION_11.toString()
+                jvmTarget = javaVersion
             }
         }
 

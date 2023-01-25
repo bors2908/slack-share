@@ -7,9 +7,10 @@ import java.awt.event.ActionEvent
 class TokenSettingsConfigurableAutomatic : TokenSettingsConfigurable() {
     private fun getAutomaticActionListener(): (ActionEvent) -> Unit {
         return {
+            //TODO Move out to init service.
             SecretImporter.checkAndImport()
 
-            (authenticator as AutomaticAuthenticator).authAutomatically()
+            addToken((authenticator as AutomaticAuthenticator).authAutomatically())
         }
     }
 
@@ -20,11 +21,17 @@ class TokenSettingsConfigurableAutomatic : TokenSettingsConfigurable() {
     }
 
     override fun getComponent(): TokenSettingsComponent {
-        return TokenSettingsComponentAutomatic(
+        val component = TokenSettingsComponentAutomatic(
             getManualActionListener(),
             getAutomaticActionListener(),
             getRemoveTokenListener(),
-            getReloadCachesListener()
+            getReloadCachesListener(),
+            getMoveUpListener(),
+            getMoveDownListener()
         )
+
+        component.setWorkspaces(workspaceService.getAllWorkspaces())
+
+        return component
     }
 }

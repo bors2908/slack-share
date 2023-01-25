@@ -3,31 +3,84 @@ package me.bors.slack.share.ui.settings
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.Configurable
 import me.bors.slack.share.auth.Authenticator
+import me.bors.slack.share.entity.Workspace
+import me.bors.slack.share.service.WorkspaceService
+import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.Nls.Capitalization.Title
 import java.awt.event.ActionEvent
 import javax.swing.JComponent
-import kotlin.properties.Delegates
 
 abstract class TokenSettingsConfigurable : Configurable {
     private lateinit var slackShareSettingsComponent: TokenSettingsComponent
 
-    private var previousState by Delegates.notNull<Boolean>()
-
     protected val authenticator: Authenticator = service()
+
+    protected val workspaceService: WorkspaceService = service()
+
+    private var previousState: List<Workspace> = workspaceService.getAllWorkspaces()
 
     abstract fun getComponent(): TokenSettingsComponent
 
     protected fun getManualActionListener(): (ActionEvent) -> Unit {
         return {
-            authenticator.authManually()
+            addToken(authenticator.authManually())
         }
+
+    }
+
+    protected fun addToken(token: String?) {
+        if (token == null) return
+
+        val errorMessage = workspaceService.addToken(token)
+
+        errorMessage?.let { TokenErrorDialogWrapper(it, false).showAndGet() }
+
+        refreshWorkspacesList()
     }
 
     protected fun getRemoveTokenListener(): (ActionEvent) -> Unit {
         return {
-            authenticator.remove()
+            val selectedWorkspace = slackShareSettingsComponent.getSelectedWorkspace()
+
+            if (selectedWorkspace != null) {
+                workspaceService.delete(selectedWorkspace)
+
+                refreshWorkspacesList()
+            }
         }
+    }
+
+    protected fun getMoveUpListener(): (ActionEvent) -> Unit {
+        return {
+            val selectedWorkspace = slackShareSettingsComponent.getSelectedWorkspace()
+
+            if (selectedWorkspace != null) {
+                workspaceService.moveUp(selectedWorkspace)
+
+                refreshWorkspacesList()
+            }
+        }
+    }
+
+    protected fun getMoveDownListener(): (ActionEvent) -> Unit {
+        return {
+            val selectedWorkspace = slackShareSettingsComponent.getSelectedWorkspace()
+
+            if (selectedWorkspace != null) {
+                workspaceService.moveDown(selectedWorkspace)
+
+                refreshWorkspacesList()
+            }
+        }
+    }
+
+    private fun refreshWorkspacesList() {
+        val workspaces = workspaceService.getAllWorkspaces()
+
+        slackShareSettingsComponent.setWorkspaces(workspaces)
+
+        previousState = workspaces
     }
 
     @Nls(capitalization = Title)
@@ -40,30 +93,22 @@ abstract class TokenSettingsConfigurable : Configurable {
     }
 
     override fun createComponent(): JComponent {
-        previousState = authenticator.isTokenPresent()
-
         slackShareSettingsComponent = getComponent()
 
         return slackShareSettingsComponent.panel
     }
 
     override fun isModified(): Boolean {
-        val exists = authenticator.isTokenPresent()
-
-        slackShareSettingsComponent.setStatus(exists)
-
-        return exists == previousState
+        return previousState == workspaceService.getAllWorkspaces()
     }
 
     override fun apply() {
-        previousState = authenticator.isTokenPresent()
+        workspaceService.persist()
     }
 
     override fun reset() {
-        slackShareSettingsComponent.setStatus(previousState)
-    }
+        workspaceService.refresh()
 
-    override fun disposeUIResources() {
-        createComponent()
+        refreshWorkspacesList()
     }
 }

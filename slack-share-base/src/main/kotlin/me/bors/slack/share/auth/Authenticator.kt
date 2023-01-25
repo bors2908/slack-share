@@ -4,34 +4,21 @@ import com.intellij.ide.BrowserUtil
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import me.bors.slack.share.persistence.SlackUserTokenSecretState
 import me.bors.slack.share.ui.settings.dialog.AddTokenManualDialogWrapper
 import me.bors.slack.share.ui.settings.dialog.CreateSlackAppDialogWrapper
 import okhttp3.HttpUrl
 
 interface Authenticator {
-    fun authManually() {
+    fun authManually(): String? {
         val wrapper = AddTokenManualDialogWrapper {
             BrowserUtil.browse(createAppUri)
 
             CreateSlackAppDialogWrapper(createAppUri).showAndGet()
         }
 
-        if (wrapper.showAndGet()) {
-            SlackUserTokenSecretState.set(wrapper.field.text)
-        }
-    }
-
-    fun remove() {
-        SlackUserTokenSecretState.remove()
-    }
-
-    fun isTokenPresent(): Boolean {
-        return SlackUserTokenSecretState.exists()
-    }
-
-    fun getToken(): String? {
-        return SlackUserTokenSecretState.get()
+        return if (wrapper.showAndGet()) {
+            wrapper.field.text
+        } else null
     }
 
     companion object {

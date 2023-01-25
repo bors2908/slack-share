@@ -8,6 +8,7 @@ import com.intellij.util.ui.UIUtil
 import me.bors.slack.share.entity.Conversation
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.entity.MessageStyle
+import me.bors.slack.share.entity.Workspace
 import java.awt.Component.LEFT_ALIGNMENT
 import java.awt.ComponentOrientation
 import java.awt.Dimension
@@ -29,14 +30,17 @@ import javax.swing.text.StyleConstants
 
 private const val UNKNOWN = "Unknown"
 
+//TODO Adjust sizes, investigate workspace long loading time
 @Suppress("TooManyFunctions")
 class ShareDialogWrapper(
-    private val conversations: List<Conversation>,
+    private val workspaces: List<Workspace>,
     private val text: String = "",
     private val filenames: List<String> = emptyList(),
     private val fileExclusions: List<FileExclusion> = emptyList(),
-    private val snippetFileExtension: String = ""
+    private val snippetFileExtension: String = "",
+    private val conversationProcessing: (Workspace) -> List<Conversation>
 ) : DialogWrapper(true) {
+    private lateinit var workspacesComboBox: ComboBox<Workspace>
     private lateinit var conversationComboBox: ComboBox<Conversation>
     private lateinit var editorPane: JEditorPane
     private lateinit var messageFormatComboBox: ComboBox<MessageStyle>
@@ -56,7 +60,11 @@ class ShareDialogWrapper(
         return extensionTextField.text.replace(".", "").replace(UNKNOWN, "")
     }
 
-    fun getSelectedItem(): Conversation {
+    fun getSelectedWorkspace(): Workspace {
+        return workspacesComboBox.selectedItem as Workspace
+    }
+
+    fun getSelectedConversation(): Conversation {
         return conversationComboBox.selectedItem as Conversation
     }
 
@@ -73,6 +81,7 @@ class ShareDialogWrapper(
 
         val scrollPane = createScrollPane(editorPane)
 
+        dialogPanel.add(createWorkspacesPanel())
         dialogPanel.add(createConversationsPanel())
         dialogPanel.add(createVerticalFiller())
         dialogPanel.add(scrollPane)
@@ -149,8 +158,39 @@ class ShareDialogWrapper(
         return attachments
     }
 
+    private fun createWorkspacesPanel(): JPanel {
+        workspacesComboBox = ComboBox(DefaultComboBoxModel(workspaces.toTypedArray()))
+        workspacesComboBox.maximumSize = Dimension(1000, 30)
+        workspacesComboBox.preferredSize = Dimension(300, 30)
+        workspacesComboBox.minimumSize = Dimension(100, 30)
+        workspacesComboBox.toolTipText = "Workplace to select conversation from."
+        workspacesComboBox.addActionListener {
+            run {
+                val workspace = workspacesComboBox.selectedItem as Workspace
+
+                val conversations = conversationProcessing.invoke(workspace)
+
+                conversationComboBox.model = DefaultComboBoxModel(conversations.toTypedArray())
+            }
+        }
+
+        val workspacesPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        workspacesPanel.alignmentX = LEFT_ALIGNMENT
+        workspacesPanel.componentOrientation = ComponentOrientation.LEFT_TO_RIGHT
+        workspacesPanel.preferredSize = Dimension(500, 50)
+        workspacesPanel.maximumSize = Dimension(1000, 50)
+        workspacesPanel.minimumSize = Dimension(400, 50)
+
+        val selectLabel = JLabel("Select Workspace:")
+
+        workspacesPanel.add(selectLabel)
+        workspacesPanel.add(workspacesComboBox)
+
+        return workspacesPanel
+    }
+
     private fun createConversationsPanel(): JPanel {
-        conversationComboBox = ComboBox(DefaultComboBoxModel(conversations.toTypedArray()))
+        conversationComboBox = ComboBox()
         conversationComboBox.maximumSize = Dimension(1000, 30)
         conversationComboBox.preferredSize = Dimension(300, 30)
         conversationComboBox.minimumSize = Dimension(100, 30)
@@ -167,6 +207,7 @@ class ShareDialogWrapper(
 
         conversationsPanel.add(selectLabel)
         conversationsPanel.add(conversationComboBox)
+
         return conversationsPanel
     }
 
