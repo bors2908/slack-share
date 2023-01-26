@@ -1,5 +1,6 @@
 package me.bors.slack.share.service
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.ProjectManager
@@ -12,6 +13,7 @@ import me.bors.slack.share.persistence.WorkspaceSecretState.Companion.MAX_ACCOUN
 import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
 import java.util.*
 
+@Service
 class WorkspaceService {
     private val client = SlackWorkspaceClient()
 

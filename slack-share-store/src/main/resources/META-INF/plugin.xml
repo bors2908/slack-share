@@ -22,8 +22,6 @@
         <applicationService
                 serviceInterface="me.bors.slack.share.auth.Authenticator"
                 serviceImplementation="me.bors.slack.share.auth.AutomaticAuthenticator"/>
-        <applicationService
-                serviceImplementation="me.bors.slack.share.service.WorkspaceService"/>
     </extensions>
     <actions>
         <action id="me.bors.slack.share.ui.share.actions.ShareSnippetAction"
