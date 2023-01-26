@@ -15,7 +15,7 @@ abstract class InitializationService {
         beforeInit()
     }
 
-    fun beforeInit() {
+    open fun beforeInit() {
         // No-op.
     }
 }

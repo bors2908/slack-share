@@ -4,6 +4,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.options.Configurable
 import me.bors.slack.share.auth.Authenticator
 import me.bors.slack.share.entity.Workspace
+import me.bors.slack.share.service.InitializationService
 import me.bors.slack.share.service.WorkspaceService
 import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
 import org.jetbrains.annotations.Nls
@@ -15,6 +16,8 @@ abstract class TokenSettingsConfigurable : Configurable {
     private lateinit var slackShareSettingsComponent: TokenSettingsComponent
 
     protected val authenticator: Authenticator = service()
+
+    protected val initializationService: InitializationService = service()
 
     protected val workspaceService: WorkspaceService = service()
 

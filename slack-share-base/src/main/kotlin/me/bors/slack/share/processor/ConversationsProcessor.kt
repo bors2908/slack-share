@@ -9,6 +9,7 @@ import me.bors.slack.share.client.SlackConversationsClient
 import me.bors.slack.share.entity.Conversation
 import me.bors.slack.share.entity.Workspace
 import me.bors.slack.share.service.WorkspaceService
+import me.bors.slack.share.ui.share.dialog.ErrorDialogWrapper
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -25,7 +26,13 @@ open class ConversationsProcessor {
          */
         val result = LinkedBlockingQueue<Conversation>()
 
-        val token = workspace.state.get() ?: TODO("Workspace error")
+        val token = workspace.state.get()
+
+        if (token == null) {
+            ErrorDialogWrapper("Token is missing.").showAndGet()
+
+            return emptyList()
+        }
 
         val multiChannels = slackClient.getChannels(token, listOf(ConversationType.MPIM))
 

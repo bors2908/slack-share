@@ -1,23 +1,24 @@
 package me.bors.slack.share.persistence
 
-import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.util.xmlb.XmlSerializerUtil
+import com.intellij.openapi.components.*
 
-abstract class PersistentState<T : Any> : PersistentStateComponent<PersistentState<T>> {
-    private var value: T? = null
-
-    fun getValue(): T? = value
-
-    fun setValue(value: T?) {
-        this.value = value
+@Service
+@State(name = "SlackSharePersistentState", storages = [Storage("SlackShare.xml")])
+class PersistentState : PersistentStateComponent<SlackState> {
+    companion object {
+        val instance: PersistentState
+            get() = service()
     }
 
-    override fun getState(): PersistentState<T> {
-        return this
+    var myState = SlackState()
+
+    override fun getState(): SlackState {
+        return myState
     }
 
-    override fun loadState(state: PersistentState<T>) {
-        XmlSerializerUtil.copyBean(state, this)
+    override fun loadState(stateLoadedFromPersistence: SlackState) {
+        myState = stateLoadedFromPersistence
     }
 }
+
 

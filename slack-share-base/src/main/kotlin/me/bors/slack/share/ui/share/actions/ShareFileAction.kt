@@ -11,7 +11,6 @@ import me.bors.slack.share.service.WorkspaceService
 import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
 import java.io.File
 
-@Suppress("CHECK_ACTION")
 class ShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val initService: InitializationService = service()

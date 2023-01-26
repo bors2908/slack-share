@@ -8,6 +8,7 @@ import com.slack.api.model.block.composition.MarkdownTextObject
 import me.bors.slack.share.client.SlackMessageClient
 import me.bors.slack.share.entity.MessageStyle
 import me.bors.slack.share.entity.Workspace
+import me.bors.slack.share.ui.share.dialog.ErrorDialogWrapper
 import java.io.File
 
 class MessageProcessor {
@@ -23,7 +24,13 @@ class MessageProcessor {
         val builder = ChatPostMessageRequest.builder()
             .channel(userId)
 
-        val token = workspace.state.get() ?: TODO("bad token")
+        val token = workspace.state.get()
+
+        if (token == null) {
+            ErrorDialogWrapper("Token is missing.").showAndGet()
+
+            return
+        }
 
         when (formatType) {
             MessageStyle.NONE -> {
@@ -67,7 +74,13 @@ class MessageProcessor {
     ) {
         var tagged = false
 
-        val token = workspace.state.get() ?: TODO("Bad token")
+        val token = workspace.state.get()
+
+        if (token == null) {
+            ErrorDialogWrapper("Token is missing.").showAndGet()
+
+            return
+        }
 
         for (file: File in files) {
             val builder = FilesUploadRequest.builder()

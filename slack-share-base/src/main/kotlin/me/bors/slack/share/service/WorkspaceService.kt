@@ -5,8 +5,8 @@ import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.ProjectManager
 import me.bors.slack.share.client.SlackWorkspaceClient
 import me.bors.slack.share.entity.Workspace
+import me.bors.slack.share.persistence.PersistentState
 import me.bors.slack.share.persistence.SlackUserTokenBasicSecretState
-import me.bors.slack.share.persistence.WorkspacePersistenceState
 import me.bors.slack.share.persistence.WorkspaceSecretState
 import me.bors.slack.share.persistence.WorkspaceSecretState.Companion.MAX_ACCOUNTS
 import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
@@ -24,7 +24,7 @@ class WorkspaceService {
         if (workspaces.isEmpty() && SlackUserTokenBasicSecretState.exists()) {
             val errorMessage = addToken(SlackUserTokenBasicSecretState.get()!!)
 
-            //TODO add remove
+            //TODO add original token remove
 
             persist()
         }
@@ -57,16 +57,20 @@ class WorkspaceService {
     fun moveUp(selectedWorkspace: Workspace) {
         val index = workspaces.indexOf(selectedWorkspace)
 
-        if (index > 0) {
-            Collections.swap(workspaces, index, index - 1)
+        if (workspaces.size > 1) {
+            if (index > 0) {
+                Collections.swap(workspaces, index, index - 1)
+            }
         }
     }
 
     fun moveDown(selectedWorkspace: Workspace) {
         val index = workspaces.indexOf(selectedWorkspace)
 
-        if (index < workspaces.size - 1) {
-            Collections.swap(workspaces, index, index + 1)
+        if (workspaces.size > 1) {
+            if (index < workspaces.size - 1) {
+                Collections.swap(workspaces, index, index + 1)
+            }
         }
     }
 
@@ -114,9 +118,8 @@ class WorkspaceService {
         }
     }
 
-    //TODO Check why persistence does not work
     fun persist() {
-        WorkspacePersistenceState.setValue(workspaces.map { it.id })
+        PersistentState.instance.myState.idOrder = workspaces.map { it.id }
 
         refresh()
     }
@@ -124,7 +127,7 @@ class WorkspaceService {
     private fun getAllowedIds() = (0 until MAX_ACCOUNTS)
 
     private fun getExistingWorkspaces(): MutableList<Workspace> {
-        return (WorkspacePersistenceState.getValue() ?: emptyList())
+        return PersistentState.instance.myState.idOrder
             .map {
                 val state = WorkspaceSecretState(it)
 

@@ -9,6 +9,7 @@ import me.bors.slack.share.entity.Conversation
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.entity.MessageStyle
 import me.bors.slack.share.entity.Workspace
+import java.awt.BorderLayout
 import java.awt.Component.LEFT_ALIGNMENT
 import java.awt.ComponentOrientation
 import java.awt.Dimension
@@ -30,7 +31,7 @@ import javax.swing.text.StyleConstants
 
 private const val UNKNOWN = "Unknown"
 
-//TODO Adjust sizes, investigate workspace long loading time
+//TODO Conversation performance loading
 @Suppress("TooManyFunctions")
 class ShareDialogWrapper(
     private val workspaces: List<Workspace>,
@@ -82,10 +83,11 @@ class ShareDialogWrapper(
         val scrollPane = createScrollPane(editorPane)
 
         dialogPanel.add(createWorkspacesPanel())
+        dialogPanel.add(createVerticalFiller(5))
         dialogPanel.add(createConversationsPanel())
-        dialogPanel.add(createVerticalFiller())
+        dialogPanel.add(createVerticalFiller(20))
         dialogPanel.add(scrollPane)
-        dialogPanel.add(createVerticalFiller())
+        dialogPanel.add(createVerticalFiller(20))
 
         val attachments = getAttachments()
 
@@ -174,17 +176,16 @@ class ShareDialogWrapper(
             }
         }
 
-        val workspacesPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val workspacesPanel = JPanel(BorderLayout())
         workspacesPanel.alignmentX = LEFT_ALIGNMENT
-        workspacesPanel.componentOrientation = ComponentOrientation.LEFT_TO_RIGHT
-        workspacesPanel.preferredSize = Dimension(500, 50)
-        workspacesPanel.maximumSize = Dimension(1000, 50)
-        workspacesPanel.minimumSize = Dimension(400, 50)
+        workspacesPanel.preferredSize = Dimension(500, 30)
+        workspacesPanel.maximumSize = Dimension(1000, 30)
+        workspacesPanel.minimumSize = Dimension(400, 30)
 
         val selectLabel = JLabel("Select Workspace:")
 
-        workspacesPanel.add(selectLabel)
-        workspacesPanel.add(workspacesComboBox)
+        workspacesPanel.add(selectLabel, BorderLayout.WEST)
+        workspacesPanel.add(workspacesComboBox, BorderLayout.CENTER)
 
         return workspacesPanel
     }
@@ -196,23 +197,22 @@ class ShareDialogWrapper(
         conversationComboBox.minimumSize = Dimension(100, 30)
         conversationComboBox.toolTipText = "Message destination"
 
-        val conversationsPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val conversationsPanel = JPanel(BorderLayout())
         conversationsPanel.alignmentX = LEFT_ALIGNMENT
-        conversationsPanel.componentOrientation = ComponentOrientation.LEFT_TO_RIGHT
-        conversationsPanel.preferredSize = Dimension(500, 50)
-        conversationsPanel.maximumSize = Dimension(1000, 50)
-        conversationsPanel.minimumSize = Dimension(400, 50)
+        conversationsPanel.preferredSize = Dimension(500, 30)
+        conversationsPanel.maximumSize = Dimension(1000, 30)
+        conversationsPanel.minimumSize = Dimension(400, 30)
 
         val selectLabel = JLabel("Select Conversation:")
 
-        conversationsPanel.add(selectLabel)
-        conversationsPanel.add(conversationComboBox)
+        conversationsPanel.add(selectLabel, BorderLayout.WEST)
+        conversationsPanel.add(conversationComboBox, BorderLayout.CENTER)
 
         return conversationsPanel
     }
 
-    private fun createVerticalFiller(): Box.Filler {
-        val filler = Box.Filler(Dimension(0, 0), Dimension(600, 20), Dimension(1000, 40))
+    private fun createVerticalFiller(height: Int): Box.Filler {
+        val filler = Box.Filler(Dimension(0, 0), Dimension(600, height), Dimension(1000, height * 2))
 
         filler.alignmentX = LEFT_ALIGNMENT
 
