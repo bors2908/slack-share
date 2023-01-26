@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.UIUtil
-import me.bors.slack.share.entity.Conversation
+import me.bors.slack.share.entity.SlackConversation
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.entity.MessageStyle
 import me.bors.slack.share.entity.Workspace
@@ -39,10 +39,10 @@ class ShareDialogWrapper(
     private val filenames: List<String> = emptyList(),
     private val fileExclusions: List<FileExclusion> = emptyList(),
     private val snippetFileExtension: String = "",
-    private val conversationProcessing: (Workspace) -> List<Conversation>
+    private val conversationProcessing: (Workspace) -> List<SlackConversation>
 ) : DialogWrapper(true) {
     private lateinit var workspacesComboBox: ComboBox<Workspace>
-    private lateinit var conversationComboBox: ComboBox<Conversation>
+    private lateinit var conversationComboBox: ComboBox<SlackConversation>
     private lateinit var editorPane: JEditorPane
     private lateinit var messageFormatComboBox: ComboBox<MessageStyle>
     private lateinit var extensionTextField: JBTextField
@@ -65,8 +65,8 @@ class ShareDialogWrapper(
         return workspacesComboBox.selectedItem as Workspace
     }
 
-    fun getSelectedConversation(): Conversation {
-        return conversationComboBox.selectedItem as Conversation
+    fun getSelectedConversation(): SlackConversation {
+        return conversationComboBox.selectedItem as SlackConversation
     }
 
     fun getMessageFormatType(): MessageStyle {
@@ -170,9 +170,7 @@ class ShareDialogWrapper(
             run {
                 val workspace = workspacesComboBox.selectedItem as Workspace
 
-                val conversations = conversationProcessing.invoke(workspace)
-
-                conversationComboBox.model = DefaultComboBoxModel(conversations.toTypedArray())
+                refreshConversations(workspace)
             }
         }
 
@@ -188,6 +186,12 @@ class ShareDialogWrapper(
         workspacesPanel.add(workspacesComboBox, BorderLayout.CENTER)
 
         return workspacesPanel
+    }
+
+    private fun refreshConversations(workspace: Workspace) {
+        val conversations = conversationProcessing.invoke(workspace)
+
+        conversationComboBox.model = DefaultComboBoxModel(conversations.toTypedArray())
     }
 
     private fun createConversationsPanel(): JPanel {
@@ -207,6 +211,8 @@ class ShareDialogWrapper(
 
         conversationsPanel.add(selectLabel, BorderLayout.WEST)
         conversationsPanel.add(conversationComboBox, BorderLayout.CENTER)
+
+        refreshConversations(workspacesComboBox.model.getElementAt(0))
 
         return conversationsPanel
     }

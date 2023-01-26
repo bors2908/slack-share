@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.VirtualFile
 import me.bors.slack.share.entity.FileExclusion
+import me.bors.slack.share.service.ConversationsService
 import me.bors.slack.share.service.InitializationService
 import me.bors.slack.share.service.WorkspaceService
 import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
@@ -19,7 +20,7 @@ class ShareFileAction : AnAction() {
 
         workspaceProcessor.refresh()
 
-        val conversationsProcessor = initService.conversationsProcessor
+        val conversationsService: ConversationsService = service()
 
         val files = (getVirtualFiles(e) ?: emptyArray()).asList()
             .map { it.toNioPath().toFile() }
@@ -33,7 +34,7 @@ class ShareFileAction : AnAction() {
             workspaces = workspaceProcessor.getAvailableWorkspaces(),
             filenames = filenames,
             fileExclusions = exclusions,
-            conversationProcessing = { conversationsProcessor.getConversations(it) }
+            conversationProcessing = { conversationsService.getConversations(it) }
         )
 
         val exitCode = dialogWrapper.showAndGet()

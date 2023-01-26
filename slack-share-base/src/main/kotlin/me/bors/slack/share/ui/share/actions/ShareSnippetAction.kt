@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import me.bors.slack.share.service.ConversationsService
 import me.bors.slack.share.service.InitializationService
 import me.bors.slack.share.service.WorkspaceService
 import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
@@ -19,13 +20,13 @@ class ShareSnippetAction : AnAction() {
 
         workspaceProcessor.refresh()
 
-        val conversationsProcessor = initService.conversationsProcessor
+        val conversationsService: ConversationsService = service()
 
         val dialogWrapper = ShareDialogWrapper(
             workspaces = workspaceProcessor.getAvailableWorkspaces(),
             text = selectedText,
             snippetFileExtension = getSnippetFileExtension(e),
-            conversationProcessing = { conversationsProcessor.getConversations(it) }
+            conversationProcessing = { conversationsService.getConversations(it) }
         )
 
         val exitCode = dialogWrapper.showAndGet()
