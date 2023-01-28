@@ -14,11 +14,11 @@ import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 
 open class ConversationsProcessor {
-    protected val slackClient = SlackConversationsClient()
+    private val slackClient: SlackConversationsClient = SlackConversationsClient()
 
-    protected val workspaceService: WorkspaceService = service()
+    private val workspaceService: WorkspaceService = service()
 
-    protected val nameCache: Map<Int, Map<String, String>> = slackClient.getNameCache(workspaceService.getTokenMap())
+    private val nameCache: Map<Workspace, Map<String, String>> = slackClient.getNameCache(workspaceService.getAvailableWorkspaces())
 
     fun getConversations(workspace: Workspace): List<Conversation> {
         /* Multi-User conversations require a lot of requests to receive members and form a readable conversation name
@@ -44,7 +44,7 @@ open class ConversationsProcessor {
                     result.add(
                         Conversation(
                             it.id,
-                            getMultiUserGroupName(token, workspace.id, it.id),
+                            getMultiUserGroupName(workspace, it.id),
                             it.priority ?: 0.0
                         )
                     )
@@ -54,7 +54,7 @@ open class ConversationsProcessor {
             launch(dispatcher) {
                 result.addAll(
                     slackClient.getChannels(token, listOf(ConversationType.IM))
-                        .map { Conversation(it.id, getUserName(token, workspace.id, it.user), it.priority ?: 0.0) }
+                        .map { Conversation(it.id, getUserName(workspace, it.user), it.priority ?: 0.0) }
                 )
             }
 
@@ -69,10 +69,13 @@ open class ConversationsProcessor {
         return result.sortedByDescending { it.priority }
     }
 
-    fun getMultiUserGroupName(token: String, workspaceId: Int, id: String) =
-        slackClient.getMultiUserGroupMembers(token, id).joinToString(", ") { getUserName(token, workspaceId, it) }
+    private fun getMultiUserGroupName(workspace: Workspace, id: String): String {
+        val token = workspace.state.get()!!
 
-    fun getUserName(token: String, workspaceId: Int, userId: String): String {
-        return nameCache[workspaceId]?.get(userId) ?: slackClient.getUserName(token, userId)
+        return slackClient.getMultiUserGroupMembers(token, id).joinToString(", ") { getUserName(workspace, it) }
+    }
+
+    private fun getUserName(workspace: Workspace, userId: String): String {
+        return nameCache[workspace]?.get(userId) ?: slackClient.getUserName(workspace.state.get()!!, userId)
     }
 }

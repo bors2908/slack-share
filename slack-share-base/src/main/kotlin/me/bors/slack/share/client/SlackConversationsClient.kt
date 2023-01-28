@@ -1,6 +1,5 @@
 package me.bors.slack.share.client
 
-import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.Slack
 import com.slack.api.methods.request.conversations.ConversationsListRequest
 import com.slack.api.methods.request.conversations.ConversationsMembersRequest
@@ -9,6 +8,7 @@ import com.slack.api.methods.request.users.UsersListRequest
 import com.slack.api.model.Conversation
 import com.slack.api.model.ConversationType
 import com.slack.api.model.User
+import me.bors.slack.share.entity.Workspace
 
 open class SlackConversationsClient : SlackClientBase() {
     private val slack = Slack.getInstance()
@@ -67,8 +67,10 @@ open class SlackConversationsClient : SlackClientBase() {
         }
     }
 
-    fun getNameCache(tokens: Map<Int, String>): Map<Int, Map<String, String>> {
-        return tokens.map { (key, token) ->
+    fun getNameCache(workspaces: List<Workspace>): Map<Workspace, Map<String, String>> {
+        return workspaces.associateWith { workspace ->
+            val token = workspace.state.get()
+
             val request = UsersListRequest.builder()
                 .token(token)
                 .build()
@@ -83,7 +85,7 @@ open class SlackConversationsClient : SlackClientBase() {
                 response.responseMetadata.nextCursor to response.members
             }
 
-            key to (members.associate { it.id to (it.realName ?: it.name ?: it.id) })
-        }.associate { it.first to it.second }
+            (members.associate { it.id to (it.realName ?: it.name ?: it.id) })
+        }
     }
 }
