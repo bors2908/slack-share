@@ -20,7 +20,7 @@ class ConversationsService {
 
     private val workspaceService: WorkspaceService = service()
 
-    private val nameCache: Map<Int, Map<String, String>> = slackClient.getNameCache(workspaceService.getTokenMap())
+    private val nameCache: Map<Workspace, Map<String, String>> = slackClient.getNameCache(workspaceService.getAvailableWorkspaces())
 
     private val cache: MutableMap<Workspace, Map<ConversationType, MutableMap<String, SlackConversation>>> = mutableMapOf()
 
@@ -71,8 +71,7 @@ class ConversationsService {
                     parseChannels(
                         idsToCreate.mapNotNull { conversations[it] },
                         ct,
-                        token,
-                        ws.id
+                        ws
                     ).associateBy { it.id }
                 )
             }
@@ -84,13 +83,12 @@ class ConversationsService {
     private fun parseChannels(
         conversations: List<Conversation>,
         type: ConversationType,
-        token: String,
-        workspaceId: Int
+        workspace: Workspace
     ): List<SlackConversation> {
         return when (type) {
             PRIVATE_CHANNEL, PUBLIC_CHANNEL -> parseGroupChannels(conversations)
-            IM -> parseIndividualChannels(conversations, token, workspaceId)
-            MPIM -> parseMultiChannels(conversations, token, workspaceId)
+            IM -> parseIndividualChannels(conversations, workspace)
+            MPIM -> parseMultiChannels(conversations, workspace)
             else -> emptyList()
         }
     }
@@ -98,10 +96,10 @@ class ConversationsService {
     private fun parseGroupChannels(conversations: List<Conversation>): List<SlackConversation> =
         conversations.map { SlackConversation(it.id, it.nameNormalized, it.priority ?: 0.0) }
 
-    private fun parseIndividualChannels(conversations: List<Conversation>, token: String, workspaceId: Int): List<SlackConversation> =
-        conversations.map { SlackConversation(it.id, getUserName(token, workspaceId, it.user), it.priority ?: 0.0) }
+    private fun parseIndividualChannels(conversations: List<Conversation>, workspace: Workspace): List<SlackConversation> =
+        conversations.map { SlackConversation(it.id, getUserName(workspace, it.user), it.priority ?: 0.0) }
 
-    private fun parseMultiChannels(conversations: List<Conversation>, token: String, workspaceId: Int): List<SlackConversation> {
+    private fun parseMultiChannels(conversations: List<Conversation>, workspace: Workspace): List<SlackConversation> {
         val result = LinkedBlockingQueue<SlackConversation>()
 
         val dispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
@@ -112,7 +110,7 @@ class ConversationsService {
                     result.add(
                         SlackConversation(
                             it.id,
-                            getMultiUserGroupName(token, workspaceId, it.id),
+                            getMultiUserGroupName(workspace, it.id),
                             it.priority ?: 0.0
                         )
                     )
@@ -123,10 +121,10 @@ class ConversationsService {
         return result.toList()
     }
 
-    private fun getMultiUserGroupName(token: String, workspaceId: Int, id: String) =
-        slackClient.getMultiUserGroupMembers(token, id).joinToString(", ") { getUserName(token, workspaceId, it) }
+    private fun getMultiUserGroupName(workspace: Workspace, id: String) =
+        slackClient.getMultiUserGroupMembers(workspace.state.get()!!, id).joinToString(", ") { getUserName(workspace, it) }
 
-    private fun getUserName(token: String, workspaceId: Int, userId: String): String {
-        return nameCache[workspaceId]?.get(userId) ?: slackClient.getUserName(token, userId)
+    private fun getUserName(workspace: Workspace, userId: String): String {
+        return nameCache[workspace]?.get(userId) ?: slackClient.getUserName(workspace.state.get()!!, userId)
     }
 }

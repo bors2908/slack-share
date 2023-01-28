@@ -2,12 +2,16 @@ package me.bors.slack.share.ui.share.dialog
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.AnimatedIcon
+import com.intellij.ui.PopupMenuListenerAdapter
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
+import com.intellij.ui.components.fields.ExtendableTextComponent
+import com.intellij.ui.components.fields.ExtendableTextField
 import com.intellij.util.ui.UIUtil
-import me.bors.slack.share.entity.Conversation
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.entity.MessageStyle
+import me.bors.slack.share.entity.SlackConversation
 import me.bors.slack.share.entity.Workspace
 import java.awt.BorderLayout
 import java.awt.Component.LEFT_ALIGNMENT
@@ -195,7 +199,7 @@ class ShareDialogWrapper(
         setComboBox(conversationComboBox, false)
     }
 
-    private fun refreshConversationValues(comboBox: ComboBox<Conversation>, workspace: Workspace) {
+    private fun refreshConversationValues(comboBox: ComboBox<SlackConversation>, workspace: Workspace) {
         val conversations = conversationProcessing.invoke(workspace)
 
         comboBox.model = DefaultComboBoxModel(conversations.toTypedArray())
