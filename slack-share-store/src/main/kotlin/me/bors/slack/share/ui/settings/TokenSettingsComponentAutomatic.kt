@@ -5,6 +5,7 @@ import com.intellij.ui.components.panels.VerticalLayout.TOP
 import java.awt.event.ActionListener
 import javax.swing.JButton
 import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JPanel
 
 class TokenSettingsComponentAutomatic(
@@ -25,6 +26,7 @@ class TokenSettingsComponentAutomatic(
 
     init {
         buttonJPanel.layout = VerticalLayout(5)
+        buttonJPanel.add(JLabel("Slack Workspaces:"), TOP)
         buttonJPanel.add(automaticSetButton, TOP)
         buttonJPanel.add(manualSetButton, TOP)
         buttonJPanel.add(removeButton, TOP)

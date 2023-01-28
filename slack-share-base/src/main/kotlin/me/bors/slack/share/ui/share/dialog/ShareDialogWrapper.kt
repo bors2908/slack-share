@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.UIUtil
-import me.bors.slack.share.entity.SlackConversation
+import me.bors.slack.share.entity.Conversation
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.entity.MessageStyle
 import me.bors.slack.share.entity.Workspace
@@ -15,16 +15,9 @@ import java.awt.ComponentOrientation
 import java.awt.Dimension
 import java.awt.FlowLayout
 import java.lang.Boolean.TRUE
-import javax.swing.BorderFactory
-import javax.swing.Box
-import javax.swing.BoxLayout
-import javax.swing.DefaultComboBoxModel
-import javax.swing.JComponent
-import javax.swing.JEditorPane
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JTextPane
-import javax.swing.ScrollPaneConstants
+import javax.swing.*
+import javax.swing.event.PopupMenuEvent
+import javax.swing.plaf.basic.BasicComboBoxEditor
 import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -81,6 +74,9 @@ class ShareDialogWrapper(
         editorPane = createEditorPane()
 
         val scrollPane = createScrollPane(editorPane)
+
+        workspacesComboBox = ComboBox(DefaultComboBoxModel(workspaces.toTypedArray()))
+        conversationComboBox = ComboBox()
 
         dialogPanel.add(createWorkspacesPanel())
         dialogPanel.add(createVerticalFiller(5))
@@ -161,18 +157,21 @@ class ShareDialogWrapper(
     }
 
     private fun createWorkspacesPanel(): JPanel {
-        workspacesComboBox = ComboBox(DefaultComboBoxModel(workspaces.toTypedArray()))
         workspacesComboBox.maximumSize = Dimension(1000, 30)
         workspacesComboBox.preferredSize = Dimension(300, 30)
         workspacesComboBox.minimumSize = Dimension(100, 30)
         workspacesComboBox.toolTipText = "Workplace to select conversation from."
-        workspacesComboBox.addActionListener {
-            run {
-                val workspace = workspacesComboBox.selectedItem as Workspace
+        workspacesComboBox.addPopupMenuListener(object : PopupMenuListenerAdapter() {
+            override fun popupMenuWillBecomeInvisible(e: PopupMenuEvent) {
+                super.popupMenuWillBecomeInvisible(e)
 
-                refreshConversations(workspace)
+                run {
+                    val workspace = workspacesComboBox.selectedItem as Workspace
+
+                    updateConversations(workspace)
+                }
             }
-        }
+        })
 
         val workspacesPanel = JPanel(BorderLayout())
         workspacesPanel.alignmentX = LEFT_ALIGNMENT
@@ -188,14 +187,38 @@ class ShareDialogWrapper(
         return workspacesPanel
     }
 
-    private fun refreshConversations(workspace: Workspace) {
+    private fun updateConversations(workspace: Workspace) {
+        setComboBox(conversationComboBox, true)
+
+        refreshConversationValues(conversationComboBox, workspace)
+
+        setComboBox(conversationComboBox, false)
+    }
+
+    private fun refreshConversationValues(comboBox: ComboBox<Conversation>, workspace: Workspace) {
         val conversations = conversationProcessing.invoke(workspace)
 
-        conversationComboBox.model = DefaultComboBoxModel(conversations.toTypedArray())
+        comboBox.model = DefaultComboBoxModel(conversations.toTypedArray())
+    }
+
+    private fun setComboBox(comboBox: ComboBox<*>, loading: Boolean) {
+        if (loading) {
+            val loadingExtension = ExtendableTextComponent.Extension.create(AnimatedIcon.Default(), null, null)
+
+            comboBox.editor = object : BasicComboBoxEditor() {
+                override fun createEditorComponent(): JTextField {
+                    val ecbEditor = ExtendableTextField()
+                    ecbEditor.addExtension(loadingExtension)
+                    ecbEditor.border = null
+                    return ecbEditor
+                }
+            }
+        } else {
+            comboBox.editor = BasicComboBoxEditor()
+        }
     }
 
     private fun createConversationsPanel(): JPanel {
-        conversationComboBox = ComboBox()
         conversationComboBox.maximumSize = Dimension(1000, 30)
         conversationComboBox.preferredSize = Dimension(300, 30)
         conversationComboBox.minimumSize = Dimension(100, 30)
@@ -212,7 +235,7 @@ class ShareDialogWrapper(
         conversationsPanel.add(selectLabel, BorderLayout.WEST)
         conversationsPanel.add(conversationComboBox, BorderLayout.CENTER)
 
-        refreshConversations(workspacesComboBox.model.getElementAt(0))
+        refreshConversationValues(conversationComboBox, workspaces.first())
 
         return conversationsPanel
     }
