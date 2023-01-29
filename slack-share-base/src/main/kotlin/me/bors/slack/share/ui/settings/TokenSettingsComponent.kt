@@ -4,9 +4,17 @@ import com.intellij.ui.CollectionListModel
 import com.intellij.ui.components.JBList
 import com.intellij.ui.components.JBPanel
 import me.bors.slack.share.entity.Workspace
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Component
+import java.awt.ComponentOrientation
+import java.awt.Dimension
+import java.awt.FlowLayout
 import java.awt.event.ActionListener
-import javax.swing.*
+import javax.swing.Box
+import javax.swing.JButton
+import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.JTextArea
 
 abstract class TokenSettingsComponent(
     manualAction: ActionListener,
@@ -40,7 +48,12 @@ abstract class TokenSettingsComponent(
         return workspacesList.selectedValue
     }
 
-    private fun setPanel(manualAction: ActionListener, removeAction: ActionListener, upAction: ActionListener, downAction: ActionListener) {
+    private fun setPanel(
+        manualAction: ActionListener,
+        removeAction: ActionListener,
+        upAction: ActionListener,
+        downAction: ActionListener
+    ) {
         manualSetButton.addActionListener(manualAction)
         removeButton.addActionListener(removeAction)
         moveUpButton.addActionListener(upAction)

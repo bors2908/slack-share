@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.methods.SlackApiTextResponse
 import me.bors.slack.share.error.SlackClientException
 
-abstract class SlackClientBase {
+open class SlackClientBase {
     // Unfortunately Slack Java API paginated request has no extracted interface with cursor and limit fields.
     protected inline fun <reified T> processPaginatedRequest(
         processRequest: (String, Int) -> Pair<String, List<T>>,

@@ -5,6 +5,9 @@ complexity:
   NestedBlockDepth:
     active: true
     threshold: 5
+  TooManyFunctions:
+    active: true
+    thresholdInClasses: 15
 
 naming:
   TopLevelPropertyNaming:
@@ -15,6 +18,9 @@ style:
     active: false
   MaxLineLength:
     maxLineLength: 135
+  ReturnCount:
+    active: true
+    max: 5
 
 exceptions:
   TooGenericExceptionCaught:

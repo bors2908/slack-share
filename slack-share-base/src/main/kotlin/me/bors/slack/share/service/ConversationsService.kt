@@ -4,7 +4,10 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.slack.api.model.Conversation
 import com.slack.api.model.ConversationType
-import com.slack.api.model.ConversationType.*
+import com.slack.api.model.ConversationType.IM
+import com.slack.api.model.ConversationType.MPIM
+import com.slack.api.model.ConversationType.PRIVATE_CHANNEL
+import com.slack.api.model.ConversationType.PUBLIC_CHANNEL
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -31,8 +34,9 @@ class ConversationsService {
     }
 
     fun getConversations(workspace: Workspace): List<SlackConversation> {
-        return cache
-            .getValue(workspace)
+        updateWorkspace(workspace)
+
+        return cache.getValue(workspace)
             .flatMap { (_, ids) -> ids.values }
             .sortedBy { it.priority }
     }
@@ -54,42 +58,49 @@ class ConversationsService {
 
         val workspacesToDelete = cache.keys - workspaces
 
-        val workspaceToCreate = workspaces - cache.keys
-
         workspacesToDelete.forEach { cache.remove(it) }
 
-        workspaceToCreate.forEach { cache[it] = listOf(PRIVATE_CHANNEL, PUBLIC_CHANNEL, MPIM, IM).associateWith { mutableMapOf() } }
-
         runBlocking {
-            cache.forEach { (ws, cts) ->
+            cache.keys.forEach { ws ->
                 launch(dispatcher) {
-                    cts.forEach { (ct, ids) ->
-                        launch(dispatcher) {
-                            val token = ws.state.get() ?: return@launch
-
-                            val conversations = getChannels(token, ct).associateBy { it.id }
-
-                            val idsToCreate = conversations.keys - ids.keys
-
-                            val idsToDelete = ids.keys - conversations.keys
-
-                            idsToDelete.forEach { ids.remove(it) }
-
-                            if (idsToCreate.isEmpty()) return@launch
-
-                            ids.putAll(
-                                parseChannels(
-                                    idsToCreate.mapNotNull { conversations[it] },
-                                    ct,
-                                    ws
-                                ).associateBy { it.id }
-                            )
-                        }
-                    }
+                    updateWorkspace(ws)
                 }
             }
         }
     }
+
+    private fun updateWorkspace(workspace: Workspace) {
+        runBlocking {
+            cache
+                .computeIfAbsent(workspace) { createEmptyTypeMap() }
+                .forEach { (ct, ids) ->
+                    launch(dispatcher) {
+                        val token = workspace.state.get() ?: return@launch
+
+                        val conversations = getChannels(token, ct).associateBy { it.id }
+
+                        val idsToCreate = conversations.keys - ids.keys
+
+                        val idsToDelete = ids.keys - conversations.keys
+
+                        idsToDelete.forEach { ids.remove(it) }
+
+                        if (idsToCreate.isEmpty()) return@launch
+
+                        ids.putAll(
+                            parseChannels(
+                                idsToCreate.mapNotNull { conversations[it] },
+                                ct,
+                                workspace
+                            ).associateBy { it.id }
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun createEmptyTypeMap(): Map<ConversationType, MutableMap<String, SlackConversation>> =
+        listOf(PRIVATE_CHANNEL, PUBLIC_CHANNEL, MPIM, IM).associateWith { mutableMapOf() }
 
     private fun getChannels(token: String, type: ConversationType) = slackClient.getChannels(token, listOf(type))
 

@@ -13,7 +13,9 @@ class InitializationServiceAutomatic : InitializationService() {
         SecretImporter.checkAndImport()
     }
 
-    fun reloadCaches() {
+    override fun reloadCaches() {
         SecretImporter.checkAndImport(force = true)
+
+        super.reloadCaches()
     }
 }

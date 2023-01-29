@@ -20,9 +20,10 @@ class WorkspaceService {
 
         // TODO To be removed in a couple of updates
         if (workspaces.isEmpty() && SlackUserTokenBasicSecretState.exists()) {
-            val errorMessage = addToken(SlackUserTokenBasicSecretState.get()!!)
+            addToken(SlackUserTokenBasicSecretState.get()!!)
 
-            //TODO add original token remove
+            //TODO uncomment before release
+            //SlackUserTokenBasicSecretState.remove()
 
             persist()
         }

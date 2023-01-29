@@ -2,12 +2,9 @@ package me.bors.slack.share.ui.share.dialog
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.PopupMenuListenerAdapter
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.components.fields.ExtendableTextComponent
-import com.intellij.ui.components.fields.ExtendableTextField
 import com.intellij.util.ui.UIUtil
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.entity.MessageStyle
@@ -19,9 +16,17 @@ import java.awt.ComponentOrientation
 import java.awt.Dimension
 import java.awt.FlowLayout
 import java.lang.Boolean.TRUE
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.Box
+import javax.swing.BoxLayout
+import javax.swing.DefaultComboBoxModel
+import javax.swing.JComponent
+import javax.swing.JEditorPane
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JTextPane
+import javax.swing.ScrollPaneConstants
 import javax.swing.event.PopupMenuEvent
-import javax.swing.plaf.basic.BasicComboBoxEditor
 import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -172,7 +177,7 @@ class ShareDialogWrapper(
                 run {
                     val workspace = workspacesComboBox.selectedItem as Workspace
 
-                    updateConversations(workspace)
+                    refreshConversationValues(conversationComboBox, workspace)
                 }
             }
         })
@@ -191,35 +196,10 @@ class ShareDialogWrapper(
         return workspacesPanel
     }
 
-    private fun updateConversations(workspace: Workspace) {
-        setComboBox(conversationComboBox, true)
-
-        refreshConversationValues(conversationComboBox, workspace)
-
-        setComboBox(conversationComboBox, false)
-    }
-
     private fun refreshConversationValues(comboBox: ComboBox<SlackConversation>, workspace: Workspace) {
         val conversations = conversationProcessing.invoke(workspace)
 
         comboBox.model = DefaultComboBoxModel(conversations.toTypedArray())
-    }
-
-    private fun setComboBox(comboBox: ComboBox<*>, loading: Boolean) {
-        if (loading) {
-            val loadingExtension = ExtendableTextComponent.Extension.create(AnimatedIcon.Default(), null, null)
-
-            comboBox.editor = object : BasicComboBoxEditor() {
-                override fun createEditorComponent(): JTextField {
-                    val ecbEditor = ExtendableTextField()
-                    ecbEditor.addExtension(loadingExtension)
-                    ecbEditor.border = null
-                    return ecbEditor
-                }
-            }
-        } else {
-            comboBox.editor = BasicComboBoxEditor()
-        }
     }
 
     private fun createConversationsPanel(): JPanel {

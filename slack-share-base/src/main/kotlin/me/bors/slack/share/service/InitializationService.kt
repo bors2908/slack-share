@@ -10,7 +10,9 @@ import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
 abstract class InitializationService {
     val messageProcessor: MessageProcessor = MessageProcessor()
 
-    val workspaceService: WorkspaceService = service()
+    private val workspaceService: WorkspaceService = service()
+
+    private val conversationsService: ConversationsService = service()
 
     abstract fun getTokenSettingsConfigurable(): TokenSettingsConfigurable
 
@@ -20,18 +22,24 @@ abstract class InitializationService {
         if (workspaceService.getAvailableWorkspaces().isEmpty()) {
             showSettings("No token found")
         }
+
+        conversationsService.refresh()
     }
 
     private fun showSettings(error: String) {
         if (TokenErrorDialogWrapper(error, true).showAndGet()) {
-            val initService: InitializationService = service()
-
             ShowSettingsUtil.getInstance()
-                .editConfigurable(ProjectManager.getInstance().defaultProject, initService.getTokenSettingsConfigurable())
+                .editConfigurable(ProjectManager.getInstance().defaultProject, getTokenSettingsConfigurable())
         }
     }
 
     open fun beforeInit() {
         // No-op.
+    }
+
+    open fun reloadCaches() {
+        workspaceService.refresh()
+
+        conversationsService.forceRefresh()
     }
 }

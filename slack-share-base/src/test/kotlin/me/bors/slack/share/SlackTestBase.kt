@@ -30,7 +30,7 @@ abstract class SlackTestBase : BasePlatformTestCase() {
 
         val inputStream = SlackTestBase::class.java
             .classLoader
-            .getResourceAsStream("test-tokens.properties")
+            .getResourceAsStream("secrets/test-tokens.properties")
 
         configuration.load(inputStream)
 
