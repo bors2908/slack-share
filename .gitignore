@@ -15,3 +15,5 @@ lib/out
 secrets/**
 
 pluginIcon.svg
+
+*/test-tokens.properties

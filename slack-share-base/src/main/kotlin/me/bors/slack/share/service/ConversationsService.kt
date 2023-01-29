@@ -24,6 +24,8 @@ class ConversationsService {
 
     private val cache: MutableMap<Workspace, Map<ConversationType, MutableMap<String, SlackConversation>>> = mutableMapOf()
 
+    private val dispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
+
     init {
         updateCache(true)
     }
@@ -37,6 +39,10 @@ class ConversationsService {
 
     fun forceRefresh() {
         updateCache(true)
+    }
+
+    fun refresh() {
+        updateCache()
     }
 
     private fun updateCache(clean: Boolean = false) {
@@ -54,26 +60,33 @@ class ConversationsService {
 
         workspaceToCreate.forEach { cache[it] = listOf(PRIVATE_CHANNEL, PUBLIC_CHANNEL, MPIM, IM).associateWith { mutableMapOf() } }
 
-        //TODO Add coroutines
-        cache.forEach { (ws, cts) ->
-            for ((ct, ids) in cts) {
-                val token = ws.state.get() ?: continue
+        runBlocking {
+            cache.forEach { (ws, cts) ->
+                launch(dispatcher) {
+                    cts.forEach { (ct, ids) ->
+                        launch(dispatcher) {
+                            val token = ws.state.get() ?: return@launch
 
-                val conversations = getChannels(token, ct).associateBy { it.id }
+                            val conversations = getChannels(token, ct).associateBy { it.id }
 
-                val idsToCreate = conversations.keys - ids.keys
+                            val idsToCreate = conversations.keys - ids.keys
 
-                val idsToDelete = ids.keys - conversations.keys
+                            val idsToDelete = ids.keys - conversations.keys
 
-                idsToDelete.forEach { ids.remove(it) }
+                            idsToDelete.forEach { ids.remove(it) }
 
-                ids.putAll(
-                    parseChannels(
-                        idsToCreate.mapNotNull { conversations[it] },
-                        ct,
-                        ws
-                    ).associateBy { it.id }
-                )
+                            if (idsToCreate.isEmpty()) return@launch
+
+                            ids.putAll(
+                                parseChannels(
+                                    idsToCreate.mapNotNull { conversations[it] },
+                                    ct,
+                                    ws
+                                ).associateBy { it.id }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -86,33 +99,45 @@ class ConversationsService {
         workspace: Workspace
     ): List<SlackConversation> {
         return when (type) {
-            PRIVATE_CHANNEL, PUBLIC_CHANNEL -> parseGroupChannels(conversations)
-            IM -> parseIndividualChannels(conversations, workspace)
-            MPIM -> parseMultiChannels(conversations, workspace)
+            PRIVATE_CHANNEL, PUBLIC_CHANNEL -> parseChannelsWithCoroutines(conversations) {
+                SlackConversation(
+                    it.id,
+                    it.nameNormalized,
+                    it.priority ?: 0.0
+                )
+            }
+
+            IM -> parseChannelsWithCoroutines(conversations) {
+                SlackConversation(
+                    it.id,
+                    getUserName(workspace, it.user),
+                    it.priority ?: 0.0
+                )
+            }
+
+            MPIM -> parseChannelsWithCoroutines(conversations) {
+                SlackConversation(
+                    it.id,
+                    getMultiUserGroupName(workspace, it.id),
+                    it.priority ?: 0.0
+                )
+            }
+
             else -> emptyList()
         }
     }
 
-    private fun parseGroupChannels(conversations: List<Conversation>): List<SlackConversation> =
-        conversations.map { SlackConversation(it.id, it.nameNormalized, it.priority ?: 0.0) }
-
-    private fun parseIndividualChannels(conversations: List<Conversation>, workspace: Workspace): List<SlackConversation> =
-        conversations.map { SlackConversation(it.id, getUserName(workspace, it.user), it.priority ?: 0.0) }
-
-    private fun parseMultiChannels(conversations: List<Conversation>, workspace: Workspace): List<SlackConversation> {
+    private fun parseChannelsWithCoroutines(
+        conversations: List<Conversation>,
+        parser: (Conversation) -> SlackConversation
+    ): List<SlackConversation> {
         val result = LinkedBlockingQueue<SlackConversation>()
-
-        val dispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
 
         runBlocking {
             conversations.forEach {
                 launch(dispatcher) {
                     result.add(
-                        SlackConversation(
-                            it.id,
-                            getMultiUserGroupName(workspace, it.id),
-                            it.priority ?: 0.0
-                        )
+                        parser.invoke(it)
                     )
                 }
             }

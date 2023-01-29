@@ -1,16 +1,12 @@
 package me.bors.slack.share.service
 
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.openapi.options.ShowSettingsUtil
-import com.intellij.openapi.project.ProjectManager
 import me.bors.slack.share.client.SlackWorkspaceClient
 import me.bors.slack.share.entity.Workspace
 import me.bors.slack.share.persistence.PersistentState
 import me.bors.slack.share.persistence.SlackUserTokenBasicSecretState
 import me.bors.slack.share.persistence.WorkspaceSecretState
 import me.bors.slack.share.persistence.WorkspaceSecretState.Companion.MAX_ACCOUNTS
-import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
 import java.util.*
 
 @Service
@@ -38,10 +34,6 @@ class WorkspaceService {
             .filter { !existingIds.contains(it) }
             .map { WorkspaceSecretState(it) }
             .forEach { it.remove() }
-
-        if (workspaces.isEmpty()) {
-            showSettings("No token found")
-        }
     }
 
     fun getAllWorkspaces(): List<Workspace> {
@@ -110,16 +102,6 @@ class WorkspaceService {
         workspaces.remove(workspace)
     }
 
-    fun getTokenMap(): Map<Int, String> {
-        return workspaces.mapNotNull { workspace ->
-            WorkspaceSecretState(workspace.id).get()?.let {
-                workspace.id to it
-            }
-        }.associate {
-            it.first to it.second
-        }
-    }
-
     fun persist() {
         PersistentState.instance.myState.idOrder = workspaces.map { it.id }
 
@@ -138,22 +120,11 @@ class WorkspaceService {
                 if (result.error == null) {
                     Workspace(it, result.slackId, result.name)
                 } else {
-                    TokenErrorDialogWrapper(result.error, false).showAndGet()
-
-                    Workspace(it, "", "❌ Invalid token", false)
+                    Workspace(it, "", "❌ Invalid token: ${result.error}", false)
                 }
 
             }
             .sortedBy { it.name }
             .toMutableList()
-    }
-
-    private fun showSettings(error: String) {
-        if (TokenErrorDialogWrapper(error, true).showAndGet()) {
-            val initService: InitializationService = service()
-
-            ShowSettingsUtil.getInstance()
-                .editConfigurable(ProjectManager.getInstance().defaultProject, initService.getTokenSettingsConfigurable())
-        }
     }
 }
