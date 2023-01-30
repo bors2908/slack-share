@@ -112,10 +112,12 @@ class WorkspaceService {
 
     private fun getExistingWorkspaces(): MutableList<Workspace> {
         return PersistentState.instance.myState.idOrder
-            .map {
+            .mapNotNull {
                 val state = WorkspaceSecretState(it)
 
-                val result = client.validate(state.get()!!)
+                val token = state.get() ?: return@mapNotNull null
+
+                val result = client.validate(token)
 
                 if (result.error == null) {
                     Workspace(it, result.slackId, result.name)
