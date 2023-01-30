@@ -16,14 +16,20 @@ class ShareSnippetAction : AnAction() {
 
         val selectedText = getSelectedText(e) ?: ""
 
-        val workspaceProcessor: WorkspaceService = service()
+        val workspaceService: WorkspaceService = service()
 
-        workspaceProcessor.refresh()
+        workspaceService.refresh()
+
+        if (workspaceService.getAvailableWorkspaces().isEmpty()) {
+            initService.showSettings("No workspaces found", "Empty Workspaces")
+
+            return
+        }
 
         val conversationsService: ConversationsService = service()
 
         val dialogWrapper = ShareDialogWrapper(
-            workspaces = workspaceProcessor.getAvailableWorkspaces(),
+            workspaces = workspaceService.getAvailableWorkspaces(),
             text = selectedText,
             snippetFileExtension = getSnippetFileExtension(e),
             conversationProcessing = { conversationsService.getConversations(it) }

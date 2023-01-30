@@ -5,7 +5,7 @@ import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.ProjectManager
 import me.bors.slack.share.processor.MessageProcessor
 import me.bors.slack.share.ui.settings.TokenSettingsConfigurable
-import me.bors.slack.share.ui.share.dialog.TokenErrorDialogWrapper
+import me.bors.slack.share.ui.share.dialog.OpenSettingsErrorDialogWrapper
 
 abstract class InitializationService {
     val messageProcessor: MessageProcessor = MessageProcessor()
@@ -19,15 +19,11 @@ abstract class InitializationService {
     init {
         beforeInit()
 
-        if (workspaceService.getAvailableWorkspaces().isEmpty()) {
-            showSettings("No token found")
-        }
-
         conversationsService.refresh()
     }
 
-    private fun showSettings(error: String) {
-        if (TokenErrorDialogWrapper(error, true).showAndGet()) {
+    fun showSettings(error: String, title: String) {
+        if (OpenSettingsErrorDialogWrapper(error, title).showAndGet()) {
             ShowSettingsUtil.getInstance()
                 .editConfigurable(ProjectManager.getInstance().defaultProject, getTokenSettingsConfigurable())
         }

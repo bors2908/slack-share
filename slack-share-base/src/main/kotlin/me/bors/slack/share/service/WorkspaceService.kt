@@ -22,8 +22,7 @@ class WorkspaceService {
         if (workspaces.isEmpty() && SlackUserTokenBasicSecretState.exists()) {
             addToken(SlackUserTokenBasicSecretState.get()!!)
 
-            //TODO uncomment before release
-            //SlackUserTokenBasicSecretState.remove()
+            SlackUserTokenBasicSecretState.remove()
 
             persist()
         }

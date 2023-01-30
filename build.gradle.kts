@@ -20,7 +20,6 @@ val sinceIdeaVersion by extra { "203" }
 val untilIdeaVersion by extra { "231.*" }
 val userDescription by extra {
     """
-        <![CDATA[
         Plugin to share code snippets and files in Slack.
         Select any desired text snippet in any editor or any file in file editor, 
         right-click and share it to Slack.

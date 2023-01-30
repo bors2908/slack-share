@@ -37,7 +37,7 @@ abstract class TokenSettingsConfigurable : Configurable {
 
         val errorMessage = workspaceService.addToken(token)
 
-        errorMessage?.let { TokenErrorDialogWrapper(it, false).showAndGet() }
+        errorMessage?.let { TokenErrorDialogWrapper(it).showAndGet() }
 
         refreshWorkspacesList()
     }

@@ -16,9 +16,15 @@ class ShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val initService: InitializationService = service()
 
-        val workspaceProcessor: WorkspaceService = service()
+        val workspaceService: WorkspaceService = service()
 
-        workspaceProcessor.refresh()
+        workspaceService.refresh()
+
+        if (workspaceService.getAvailableWorkspaces().isEmpty()) {
+            initService.showSettings("No workspaces found", "Empty Workspaces")
+
+            return
+        }
 
         val conversationsService: ConversationsService = service()
 
@@ -31,7 +37,7 @@ class ShareFileAction : AnAction() {
         val filenames = validFiles.map { it.name }
 
         val dialogWrapper = ShareDialogWrapper(
-            workspaces = workspaceProcessor.getAvailableWorkspaces(),
+            workspaces = workspaceService.getAvailableWorkspaces(),
             filenames = filenames,
             fileExclusions = exclusions,
             conversationProcessing = { conversationsService.getConversations(it) }
