@@ -12,12 +12,12 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.9.1"
+version = "0.9.10"
 
 val javaVersion = JavaVersion.VERSION_11.toString()
 val intellijVersion by extra { "2022.2.4" }
 val sinceIdeaVersion by extra { "203" }
-val untilIdeaVersion by extra { "223.*" }
+val untilIdeaVersion by extra { "231.*" }
 val userDescription by extra {
     """
         <![CDATA[
@@ -46,7 +46,7 @@ val changelog by extra {
                 Dependency updates. IDEA 2022.2.2 Compatibility.<br>
                 0.9.8 - Add logo.<br>
                 0.9.9 - App creation link in manual auth. Code highlighting. Dependencies update. Fixes.<br>
-                0.9.9.1 - Workspace selection.<br>
+                0.9.10 - Workspace selection.<br>
                 <br>
                 """
 }
