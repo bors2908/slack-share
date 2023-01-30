@@ -125,7 +125,6 @@ class WorkspaceService {
                 }
 
             }
-            .sortedBy { it.name }
             .toMutableList()
     }
 }

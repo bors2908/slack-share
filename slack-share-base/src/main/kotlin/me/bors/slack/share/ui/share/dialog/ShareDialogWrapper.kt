@@ -33,7 +33,6 @@ import javax.swing.text.StyleConstants
 
 private const val UNKNOWN = "Unknown"
 
-//TODO Conversation performance loading
 @Suppress("TooManyFunctions")
 class ShareDialogWrapper(
     private val workspaces: List<Workspace>,
