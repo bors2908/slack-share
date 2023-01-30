@@ -6,7 +6,9 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.VirtualFile
 import me.bors.slack.share.entity.FileExclusion
+import me.bors.slack.share.service.ConversationsService
 import me.bors.slack.share.service.InitializationService
+import me.bors.slack.share.service.WorkspaceService
 import me.bors.slack.share.ui.share.dialog.ShareDialogWrapper
 import java.io.File
 
@@ -14,9 +16,17 @@ class ShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val initService: InitializationService = service()
 
-        if (!initService.initializeIfNot()) return
+        val workspaceService: WorkspaceService = service()
 
-        val conversationsProcessor = initService.getConversationsProcessor()
+        workspaceService.refresh()
+
+        if (workspaceService.getAvailableWorkspaces().isEmpty()) {
+            initService.showSettings("No workspaces found", "Empty Workspaces")
+
+            return
+        }
+
+        val conversationsService: ConversationsService = service()
 
         val files = (getVirtualFiles(e) ?: emptyArray()).asList()
             .map { it.toNioPath().toFile() }
@@ -26,21 +36,21 @@ class ShareFileAction : AnAction() {
 
         val filenames = validFiles.map { it.name }
 
-        val conversations = conversationsProcessor.getConversations()
-
         val dialogWrapper = ShareDialogWrapper(
-            conversations = conversations,
+            workspaces = workspaceService.getAvailableWorkspaces(),
             filenames = filenames,
-            fileExclusions = exclusions
+            fileExclusions = exclusions,
+            conversationProcessing = { conversationsService.getConversations(it) }
         )
 
         val exitCode = dialogWrapper.showAndGet()
 
-        val messageProcessor = initService.getMessageProcessor()
+        val messageProcessor = initService.messageProcessor
 
         if (exitCode) {
             messageProcessor.sendFile(
-                id = dialogWrapper.getSelectedItem().id,
+                workspace = dialogWrapper.getSelectedWorkspace(),
+                userId = dialogWrapper.getSelectedConversation().id,
                 files = validFiles,
                 text = dialogWrapper.getEditedText()
             )

@@ -7,9 +7,9 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class TokenErrorDialogWrapper(private val error: String) : DialogWrapper(true) {
+class ErrorDialogWrapper(private val error: String) : DialogWrapper(true) {
     init {
-        title = "Invalid Token"
+        title = "Error"
 
         init()
     }
@@ -17,7 +17,7 @@ class TokenErrorDialogWrapper(private val error: String) : DialogWrapper(true) {
     override fun createCenterPanel(): JComponent {
         val dialogPanel = JPanel(BorderLayout())
 
-        val label = JLabel("User token error: $error")
+        val label = JLabel(error)
 
         label.preferredSize = Dimension(100, 30)
 

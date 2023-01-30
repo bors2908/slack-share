@@ -22,6 +22,7 @@
         <applicationService
                 serviceInterface="me.bors.slack.share.auth.Authenticator"
                 serviceImplementation="me.bors.slack.share.auth.BasicAuthenticator"/>
+        <postStartupActivity implementation="me.bors.slack.share.listener.PostStartListener"/>
     </extensions>
     <actions>
         <action id="me.bors.slack.share.ui.share.actions.ShareSnippetAction"

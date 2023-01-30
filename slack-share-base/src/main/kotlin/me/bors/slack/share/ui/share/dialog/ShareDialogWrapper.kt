@@ -2,12 +2,15 @@ package me.bors.slack.share.ui.share.dialog
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.PopupMenuListenerAdapter
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.UIUtil
-import me.bors.slack.share.entity.Conversation
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.entity.MessageStyle
+import me.bors.slack.share.entity.SlackConversation
+import me.bors.slack.share.entity.Workspace
+import java.awt.BorderLayout
 import java.awt.Component.LEFT_ALIGNMENT
 import java.awt.ComponentOrientation
 import java.awt.Dimension
@@ -23,6 +26,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextPane
 import javax.swing.ScrollPaneConstants
+import javax.swing.event.PopupMenuEvent
 import javax.swing.text.DefaultStyledDocument
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -31,13 +35,15 @@ private const val UNKNOWN = "Unknown"
 
 @Suppress("TooManyFunctions")
 class ShareDialogWrapper(
-    private val conversations: List<Conversation>,
+    private val workspaces: List<Workspace>,
     private val text: String = "",
     private val filenames: List<String> = emptyList(),
     private val fileExclusions: List<FileExclusion> = emptyList(),
-    private val snippetFileExtension: String = ""
+    private val snippetFileExtension: String = "",
+    private val conversationProcessing: (Workspace) -> List<SlackConversation>
 ) : DialogWrapper(true) {
-    private lateinit var conversationComboBox: ComboBox<Conversation>
+    private lateinit var workspacesComboBox: ComboBox<Workspace>
+    private lateinit var conversationComboBox: ComboBox<SlackConversation>
     private lateinit var editorPane: JEditorPane
     private lateinit var messageFormatComboBox: ComboBox<MessageStyle>
     private lateinit var extensionTextField: JBTextField
@@ -56,8 +62,12 @@ class ShareDialogWrapper(
         return extensionTextField.text.replace(".", "").replace(UNKNOWN, "")
     }
 
-    fun getSelectedItem(): Conversation {
-        return conversationComboBox.selectedItem as Conversation
+    fun getSelectedWorkspace(): Workspace {
+        return workspacesComboBox.selectedItem as Workspace
+    }
+
+    fun getSelectedConversation(): SlackConversation {
+        return conversationComboBox.selectedItem as SlackConversation
     }
 
     fun getMessageFormatType(): MessageStyle {
@@ -73,10 +83,15 @@ class ShareDialogWrapper(
 
         val scrollPane = createScrollPane(editorPane)
 
+        workspacesComboBox = ComboBox(DefaultComboBoxModel(workspaces.toTypedArray()))
+        conversationComboBox = ComboBox()
+
+        dialogPanel.add(createWorkspacesPanel())
+        dialogPanel.add(createVerticalFiller(5))
         dialogPanel.add(createConversationsPanel())
-        dialogPanel.add(createVerticalFiller())
+        dialogPanel.add(createVerticalFiller(20))
         dialogPanel.add(scrollPane)
-        dialogPanel.add(createVerticalFiller())
+        dialogPanel.add(createVerticalFiller(20))
 
         val attachments = getAttachments()
 
@@ -149,29 +164,67 @@ class ShareDialogWrapper(
         return attachments
     }
 
+    private fun createWorkspacesPanel(): JPanel {
+        workspacesComboBox.maximumSize = Dimension(1000, 30)
+        workspacesComboBox.preferredSize = Dimension(300, 30)
+        workspacesComboBox.minimumSize = Dimension(100, 30)
+        workspacesComboBox.toolTipText = "Workplace to select conversation from."
+        workspacesComboBox.addPopupMenuListener(object : PopupMenuListenerAdapter() {
+            override fun popupMenuWillBecomeInvisible(e: PopupMenuEvent) {
+                super.popupMenuWillBecomeInvisible(e)
+
+                run {
+                    val workspace = workspacesComboBox.selectedItem as Workspace
+
+                    refreshConversationValues(conversationComboBox, workspace)
+                }
+            }
+        })
+
+        val workspacesPanel = JPanel(BorderLayout())
+        workspacesPanel.alignmentX = LEFT_ALIGNMENT
+        workspacesPanel.preferredSize = Dimension(500, 30)
+        workspacesPanel.maximumSize = Dimension(1000, 30)
+        workspacesPanel.minimumSize = Dimension(400, 30)
+
+        val selectLabel = JLabel("Select Workspace:")
+
+        workspacesPanel.add(selectLabel, BorderLayout.WEST)
+        workspacesPanel.add(workspacesComboBox, BorderLayout.CENTER)
+
+        return workspacesPanel
+    }
+
+    private fun refreshConversationValues(comboBox: ComboBox<SlackConversation>, workspace: Workspace) {
+        val conversations = conversationProcessing.invoke(workspace)
+
+        comboBox.model = DefaultComboBoxModel(conversations.toTypedArray())
+    }
+
     private fun createConversationsPanel(): JPanel {
-        conversationComboBox = ComboBox(DefaultComboBoxModel(conversations.toTypedArray()))
         conversationComboBox.maximumSize = Dimension(1000, 30)
         conversationComboBox.preferredSize = Dimension(300, 30)
         conversationComboBox.minimumSize = Dimension(100, 30)
         conversationComboBox.toolTipText = "Message destination"
 
-        val conversationsPanel = JPanel(FlowLayout(FlowLayout.LEFT))
+        val conversationsPanel = JPanel(BorderLayout())
         conversationsPanel.alignmentX = LEFT_ALIGNMENT
-        conversationsPanel.componentOrientation = ComponentOrientation.LEFT_TO_RIGHT
-        conversationsPanel.preferredSize = Dimension(500, 50)
-        conversationsPanel.maximumSize = Dimension(1000, 50)
-        conversationsPanel.minimumSize = Dimension(400, 50)
+        conversationsPanel.preferredSize = Dimension(500, 30)
+        conversationsPanel.maximumSize = Dimension(1000, 30)
+        conversationsPanel.minimumSize = Dimension(400, 30)
 
         val selectLabel = JLabel("Select Conversation:")
 
-        conversationsPanel.add(selectLabel)
-        conversationsPanel.add(conversationComboBox)
+        conversationsPanel.add(selectLabel, BorderLayout.WEST)
+        conversationsPanel.add(conversationComboBox, BorderLayout.CENTER)
+
+        refreshConversationValues(conversationComboBox, workspaces.first())
+
         return conversationsPanel
     }
 
-    private fun createVerticalFiller(): Box.Filler {
-        val filler = Box.Filler(Dimension(0, 0), Dimension(600, 20), Dimension(1000, 40))
+    private fun createVerticalFiller(height: Int): Box.Filler {
+        val filler = Box.Filler(Dimension(0, 0), Dimension(600, height), Dimension(1000, height * 2))
 
         filler.alignmentX = LEFT_ALIGNMENT
 

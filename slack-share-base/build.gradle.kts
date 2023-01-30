@@ -28,9 +28,8 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json.jvm)
 
-    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.vintage)
     testImplementation(libs.junit.platform.launcher)
-    testImplementation(libs.slf4j.api)
 }
 
 tasks {

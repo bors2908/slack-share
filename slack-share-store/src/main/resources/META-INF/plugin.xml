@@ -12,16 +12,17 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable parentId="tools" instance="me.bors.slack.share.ui.settings.TokenSettingsConfigurableAutomatic"
+        <applicationConfigurable parentId="tools"
+                                 instance="me.bors.slack.share.ui.settings.TokenSettingsConfigurableAutomatic"
                                  id="me.bors.slack.share.ui.settings.TokenSettingsConfigurableAutomatic"
                                  displayName="Slack Share"/>
-
         <applicationService
                 serviceInterface="me.bors.slack.share.service.InitializationService"
                 serviceImplementation="me.bors.slack.share.service.InitializationServiceAutomatic"/>
         <applicationService
                 serviceInterface="me.bors.slack.share.auth.Authenticator"
                 serviceImplementation="me.bors.slack.share.auth.AutomaticAuthenticator"/>
+        <postStartupActivity implementation="me.bors.slack.share.listener.PostStartListener"/>
     </extensions>
     <actions>
         <action id="me.bors.slack.share.ui.share.actions.ShareSnippetAction"

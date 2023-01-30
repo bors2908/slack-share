@@ -5,14 +5,32 @@ import com.slack.api.methods.request.files.FilesUploadRequest
 import com.slack.api.methods.request.files.FilesUploadRequest.FilesUploadRequestBuilder
 import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
-import me.bors.slack.share.client.SlackClient
+import me.bors.slack.share.client.SlackMessageClient
 import me.bors.slack.share.entity.MessageStyle
+import me.bors.slack.share.entity.Workspace
+import me.bors.slack.share.ui.share.dialog.ErrorDialogWrapper
 import java.io.File
 
-class MessageProcessor(val client: SlackClient) {
-    fun sendMessage(id: String, text: String, formatType: MessageStyle, fileExtension: String = "") {
+class MessageProcessor {
+    private val client = SlackMessageClient()
+
+    fun sendMessage(
+        workspace: Workspace,
+        userId: String,
+        text: String,
+        formatType: MessageStyle,
+        fileExtension: String = ""
+    ) {
         val builder = ChatPostMessageRequest.builder()
-            .channel(id)
+            .channel(userId)
+
+        val token = workspace.state.get()
+
+        if (token == null) {
+            ErrorDialogWrapper("Token is missing.").showAndGet()
+
+            return
+        }
 
         when (formatType) {
             MessageStyle.NONE -> {
@@ -39,17 +57,30 @@ class MessageProcessor(val client: SlackClient) {
             }
 
             MessageStyle.CODE_SNIPPET -> {
-                sendSingleFile(id, text.toByteArray(), "snippet.$fileExtension", FilesUploadRequest.builder())
+                sendSingleFile(token, userId, text.toByteArray(), "snippet.$fileExtension", FilesUploadRequest.builder())
 
                 return
             }
         }
 
-        client.sendMessage(builder)
+        client.sendMessage(token, builder)
     }
 
-    fun sendFile(id: String, files: List<File>, text: String) {
+    fun sendFile(
+        workspace: Workspace,
+        userId: String,
+        files: List<File>,
+        text: String
+    ) {
         var tagged = false
+
+        val token = workspace.state.get()
+
+        if (token == null) {
+            ErrorDialogWrapper("Token is missing.").showAndGet()
+
+            return
+        }
 
         for (file: File in files) {
             val builder = FilesUploadRequest.builder()
@@ -60,22 +91,23 @@ class MessageProcessor(val client: SlackClient) {
                 tagged = true
             }
 
-            sendSingleFile(id, file.readBytes(), file.name, builder)
+            sendSingleFile(token, userId, file.readBytes(), file.name, builder)
         }
     }
 
     private fun sendSingleFile(
-        id: String,
+        token: String,
+        userId: String,
         fileBytes: ByteArray,
         fileName: String,
         builder: FilesUploadRequestBuilder
     ) {
         builder
-            .channels(listOf(id))
+            .channels(listOf(userId))
             .fileData(fileBytes)
             .filename(fileName)
             .filetype("auto")
 
-        client.sendFile(builder)
+        client.sendFile(token, builder)
     }
 }
