@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.Nls.Capitalization.Title
 import javax.swing.JComponent
 
-class TokenSettingsConfigurable : Configurable {
+class WorkspaceSettingsConfigurable : Configurable {
     private val settingsService: SettingsService = service()
 
     @Nls(capitalization = Title)

@@ -49,7 +49,7 @@ open class ExportSecretTask : DefaultTask() {
 
         val message = { "Secret was not properly obfuscated." }
 
-        assert(obfuscatedMap.entries.all { !it.value.contains(originalProps[it.key]!!) } , message)
+        assert(obfuscatedMap.entries.all { !it.value.contains(originalProps[it.key]!!) }, message)
         assert(obfuscatedMap.values.all { it.contains("decrypt:") }, message)
 
         val bytes = Base64.getEncoder()

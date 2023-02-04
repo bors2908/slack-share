@@ -11,8 +11,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable parentId="tools"
-            instance="me.bors.slack.share.ui.settings.TokenSettingsConfigurable"
-            id="me.bors.slack.share.ui.settings.TokenSettingsConfigurable"
+            instance="me.bors.slack.share.ui.settings.WorkspaceSettingsConfigurable"
+            id="me.bors.slack.share.ui.settings.WorkspaceSettingsConfigurable"
             displayName="Slack Share"/>
         <applicationService
             serviceInterface="me.bors.slack.share.service.InitializationService"

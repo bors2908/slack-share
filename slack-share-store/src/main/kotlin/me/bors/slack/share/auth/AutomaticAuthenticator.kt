@@ -16,7 +16,7 @@ import me.bors.slack.share.auth.server.getFreePort
 import me.bors.slack.share.error.AuthenticationException
 import me.bors.slack.share.persistence.ShareClientId
 import me.bors.slack.share.persistence.SlackShareBasicSecret
-import me.bors.slack.share.ui.dialog.AddTokenAutomaticDialogWrapper
+import me.bors.slack.share.ui.dialog.AutomaticAuthDialogWrapper
 import me.bors.slack.share.ui.dialog.AuthenticationDialogWrapper
 import okhttp3.HttpUrl
 import java.io.OutputStream
@@ -49,7 +49,7 @@ object AutomaticAuthenticator : Authenticator, AutoCloseable {
     private val resultExchanger = Exchanger<AuthResult>()
 
     fun authAutomatically(): String? {
-        val wrapper = AddTokenAutomaticDialogWrapper()
+        val wrapper = AutomaticAuthDialogWrapper()
 
         if (!wrapper.showAndGet()) {
             return null

@@ -10,7 +10,7 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class AddTokenManualDialogWrapper(private val createApp: ActionListener) : DialogWrapper(true) {
+class ManualAuthDialogWrapper(private val createApp: ActionListener) : DialogWrapper(true) {
     private lateinit var field: JBTextField
 
     init {

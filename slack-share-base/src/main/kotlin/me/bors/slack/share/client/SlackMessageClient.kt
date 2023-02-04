@@ -1,6 +1,5 @@
 package me.bors.slack.share.client
 
-import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.Slack
 import com.slack.api.methods.request.chat.ChatPostMessageRequest.ChatPostMessageRequestBuilder
 import com.slack.api.methods.request.files.FilesUploadRequest.FilesUploadRequestBuilder

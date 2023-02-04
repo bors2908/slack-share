@@ -4,13 +4,13 @@ import com.intellij.ide.BrowserUtil
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import me.bors.slack.share.ui.dialog.AddTokenManualDialogWrapper
 import me.bors.slack.share.ui.dialog.CreateSlackAppDialogWrapper
+import me.bors.slack.share.ui.dialog.ManualAuthDialogWrapper
 import okhttp3.HttpUrl
 
 interface Authenticator {
     fun authManually(): String? {
-        val wrapper = AddTokenManualDialogWrapper {
+        val wrapper = ManualAuthDialogWrapper {
             BrowserUtil.browse(createAppUri)
 
             CreateSlackAppDialogWrapper(createAppUri).showAndGet()
@@ -22,7 +22,7 @@ interface Authenticator {
     }
 
     companion object {
-        val SCOPE_LIST = listOf(
+        val SCOPE_LIST: List<String> = listOf(
             "channels:read",
             "chat:write",
             "files:write",

@@ -11,6 +11,7 @@ abstract class InitializationService {
     private val conversationsService: ConversationsService = service()
 
     init {
+        @Suppress("LeakingThis")
         beforeInit()
 
         conversationsService.refresh()

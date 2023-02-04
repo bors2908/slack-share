@@ -6,7 +6,7 @@ import me.bors.slack.share.service.ConversationsService
 import me.bors.slack.share.service.WorkspaceService
 import java.util.*
 
-
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 abstract class SlackTestBase : BasePlatformTestCase() {
     protected lateinit var conversationsService: ConversationsService
 

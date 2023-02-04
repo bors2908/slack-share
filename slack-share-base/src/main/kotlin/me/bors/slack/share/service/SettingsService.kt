@@ -7,8 +7,8 @@ import me.bors.slack.share.auth.Authenticator
 import me.bors.slack.share.entity.Workspace
 import me.bors.slack.share.ui.dialog.error.OpenSettingsErrorDialogWrapper
 import me.bors.slack.share.ui.dialog.error.TokenErrorDialogWrapper
-import me.bors.slack.share.ui.settings.TokenSettingsComponent
-import me.bors.slack.share.ui.settings.TokenSettingsConfigurable
+import me.bors.slack.share.ui.settings.WorkspaceSettingsComponent
+import me.bors.slack.share.ui.settings.WorkspaceSettingsConfigurable
 import java.awt.event.ActionEvent
 
 abstract class SettingsService {
@@ -20,12 +20,12 @@ abstract class SettingsService {
 
     private var previousState: List<Workspace> = workspaceService.getAllWorkspaces()
 
-    abstract val settingsComponent: TokenSettingsComponent
+    abstract val settingsComponent: WorkspaceSettingsComponent
 
     fun showSettings(error: String, title: String) {
         if (OpenSettingsErrorDialogWrapper(error, title).showAndGet()) {
             ShowSettingsUtil.getInstance()
-                .editConfigurable(ProjectManager.getInstance().defaultProject, TokenSettingsConfigurable())
+                .editConfigurable(ProjectManager.getInstance().defaultProject, WorkspaceSettingsConfigurable())
         }
     }
 

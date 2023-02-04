@@ -1,10 +1,10 @@
 package me.bors.slack.share.service
 
-import me.bors.slack.share.ui.settings.TokenSettingsComponent
-import me.bors.slack.share.ui.settings.TokenSettingsComponentBasic
+import me.bors.slack.share.ui.settings.WorkspaceSettingsComponent
+import me.bors.slack.share.ui.settings.WorkspaceSettingsComponentBasic
 
 class SettingsServiceBasic : SettingsService() {
-    override val settingsComponent: TokenSettingsComponent = TokenSettingsComponentBasic(
+    override val settingsComponent: WorkspaceSettingsComponent = WorkspaceSettingsComponentBasic(
         getManualActionListener(),
         getRemoveTokenListener(),
         getMoveUpListener(),

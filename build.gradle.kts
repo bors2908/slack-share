@@ -14,11 +14,11 @@ plugins {
 group = "me.bors"
 version = "0.9.10"
 
-val javaVersion = JavaVersion.VERSION_11.toString()
-val intellijVersion by extra { "2022.2.4" }
-val sinceIdeaVersion by extra { "203" }
-val untilIdeaVersion by extra { "231.*" }
-val userDescription by extra {
+val javaVersion: String = JavaVersion.VERSION_11.toString()
+val intellijVersion: String by extra { "2022.2.4" }
+val sinceIdeaVersion: String by extra { "203" }
+val untilIdeaVersion: String by extra { "231.*" }
+val userDescription: String by extra {
     """
         Plugin to share code snippets and files in Slack.
         Select any desired text snippet in any editor or any file in file editor, 
@@ -29,7 +29,7 @@ val userDescription by extra {
         or paste Slack token manually in the plugin options. 
     """
 }
-val changelog by extra {
+val changelog: String by extra {
     """         0.1 - Initial version.<br>
                 0.2 - Pagination support, conversation names fix.<br>
                 0.3 - Improved conversations load speed.<br>
@@ -75,4 +75,3 @@ allprojects {
         }
     }
 }
-

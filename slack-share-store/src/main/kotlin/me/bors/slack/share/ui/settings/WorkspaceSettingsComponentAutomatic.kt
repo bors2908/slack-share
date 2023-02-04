@@ -9,7 +9,7 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class TokenSettingsComponentAutomatic(
+class WorkspaceSettingsComponentAutomatic(
     manualAction: ActionListener,
     automaticAction: ActionListener,
     removeAction: ActionListener,
@@ -17,7 +17,7 @@ class TokenSettingsComponentAutomatic(
     moveUpAction: ActionListener,
     moveDownAction: ActionListener,
     workspaces: List<Workspace>
-) : TokenSettingsComponent(manualAction, removeAction, moveUpAction, moveDownAction, workspaces) {
+) : WorkspaceSettingsComponent(manualAction, removeAction, moveUpAction, moveDownAction, workspaces) {
     override lateinit var panel: JPanel
 
     private val automaticSetButton = JButton("Add automatically")

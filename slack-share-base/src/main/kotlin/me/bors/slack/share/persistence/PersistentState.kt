@@ -14,7 +14,7 @@ class PersistentState : PersistentStateComponent<SlackPersistentState> {
             get() = service()
     }
 
-    var myState = SlackPersistentState()
+    var myState: SlackPersistentState = SlackPersistentState()
 
     override fun getState(): SlackPersistentState {
         return myState
@@ -24,5 +24,3 @@ class PersistentState : PersistentStateComponent<SlackPersistentState> {
         myState = stateLoadedFromPersistence
     }
 }
-
-

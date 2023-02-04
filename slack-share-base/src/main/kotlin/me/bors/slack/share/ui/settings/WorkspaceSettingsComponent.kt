@@ -16,7 +16,7 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextArea
 
-abstract class TokenSettingsComponent(
+abstract class WorkspaceSettingsComponent(
     manualAction: ActionListener,
     removeAction: ActionListener,
     upAction: ActionListener,

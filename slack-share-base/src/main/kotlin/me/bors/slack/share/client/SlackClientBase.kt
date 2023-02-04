@@ -46,7 +46,7 @@ open class SlackClientBase {
     }
 
     companion object {
-        const val PAGE_SIZE = 200
+        const val PAGE_SIZE: Int = 200
 
         val logger: Logger = Logger.getInstance(SlackClientBase::class.java)
     }

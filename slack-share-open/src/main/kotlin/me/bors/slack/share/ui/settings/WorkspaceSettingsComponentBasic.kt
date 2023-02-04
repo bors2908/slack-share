@@ -8,13 +8,13 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class TokenSettingsComponentBasic(
+class WorkspaceSettingsComponentBasic(
     manualAction: ActionListener,
     removeAction: ActionListener,
     moveUpAction: ActionListener,
     moveDownAction: ActionListener,
     workspaces: List<Workspace>
-) : TokenSettingsComponent(manualAction, removeAction, moveUpAction, moveDownAction, workspaces) {
+) : WorkspaceSettingsComponent(manualAction, removeAction, moveUpAction, moveDownAction, workspaces) {
     override val preferredFocusedComponent: JComponent
         get() = manualSetButton
 

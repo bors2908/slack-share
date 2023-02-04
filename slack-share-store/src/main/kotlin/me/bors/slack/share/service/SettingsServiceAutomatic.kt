@@ -1,12 +1,12 @@
 package me.bors.slack.share.service
 
 import me.bors.slack.share.auth.AutomaticAuthenticator
-import me.bors.slack.share.ui.settings.TokenSettingsComponent
-import me.bors.slack.share.ui.settings.TokenSettingsComponentAutomatic
+import me.bors.slack.share.ui.settings.WorkspaceSettingsComponent
+import me.bors.slack.share.ui.settings.WorkspaceSettingsComponentAutomatic
 import java.awt.event.ActionEvent
 
 class SettingsServiceAutomatic : SettingsService() {
-    override val settingsComponent: TokenSettingsComponent = TokenSettingsComponentAutomatic(
+    override val settingsComponent: WorkspaceSettingsComponent = WorkspaceSettingsComponentAutomatic(
         getManualActionListener(),
         getAutomaticActionListener(),
         getRemoveTokenListener(),

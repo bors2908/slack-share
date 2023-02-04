@@ -52,4 +52,8 @@ class UriTextSlider : JPanel() {
         urlField.text = uri.toString()
         urlField.caretPosition = 0
     }
+
+    companion object {
+        private const val serialVersionUID: Long = 0L
+    }
 }

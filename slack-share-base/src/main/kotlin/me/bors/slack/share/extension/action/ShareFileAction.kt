@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import me.bors.slack.share.service.ActionService
 
+@Suppress("ComponentNotRegistered")
 class ShareFileAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         service<ActionService>().shareFileAction(e)

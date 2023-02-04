@@ -6,7 +6,7 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextArea
 
-class AddTokenAutomaticDialogWrapper : DialogWrapper(true) {
+class AutomaticAuthDialogWrapper : DialogWrapper(true) {
 
     init {
         title = "Slack Auth"

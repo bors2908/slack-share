@@ -11,6 +11,6 @@ class WorkspaceSecretState(id: Int) : SecretState() {
     }
 
     companion object {
-        const val MAX_ACCOUNTS = 10
+        const val MAX_ACCOUNTS: Int = 10
     }
 }
