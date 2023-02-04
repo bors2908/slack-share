@@ -20,22 +20,25 @@ abstract class TokenSettingsComponent(
     manualAction: ActionListener,
     removeAction: ActionListener,
     upAction: ActionListener,
-    downAction: ActionListener
+    downAction: ActionListener,
+    workspaces: List<Workspace>
 ) {
     abstract var panel: JPanel
     abstract val preferredFocusedComponent: JComponent
 
-    protected val manualSetButton = JButton("Add manually")
-    protected val removeButton = JButton("Remove")
-    protected val moveUpButton = JButton("Move up")
-    protected val moveDownButton = JButton("Move down")
+    protected val manualSetButton: JButton = JButton("Add manually")
+    protected val removeButton: JButton = JButton("Remove")
+    protected val moveUpButton: JButton = JButton("Move up")
+    protected val moveDownButton: JButton = JButton("Move down")
 
-    protected val workspacesList = JBList<Workspace>()
+    protected val workspacesList: JBList<Workspace> = JBList<Workspace>()
 
-    protected val buttonJPanel = JPanel()
+    protected val buttonJPanel: JPanel = JPanel()
 
     init {
         setPanel(manualAction, removeAction, upAction, downAction)
+
+        setWorkspaces(workspaces)
     }
 
     abstract fun extraButtonActions(opName: String)

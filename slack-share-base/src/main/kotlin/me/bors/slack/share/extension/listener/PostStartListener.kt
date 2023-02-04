@@ -1,4 +1,4 @@
-package me.bors.slack.share.listener
+package me.bors.slack.share.extension.listener
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project

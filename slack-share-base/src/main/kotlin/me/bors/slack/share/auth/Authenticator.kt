@@ -4,8 +4,8 @@ import com.intellij.ide.BrowserUtil
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import me.bors.slack.share.ui.settings.dialog.AddTokenManualDialogWrapper
-import me.bors.slack.share.ui.settings.dialog.CreateSlackAppDialogWrapper
+import me.bors.slack.share.ui.dialog.AddTokenManualDialogWrapper
+import me.bors.slack.share.ui.dialog.CreateSlackAppDialogWrapper
 import okhttp3.HttpUrl
 
 interface Authenticator {
@@ -17,7 +17,7 @@ interface Authenticator {
         }
 
         return if (wrapper.showAndGet()) {
-            wrapper.field.text
+            wrapper.getTokenText()
         } else null
     }
 

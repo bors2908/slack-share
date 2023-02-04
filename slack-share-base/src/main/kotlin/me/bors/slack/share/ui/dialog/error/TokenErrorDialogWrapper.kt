@@ -1,4 +1,4 @@
-package me.bors.slack.share.ui.share.dialog
+package me.bors.slack.share.ui.dialog.error
 
 import com.intellij.openapi.ui.DialogWrapper
 import java.awt.BorderLayout
@@ -7,9 +7,9 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class OpenSettingsErrorDialogWrapper(private val error: String, title: String) : DialogWrapper(true) {
+class TokenErrorDialogWrapper(private val error: String) : DialogWrapper(true) {
     init {
-        this.title = title
+        title = "Invalid Token"
 
         init()
     }
@@ -17,7 +17,7 @@ class OpenSettingsErrorDialogWrapper(private val error: String, title: String) :
     override fun createCenterPanel(): JComponent {
         val dialogPanel = JPanel(BorderLayout())
 
-        val label = JLabel("Error: $error. Press OK to open settings.")
+        val label = JLabel("User token error: $error")
 
         label.preferredSize = Dimension(100, 30)
 

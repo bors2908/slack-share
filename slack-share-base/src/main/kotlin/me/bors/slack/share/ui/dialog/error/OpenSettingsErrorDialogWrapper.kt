@@ -1,4 +1,4 @@
-package me.bors.slack.share.ui.share.dialog
+package me.bors.slack.share.ui.dialog.error
 
 import com.intellij.openapi.ui.DialogWrapper
 import java.awt.BorderLayout
@@ -7,9 +7,9 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class ErrorDialogWrapper(private val error: String) : DialogWrapper(true) {
+class OpenSettingsErrorDialogWrapper(private val error: String, title: String) : DialogWrapper(true) {
     init {
-        title = "Error"
+        this.title = title
 
         init()
     }
@@ -17,7 +17,7 @@ class ErrorDialogWrapper(private val error: String) : DialogWrapper(true) {
     override fun createCenterPanel(): JComponent {
         val dialogPanel = JPanel(BorderLayout())
 
-        val label = JLabel(error)
+        val label = JLabel("Error: $error. Press OK to open settings.")
 
         label.preferredSize = Dimension(100, 30)
 

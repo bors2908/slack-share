@@ -1,5 +1,6 @@
 package me.bors.slack.share.secret
 
+import me.bors.slack.share.error.SlackShareBundledFileException
 import me.bors.slack.share.persistence.ShareClientId
 import me.bors.slack.share.persistence.SlackShareBasicSecret
 import org.refcodes.properties.ext.obfuscation.ObfuscationPropertiesSugar
@@ -68,6 +69,3 @@ object SecretImporter {
             }.joinToString(System.lineSeparator())
     }
 }
-
-class SlackShareBundledFileException :
-    RuntimeException("Data file, bundled with plugin, required for authentication was not found.")

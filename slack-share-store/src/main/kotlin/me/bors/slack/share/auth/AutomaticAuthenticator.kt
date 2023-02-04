@@ -13,10 +13,11 @@ import io.netty.handler.codec.http.HttpResponseStatus.OK
 import me.bors.slack.share.auth.Authenticator.Companion.SCOPE_LIST
 import me.bors.slack.share.auth.server.DummySslHttpsServer
 import me.bors.slack.share.auth.server.getFreePort
+import me.bors.slack.share.error.AuthenticationException
 import me.bors.slack.share.persistence.ShareClientId
 import me.bors.slack.share.persistence.SlackShareBasicSecret
-import me.bors.slack.share.ui.settings.dialog.AddTokenAutomaticDialogWrapper
-import me.bors.slack.share.ui.settings.dialog.AuthenticationDialogWrapper
+import me.bors.slack.share.ui.dialog.AddTokenAutomaticDialogWrapper
+import me.bors.slack.share.ui.dialog.AuthenticationDialogWrapper
 import okhttp3.HttpUrl
 import java.io.OutputStream
 import java.net.URI
@@ -280,5 +281,3 @@ data class AuthResult(
     val extraMessage: String? = null,
     val error: Throwable? = null
 )
-
-class AuthenticationException(msg: String) : RuntimeException(msg)

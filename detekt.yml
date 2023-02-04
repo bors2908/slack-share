@@ -1,6 +1,8 @@
 complexity:
   LongParameterList:
     ignoreAnnotated: [ 'Bean', 'Component', 'Entity', 'SpringBootTest']
+    constructorThreshold: 10
+    functionThreshold: 10
     ignoreDefaultParameters: true
   NestedBlockDepth:
     active: true

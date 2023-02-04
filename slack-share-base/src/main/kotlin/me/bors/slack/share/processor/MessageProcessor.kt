@@ -8,7 +8,7 @@ import com.slack.api.model.block.composition.MarkdownTextObject
 import me.bors.slack.share.client.SlackMessageClient
 import me.bors.slack.share.entity.MessageStyle
 import me.bors.slack.share.entity.Workspace
-import me.bors.slack.share.ui.share.dialog.ErrorDialogWrapper
+import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
 import java.io.File
 
 class MessageProcessor {

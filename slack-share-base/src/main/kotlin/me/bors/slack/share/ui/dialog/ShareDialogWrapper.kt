@@ -1,4 +1,4 @@
-package me.bors.slack.share.ui.share.dialog
+package me.bors.slack.share.ui.dialog
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
@@ -187,7 +187,7 @@ class ShareDialogWrapper(
         workspacesPanel.maximumSize = Dimension(1000, 30)
         workspacesPanel.minimumSize = Dimension(400, 30)
 
-        val selectLabel = JLabel("Select Workspace:")
+        val selectLabel = JLabel("Select Workspace: ")
 
         workspacesPanel.add(selectLabel, BorderLayout.WEST)
         workspacesPanel.add(workspacesComboBox, BorderLayout.CENTER)
@@ -213,7 +213,7 @@ class ShareDialogWrapper(
         conversationsPanel.maximumSize = Dimension(1000, 30)
         conversationsPanel.minimumSize = Dimension(400, 30)
 
-        val selectLabel = JLabel("Select Conversation:")
+        val selectLabel = JLabel("Select Conversation: ")
 
         conversationsPanel.add(selectLabel, BorderLayout.WEST)
         conversationsPanel.add(conversationComboBox, BorderLayout.CENTER)

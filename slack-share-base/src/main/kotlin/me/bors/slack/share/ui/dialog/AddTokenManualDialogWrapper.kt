@@ -1,4 +1,4 @@
-package me.bors.slack.share.ui.settings.dialog
+package me.bors.slack.share.ui.dialog
 
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextField
@@ -10,8 +10,8 @@ import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class AddTokenManualDialogWrapper(val createApp: ActionListener) : DialogWrapper(true) {
-    lateinit var field: JBTextField
+class AddTokenManualDialogWrapper(private val createApp: ActionListener) : DialogWrapper(true) {
+    private lateinit var field: JBTextField
 
     init {
         title = "Insert Token"
@@ -44,5 +44,8 @@ class AddTokenManualDialogWrapper(val createApp: ActionListener) : DialogWrapper
             .addComponentFillVertically(JPanel(), 0)
             .panel
     }
-}
 
+    fun getTokenText(): String? {
+        return field.text
+    }
+}
