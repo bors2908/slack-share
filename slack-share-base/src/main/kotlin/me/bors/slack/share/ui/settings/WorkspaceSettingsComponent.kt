@@ -31,6 +31,7 @@ abstract class WorkspaceSettingsComponent(
     protected val moveUpButton: JButton = JButton("Move up")
     protected val moveDownButton: JButton = JButton("Move down")
 
+    @Suppress("MemberVisibilityCanBePrivate")
     protected val workspacesList: JBList<Workspace> = JBList<Workspace>()
 
     protected val buttonJPanel: JPanel = JPanel()

@@ -1,11 +1,7 @@
 package me.bors.slack.share.service
 
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.vfs.VirtualFile
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.ui.dialog.ShareDialogWrapper
 import java.io.File
@@ -20,9 +16,7 @@ class ActionService {
 
     private val settingsService: SettingsService = service()
 
-    fun shareSnippetAction(e: AnActionEvent) {
-        val selectedText = getSelectedText(e) ?: ""
-
+    fun shareSnippetAction(selectedText: String, snippetFileExtension: String) {
         workspaceService.refresh()
 
         if (workspaceService.getAvailableWorkspaces().isEmpty()) {
@@ -34,7 +28,7 @@ class ActionService {
         val dialogWrapper = ShareDialogWrapper(
             workspaces = workspaceService.getAvailableWorkspaces(),
             text = selectedText,
-            snippetFileExtension = getSnippetFileExtension(e),
+            snippetFileExtension = snippetFileExtension,
             conversationProcessing = { conversationsService.getConversations(it) }
         )
 
@@ -53,7 +47,7 @@ class ActionService {
         }
     }
 
-    fun shareFileAction(e: AnActionEvent) {
+    fun shareFileAction(files: List<File>) {
         workspaceService.refresh()
 
         if (workspaceService.getAvailableWorkspaces().isEmpty()) {
@@ -62,11 +56,7 @@ class ActionService {
             return
         }
 
-        val files = (getVirtualFiles(e) ?: emptyArray()).asList()
-            .map { it.toNioPath().toFile() }
-            .toMutableList()
-
-        val (validFiles, exclusions) = excludeInvalidFiles(files)
+        val (validFiles, exclusions) = excludeInvalidFiles(files.toMutableList())
 
         val filenames = validFiles.map { it.name }
 
@@ -90,34 +80,6 @@ class ActionService {
             )
         }
     }
-
-    fun snippetUpdate(e: AnActionEvent) {
-        val selectedText = getSelectedText(e)
-
-        e.presentation.isEnabledAndVisible = selectedText != null
-    }
-
-    fun fileUpdate(e: AnActionEvent) {
-        val virtualFiles = getVirtualFiles(e)
-
-        e.presentation.isEnabledAndVisible = !virtualFiles.isNullOrEmpty()
-    }
-
-    private fun getSelectedText(e: AnActionEvent): String? {
-        val editor = e.getData(PlatformDataKeys.EDITOR) ?: return ""
-
-        return editor.selectionModel.selectedText
-    }
-
-    private fun getSnippetFileExtension(e: AnActionEvent): String {
-        val editor = e.getData(PlatformDataKeys.EDITOR) ?: return ""
-
-        return FileDocumentManager.getInstance().getFile(editor.document)?.extension ?: ""
-    }
-
-    private fun getVirtualFiles(e: AnActionEvent): Array<VirtualFile>? =
-        e.getData(PlatformDataKeys.VIRTUAL_FILE_ARRAY)
-
 
     private fun excludeInvalidFiles(files: MutableList<File>): Pair<List<File>, List<FileExclusion>> {
         val exclusions = mutableListOf<FileExclusion>()

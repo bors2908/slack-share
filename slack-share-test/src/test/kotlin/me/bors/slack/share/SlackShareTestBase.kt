@@ -4,10 +4,11 @@ import com.intellij.openapi.components.service
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import me.bors.slack.share.service.ConversationsService
 import me.bors.slack.share.service.WorkspaceService
-import java.util.*
+import java.io.File
+import java.util.Properties
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
-abstract class SlackTestBase : BasePlatformTestCase() {
+abstract class SlackShareTestBase : BasePlatformTestCase() {
     protected lateinit var conversationsService: ConversationsService
 
     protected lateinit var workspaceService: WorkspaceService
@@ -25,10 +26,22 @@ abstract class SlackTestBase : BasePlatformTestCase() {
         tokens.forEach { workspaceService.addToken(it) }
     }
 
+    fun createTestFileAndCheck(file: File, fileAction: (File) -> Unit) {
+        try {
+            file.createNewFile()
+
+            file.writeText("Sample Text")
+
+            fileAction.invoke(file)
+        } finally {
+            file.delete()
+        }
+    }
+
     private fun loadProperties(): Properties {
         val configuration = Properties()
 
-        val inputStream = SlackTestBase::class.java
+        val inputStream = SlackShareTestBase::class.java
             .classLoader
             .getResourceAsStream("secrets/test-tokens.properties")
 

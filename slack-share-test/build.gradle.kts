@@ -20,13 +20,12 @@ intellij {
 }
 
 dependencies {
-    api(libs.kotlin.stdlib)
+    implementation(projects.slackShareBase)
+    implementation(projects.slackShareStore)
 
-    api(libs.slack.api.client) {
-        exclude(group = "org.slf4j", module = "slf4j-api")
-    }
-
-    implementation(libs.kotlinx.serialization.json.jvm)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.junit.vintage)
+    testImplementation(libs.junit.platform.launcher)
 }
 
 tasks {

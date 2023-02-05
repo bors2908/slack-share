@@ -31,10 +31,6 @@ dependencies {
     implementation(libs.refcodes.obfuscation)
 
     implementation(libs.okhttp.tls)
-
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.junit.platform.launcher)
-    testImplementation(libs.slf4j.api)
 }
 
 
