@@ -29,12 +29,6 @@ abstract class SettingsService {
         }
     }
 
-    protected fun getManualActionListener(): (ActionEvent) -> Unit {
-        return {
-            addToken(authenticator.authManually())
-        }
-    }
-
     protected fun addToken(token: String?) {
         if (token == null) return
 
@@ -43,6 +37,12 @@ abstract class SettingsService {
         errorMessage?.let { TokenErrorDialogWrapper(it).showAndGet() }
 
         refreshWorkspacesList()
+    }
+
+    protected fun getManualActionListener(): (ActionEvent) -> Unit {
+        return {
+            addToken(authenticator.authManually())
+        }
     }
 
     protected fun getRemoveTokenListener(): (ActionEvent) -> Unit {

@@ -1,12 +1,9 @@
 package me.bors.slack.share.client
 
-import com.slack.api.Slack
 import com.slack.api.methods.request.chat.ChatPostMessageRequest.ChatPostMessageRequestBuilder
 import com.slack.api.methods.request.files.FilesUploadRequest.FilesUploadRequestBuilder
 
 open class SlackMessageClient : SlackClientBase() {
-    private val slack = Slack.getInstance()
-
     fun sendMessage(token: String, requestBuilder: ChatPostMessageRequestBuilder) {
         val request = requestBuilder.token(token).build()
 

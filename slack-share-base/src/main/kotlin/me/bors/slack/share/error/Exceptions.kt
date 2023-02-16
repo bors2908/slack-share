@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package me.bors.slack.share.error
 
 open class SlackClientException(message: String) : RuntimeException(message) {

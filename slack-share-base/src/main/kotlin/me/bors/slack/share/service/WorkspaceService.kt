@@ -128,4 +128,8 @@ class WorkspaceService {
             }
             .toMutableList()
     }
+
+    fun removeAllTokens() {
+        workspaces.clear()
+    }
 }

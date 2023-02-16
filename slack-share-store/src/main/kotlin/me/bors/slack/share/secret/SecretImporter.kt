@@ -45,18 +45,18 @@ object SecretImporter {
         return if (path.startsWith("jar:")) {
             readFileContentJar()
         } else {
-            readFileContentFS(path)
+            readFileContentFS(path) ?: readFileContentJar()
         }
     }
 
-    private fun readFileContentFS(path: String): String {
+    private fun readFileContentFS(path: String): String? {
         val className = this.javaClass.name.replace(".", "/") + ".class"
 
         val resultPath = path.replace(className, "")
 
         val file = File("${resultPath}data.bin")
 
-        if (!file.exists()) throw SlackShareBundledFileException()
+        if (!file.exists()) return null
 
         return file.readText(Charsets.UTF_8)
     }

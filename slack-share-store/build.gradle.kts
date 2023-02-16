@@ -27,10 +27,14 @@ intellij {
 }
 
 dependencies {
-    implementation(projects.slackShareBase)
+    api(projects.slackShareBase)
     implementation(libs.refcodes.obfuscation)
 
     implementation(libs.okhttp.tls)
+
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.junit.vintage)
+    testImplementation(libs.junit.platform.launcher)
 }
 
 
@@ -61,6 +65,7 @@ tasks {
         jar {
             from("build/classes/kotlin/main/") {
                 include("**/data.bin")
+                duplicatesStrategy = DuplicatesStrategy.INCLUDE
             }
         }
     }

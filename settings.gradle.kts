@@ -1,6 +1,5 @@
 rootProject.name = "slack-share"
 include("slack-share-base")
-include("slack-share-test")
 include("slack-share-open")
 include("slack-share-store")
 

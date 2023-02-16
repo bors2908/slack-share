@@ -3,7 +3,7 @@ package me.bors.slack.share.service
 import com.intellij.openapi.components.service
 import me.bors.slack.share.processor.MessageProcessor
 
-abstract class InitializationService {
+open class InitializationService {
     val messageProcessor: MessageProcessor = MessageProcessor()
 
     private val workspaceService: WorkspaceService = service()
