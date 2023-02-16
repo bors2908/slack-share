@@ -1,10 +1,9 @@
 package me.bors.slack.share.service
 
-import com.intellij.openapi.components.service
 import me.bors.slack.share.SlackShareTestBase
 
 class ActionServiceTest : SlackShareTestBase() {
-    private val actionService: ActionService = service()
+    //private val actionService: ActionService = service()
 
     fun testActions() {
         //actionService.shareSnippetAction("Sample text", ".test")
@@ -13,7 +12,7 @@ class ActionServiceTest : SlackShareTestBase() {
 
         //TODO Check received
 
-       /* createTestFileAndCheck(File("/temp.txt")) {
+        /* createTestFileAndCheck(File("/temp.txt")) {
             actionService.shareFileAction(listOf(it))
 
             //TODO UI Test section

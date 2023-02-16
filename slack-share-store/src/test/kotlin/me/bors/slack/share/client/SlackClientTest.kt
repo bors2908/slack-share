@@ -6,6 +6,7 @@ import com.slack.api.model.Conversation
 import com.slack.api.model.ConversationType
 import me.bors.slack.share.SlackShareTestBase
 import java.nio.charset.Charset
+import java.util.*
 
 open class SlackClientTest : SlackShareTestBase() {
     private var conversationsClient = SlackConversationsClient()
@@ -30,29 +31,49 @@ open class SlackClientTest : SlackShareTestBase() {
 
 
     fun testMessageClient() {
-        val token = workspaceService.getAvailableWorkspaces().first().state.get()!!
+        val workspace = workspaceService.getAvailableWorkspaces().first()
+
+        val token = workspace.state.get() ?: throw AssertionError("Token is absent.")
 
         val channel = getChannels(token).first()
+
+        val messageText = getRandomPayload()
 
         messageClient.sendMessage(
             token,
             ChatPostMessageRequest.builder()
                 .channel(channel.id)
                 .mrkdwn(false)
-                .text("Sample text")
+                .text(messageText)
         )
+
+        val lastMessage = testClient.getLastMessages(workspace, channel.id).getLastMessage()
+
+        assertTrue(lastMessage.text.contains(messageText))
+
+        val fileName = "test.file"
+        val filePayload = getRandomPayload()
 
         messageClient.sendFile(
             token,
             FilesUploadRequest.builder()
                 .channels(listOf(channel.id))
-                .fileData("Sample text".toByteArray(Charset.defaultCharset()))
-                .filename("test.file")
+                .fileData(
+                    filePayload.toByteArray(Charset.defaultCharset())
+                )
+                .filename(fileName)
                 .filetype("auto")
         )
 
-        //TODO Check message received, will require additional rights on Slack side.
+        val lastMessage2 = testClient.getLastMessages(workspace, channel.id).getLastMessage()
+
+        val file = lastMessage2.files.first()
+
+        assertEquals(fileName, file.name)
+        assertEquals(filePayload, file.preview)
     }
+
+    private fun getRandomPayload() = "Sample Text " + UUID.randomUUID()
 
     fun testWorkspaceClient() {
         val token = workspaceService.getAvailableWorkspaces().first().state.get()!!

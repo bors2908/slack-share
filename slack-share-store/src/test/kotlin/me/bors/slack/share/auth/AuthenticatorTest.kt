@@ -13,6 +13,6 @@ class AuthenticatorTest : SlackShareTestBase() {
 
     fun testManualAuth() {
         //TODO UI test to check inserted values.
-        //authenticator.authManually()
+        authenticator.authManually()
     }
 }
