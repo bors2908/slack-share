@@ -7,9 +7,9 @@ class WorkspaceServiceTest : SlackShareTestBase() {
     private var previousWorkspaces: List<Workspace> = emptyList()
 
     override fun setUp() {
-        previousWorkspaces = workspaceService.getAvailableWorkspaces()
-
         super.setUp()
+
+        previousWorkspaces = workspaceService.getAvailableWorkspaces()
     }
 
     override fun tearDown() {

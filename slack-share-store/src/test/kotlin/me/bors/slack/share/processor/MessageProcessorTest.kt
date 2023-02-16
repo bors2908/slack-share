@@ -6,7 +6,6 @@ import me.bors.slack.share.client.SlackConversationsClient
 import me.bors.slack.share.entity.MessageStyle
 import java.io.File
 import java.net.URL
-import java.util.*
 
 class MessageProcessorTest : SlackShareTestBase() {
     private val processor = MessageProcessor()
@@ -58,6 +57,4 @@ class MessageProcessorTest : SlackShareTestBase() {
             }
         }
     }
-
-    private fun getRandomPayload() = "Sample Text " + UUID.randomUUID()
 }

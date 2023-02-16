@@ -45,6 +45,8 @@ abstract class SlackShareTestBase : BasePlatformTestCase() {
         }
     }
 
+    protected fun getRandomPayload(): String = "Sample Text " + UUID.randomUUID()
+
     protected fun ConversationsHistoryResponse?.getLastMessage(): Message =
         this?.messages?.first() ?: throw AssertionError("No last message")
 

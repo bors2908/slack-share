@@ -6,7 +6,6 @@ import com.slack.api.model.Conversation
 import com.slack.api.model.ConversationType
 import me.bors.slack.share.SlackShareTestBase
 import java.nio.charset.Charset
-import java.util.*
 
 open class SlackClientTest : SlackShareTestBase() {
     private var conversationsClient = SlackConversationsClient()
@@ -26,7 +25,7 @@ open class SlackClientTest : SlackShareTestBase() {
 
         assertNotEmpty(conversationsClient.getMultiUserGroupMembers(token, channels.first { it.isMpim }.id))
 
-        assertTrue(conversationsClient.getUserName(token, channels.first { it.isIm }.id).isNotBlank())
+        assertTrue(conversationsClient.getUserName(token, channels.first { it.isIm && it.user != null }.user).isNotBlank())
     }
 
 
@@ -51,7 +50,7 @@ open class SlackClientTest : SlackShareTestBase() {
 
         assertTrue(lastMessage.text.contains(messageText))
 
-        val fileName = "test.file"
+        val fileName = "test.txt"
         val filePayload = getRandomPayload()
 
         messageClient.sendFile(
@@ -72,8 +71,6 @@ open class SlackClientTest : SlackShareTestBase() {
         assertEquals(fileName, file.name)
         assertEquals(filePayload, file.preview)
     }
-
-    private fun getRandomPayload() = "Sample Text " + UUID.randomUUID()
 
     fun testWorkspaceClient() {
         val token = workspaceService.getAvailableWorkspaces().first().state.get()!!
