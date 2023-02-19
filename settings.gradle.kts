@@ -18,4 +18,3 @@ pluginManagement {
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-include("slack-share-ui-tests")

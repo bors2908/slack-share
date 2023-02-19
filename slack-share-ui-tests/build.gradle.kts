@@ -1,19 +1,23 @@
+@Suppress(
+    "DSL_SCOPE_VIOLATION",
+    "MISSING_DEPENDENCY_CLASS",
+    "UNRESOLVED_REFERENCE_WRONG_RECEIVER",
+    "FUNCTION_CALL_EXPECTED"
+)
 plugins {
+    alias(libs.plugins.kotlin.jvm)
     java
 }
 
-group = "me.bors"
-version = "0.9.10"
-
-repositories {
-    mavenCentral()
-}
+group = rootProject.group
+version = rootProject.version
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    implementation(libs.intellij.remote.robot)
 }
 
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+repositories {
+    maven {
+        url = uri("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies")
+    }
 }

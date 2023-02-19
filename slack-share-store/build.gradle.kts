@@ -27,7 +27,7 @@ intellij {
 }
 
 dependencies {
-    api(projects.slackShareBase)
+    implementation(projects.slackShareBase)
     implementation(libs.refcodes.obfuscation)
 
     implementation(libs.okhttp.tls)
@@ -82,6 +82,14 @@ tasks {
 
     publishPlugin {
         token.set(File("${project.rootDir}/secrets/publish.tkn").readText(Charsets.UTF_8))
+    }
+
+    runIdeForUiTests {
+        systemProperty("robot-server.port", "8580")
+    }
+
+    downloadRobotServerPlugin {
+        version.set(libs.intellij.remote.robot.get().version)
     }
 }
 

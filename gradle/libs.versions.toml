@@ -1,18 +1,19 @@
 [versions]
-kotlin = "1.8.0"
+kotlin = "1.8.10"
 junit = "5.9.2"
 
 [libraries]
+intellij-remote-robot = "com.intellij.remoterobot:remote-robot:0.11.16"
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
 junit-vintage = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit" }
-junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.9.1"
+junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.9.2"
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-serialization-json-jvm = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.4.1"
 mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:4.1.0"
 okhttp-tls = "com.squareup.okhttp3:okhttp-tls:4.10.0"
 refcodes-obfuscation = "org.refcodes:refcodes-properties-ext-obfuscation:2.2.2"
-slack-api-client = "com.slack.api:slack-api-client:1.27.2"
-slf4j-api = "org.slf4j:slf4j-api:2.0.5"
+slack-api-client = "com.slack.api:slack-api-client:1.27.3"
+slf4j-api = "org.slf4j:slf4j-api:2.0.6"
 
 [bundles]
 
