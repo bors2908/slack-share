@@ -8,7 +8,7 @@ import com.slack.api.model.block.composition.MarkdownTextObject
 import me.bors.slack.share.client.SlackMessageClient
 import me.bors.slack.share.entity.MessageStyle
 import me.bors.slack.share.entity.Workspace
-import me.bors.slack.share.ui.share.dialog.ErrorDialogWrapper
+import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
 import java.io.File
 
 class MessageProcessor {
@@ -19,8 +19,10 @@ class MessageProcessor {
         userId: String,
         text: String,
         formatType: MessageStyle,
-        fileExtension: String = ""
+        fileExtension: String
     ) {
+        val resultingFileExtension = fileExtension.ifBlank { "txt" }
+
         val builder = ChatPostMessageRequest.builder()
             .channel(userId)
 
@@ -57,7 +59,7 @@ class MessageProcessor {
             }
 
             MessageStyle.CODE_SNIPPET -> {
-                sendSingleFile(token, userId, text.toByteArray(), "snippet.$fileExtension", FilesUploadRequest.builder())
+                sendSingleFile(token, userId, text.toByteArray(), "snippet.$resultingFileExtension", FilesUploadRequest.builder())
 
                 return
             }

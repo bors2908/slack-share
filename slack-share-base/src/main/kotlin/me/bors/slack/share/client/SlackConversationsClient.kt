@@ -1,6 +1,5 @@
 package me.bors.slack.share.client
 
-import com.slack.api.Slack
 import com.slack.api.methods.request.conversations.ConversationsListRequest
 import com.slack.api.methods.request.conversations.ConversationsMembersRequest
 import com.slack.api.methods.request.users.UsersInfoRequest
@@ -11,8 +10,6 @@ import com.slack.api.model.User
 import me.bors.slack.share.entity.Workspace
 
 open class SlackConversationsClient : SlackClientBase() {
-    private val slack = Slack.getInstance()
-
     fun getUserName(token: String, user: String): String {
         val usersInfoRequest = UsersInfoRequest.builder()
             .token(token)
@@ -24,7 +21,6 @@ open class SlackConversationsClient : SlackClientBase() {
             .user
 
         return usersInfo.realName ?: usersInfo.name ?: usersInfo.id
-
     }
 
     fun getMultiUserGroupMembers(token: String, id: String): MutableList<String> {

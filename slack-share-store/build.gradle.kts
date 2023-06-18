@@ -32,9 +32,9 @@ dependencies {
 
     implementation(libs.okhttp.tls)
 
-    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.junit.vintage)
     testImplementation(libs.junit.platform.launcher)
-    testImplementation(libs.slf4j.api)
 }
 
 
@@ -65,6 +65,7 @@ tasks {
         jar {
             from("build/classes/kotlin/main/") {
                 include("**/data.bin")
+                duplicatesStrategy = DuplicatesStrategy.INCLUDE
             }
         }
     }
@@ -81,6 +82,14 @@ tasks {
 
     publishPlugin {
         token.set(File("${project.rootDir}/secrets/publish.tkn").readText(Charsets.UTF_8))
+    }
+
+    runIdeForUiTests {
+        systemProperty("robot-server.port", "8580")
+    }
+
+    downloadRobotServerPlugin {
+        version.set(libs.intellij.remote.robot.get().version)
     }
 }
 

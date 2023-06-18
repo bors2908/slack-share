@@ -4,56 +4,59 @@ import com.intellij.ide.BrowserUtil
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import me.bors.slack.share.ui.settings.dialog.AddTokenManualDialogWrapper
-import me.bors.slack.share.ui.settings.dialog.CreateSlackAppDialogWrapper
+import me.bors.slack.share.ui.dialog.CreateSlackAppDialogWrapper
+import me.bors.slack.share.ui.dialog.ManualAuthDialogWrapper
 import okhttp3.HttpUrl
+import java.net.URI
 
 interface Authenticator {
     fun authManually(): String? {
-        val wrapper = AddTokenManualDialogWrapper {
+        val wrapper = ManualAuthDialogWrapper {
             BrowserUtil.browse(createAppUri)
 
             CreateSlackAppDialogWrapper(createAppUri).showAndGet()
         }
 
         return if (wrapper.showAndGet()) {
-            wrapper.field.text
+            wrapper.getTokenText()
         } else null
     }
 
     companion object {
-        val SCOPE_LIST = listOf(
+        val SCOPE_LIST: List<String> = listOf(
             "channels:read",
-            "chat:write",
-            "files:write",
             "groups:read",
             "im:read",
             "mpim:read",
-            "users:read"
+            "users:read",
+            "chat:write",
+            "files:write"
         )
 
-        private val createAppUri = HttpUrl.Builder()
+        private val createAppUri = getCreateAppUri(SCOPE_LIST, "Share from JetBrains")
+
+        fun getCreateAppUri(scopes: List<String>, name: String): URI = HttpUrl.Builder()
             .scheme("https")
             .host("api.slack.com")
             .addPathSegment("apps")
             .addQueryParameter("new_app", "1")
-            .addQueryParameter("manifest_json", getJsonManifest())
+            .addQueryParameter("manifest_json", getJsonManifest(scopes, name))
             .build()
             .toUrl()
             .toURI()
 
-        private fun getJsonManifest() = JsonObject(
+        private fun getJsonManifest(scopes: List<String>, name: String) = JsonObject(
             mapOf(
                 "display_information" to JsonObject(
                     mapOf(
-                        "name" to JsonPrimitive("Share from JetBrains")
+                        "name" to JsonPrimitive(name)
                     )
                 ),
                 "oauth_config" to JsonObject(
                     mapOf(
                         "scopes" to JsonObject(
                             mapOf(
-                                "user" to JsonArray(SCOPE_LIST.map { JsonPrimitive(it) })
+                                "user" to JsonArray(scopes.map { JsonPrimitive(it) })
                             )
                         )
                     )

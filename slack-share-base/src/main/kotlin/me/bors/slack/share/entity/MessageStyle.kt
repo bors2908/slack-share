@@ -1,6 +1,6 @@
 package me.bors.slack.share.entity
 
-enum class MessageStyle(val style: String) {
+enum class MessageStyle(private val style: String) {
     NONE("None"),
 
     QUOTED("Quoted"),

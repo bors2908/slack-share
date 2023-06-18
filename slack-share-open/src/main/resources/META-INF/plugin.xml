@@ -7,33 +7,34 @@
     Simple plugin to share code snippets and files in Slack.<br>
     ]]></description>
 
-    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
-         on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable parentId="tools"
-                                 instance="me.bors.slack.share.ui.settings.TokenSettingsConfigurableBasic"
-                                 id="me.bors.slack.share.ui.settings.TokenSettingsConfigurableBasic"
-                                 displayName="Slack Share"/>
+            instance="me.bors.slack.share.ui.settings.WorkspaceSettingsConfigurable"
+            id="me.bors.slack.share.ui.settings.WorkspaceSettingsConfigurable"
+            displayName="Slack Share"/>
         <applicationService
-                serviceInterface="me.bors.slack.share.service.InitializationService"
-                serviceImplementation="me.bors.slack.share.service.InitializationServiceBasic"/>
+            serviceInterface="me.bors.slack.share.service.InitializationService"
+            serviceImplementation="me.bors.slack.share.service.InitializationServiceBasic"/>
         <applicationService
-                serviceInterface="me.bors.slack.share.auth.Authenticator"
-                serviceImplementation="me.bors.slack.share.auth.BasicAuthenticator"/>
-        <postStartupActivity implementation="me.bors.slack.share.listener.PostStartListener"/>
+            serviceInterface="me.bors.slack.share.service.SettingsService"
+            serviceImplementation="me.bors.slack.share.service.SettingsServiceBasic"/>
+        <applicationService
+            serviceInterface="me.bors.slack.share.auth.Authenticator"
+            serviceImplementation="me.bors.slack.share.auth.BasicAuthenticator"/>
+        <postStartupActivity implementation="me.bors.slack.share.extension.listener.PostStartListener"/>
     </extensions>
     <actions>
-        <action id="me.bors.slack.share.ui.share.actions.ShareSnippetAction"
-                class="me.bors.slack.share.ui.share.actions.ShareSnippetAction"
-                text="Share to Slack" description="Share selected to Slack">
+        <action id="me.bors.slack.share.extension.action.ShareSnippetAction"
+            class="me.bors.slack.share.extension.action.ShareSnippetAction"
+            text="Share to Slack" description="Share selected to Slack">
             <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
             <add-to-group group-id="ConsoleEditorPopupMenu" anchor="after" relative-to-action="$SearchWeb"/>
         </action>
-        <action id="me.bors.slack.share.ui.share.actions.ShareFileAction"
-                class="me.bors.slack.share.ui.share.actions.ShareFileAction"
-                text="Share to Slack" description="Share file to Slack">
+        <action id="me.bors.slack.share.extension.action.ShareFileAction"
+            class="me.bors.slack.share.extension.action.ShareFileAction"
+            text="Share to Slack" description="Share file to Slack">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </action>
     </actions>

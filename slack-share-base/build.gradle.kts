@@ -27,9 +27,6 @@ dependencies {
     }
 
     implementation(libs.kotlinx.serialization.json.jvm)
-
-    testImplementation(libs.junit.vintage)
-    testImplementation(libs.junit.platform.launcher)
 }
 
 tasks {

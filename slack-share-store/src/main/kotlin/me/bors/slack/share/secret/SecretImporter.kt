@@ -1,5 +1,6 @@
 package me.bors.slack.share.secret
 
+import me.bors.slack.share.error.SlackShareBundledFileException
 import me.bors.slack.share.persistence.ShareClientId
 import me.bors.slack.share.persistence.SlackShareBasicSecret
 import org.refcodes.properties.ext.obfuscation.ObfuscationPropertiesSugar
@@ -44,18 +45,18 @@ object SecretImporter {
         return if (path.startsWith("jar:")) {
             readFileContentJar()
         } else {
-            readFileContentFS(path)
+            readFileContentFS(path) ?: readFileContentJar()
         }
     }
 
-    private fun readFileContentFS(path: String): String {
+    private fun readFileContentFS(path: String): String? {
         val className = this.javaClass.name.replace(".", "/") + ".class"
 
         val resultPath = path.replace(className, "")
 
         val file = File("${resultPath}data.bin")
 
-        if (!file.exists()) throw SlackShareBundledFileException()
+        if (!file.exists()) return null
 
         return file.readText(Charsets.UTF_8)
     }
@@ -68,6 +69,3 @@ object SecretImporter {
             }.joinToString(System.lineSeparator())
     }
 }
-
-class SlackShareBundledFileException :
-    RuntimeException("Data file, bundled with plugin, required for authentication was not found.")

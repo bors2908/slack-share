@@ -2,10 +2,7 @@ package me.bors.slack.share.logo
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.refcodes.properties.PropertiesSugar
-import org.refcodes.properties.ext.obfuscation.ObfuscationPropertiesSugar
 import java.io.File
-import java.util.*
 
 open class ExportLogoTask : DefaultTask() {
     init {
