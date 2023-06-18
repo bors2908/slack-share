@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.11-beta"
+version = "0.9.11"
 
 val javaVersion: String = JavaVersion.VERSION_11.toString()
 val intellijVersion: String by extra { "2022.2.4" }
