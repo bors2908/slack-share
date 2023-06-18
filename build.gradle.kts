@@ -1,11 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-@Suppress(
-    "DSL_SCOPE_VIOLATION",
-    "MISSING_DEPENDENCY_CLASS",
-    "UNRESOLVED_REFERENCE_WRONG_RECEIVER",
-    "FUNCTION_CALL_EXPECTED"
-)
 plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin.jvm)
@@ -58,6 +52,11 @@ allprojects {
         mavenCentral()
     }
 
+    detekt {
+        config.setFrom(files("$rootDir/detekt.yml"))
+        buildUponDefaultConfig = true
+    }
+
     tasks {
         withType<JavaCompile> {
             sourceCompatibility = javaVersion
@@ -68,11 +67,6 @@ allprojects {
             kotlinOptions {
                 jvmTarget = javaVersion
             }
-        }
-
-        detekt {
-            config.setFrom(files("$rootDir/detekt.yml"))
-            buildUponDefaultConfig = true
         }
     }
 }
