@@ -1,23 +1,23 @@
 [versions]
 kotlin = "1.8.10"
-junit = "5.9.2"
+junit = "5.9.3"
 
 [libraries]
 intellij-remote-robot = "com.intellij.remoterobot:remote-robot:0.11.16"
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
 junit-vintage = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit" }
-junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.9.2"
+junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.9.3"
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
-kotlinx-serialization-json-jvm = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.4.1"
-mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:4.1.0"
-okhttp-tls = "com.squareup.okhttp3:okhttp-tls:4.10.0"
+kotlinx-serialization-json-jvm = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.5.1"
+mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:5.0.0"
+okhttp-tls = "com.squareup.okhttp3:okhttp-tls:4.11.0"
 refcodes-obfuscation = "org.refcodes:refcodes-properties-ext-obfuscation:2.2.2"
-slack-api-client = "com.slack.api:slack-api-client:1.27.3"
-slf4j-api = "org.slf4j:slf4j-api:2.0.6"
+slack-api-client = "com.slack.api:slack-api-client:1.29.2"
+slf4j-api = "org.slf4j:slf4j-api:2.0.7"
 
 [bundles]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.22.0" }
-intellij = { id = "org.jetbrains.intellij", version = "1.13.0" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.0" }
+intellij = { id = "org.jetbrains.intellij", version = "1.14.1" }

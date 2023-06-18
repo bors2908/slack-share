@@ -57,7 +57,7 @@ abstract class SlackShareTestBase : BasePlatformTestCase() {
             ?: throw AssertionError("Null class resource.")
 
         //TODO Rework path accessing
-        val file = File(classResource.path + "/../../../../../secrets/test-tokens.properties")
+        val file = File(classResource.path + "/../../../../secrets/test-tokens.properties")
 
         if (!file.canRead()) throw AssertionError("Can't read test token file.")
 

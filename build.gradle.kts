@@ -12,11 +12,11 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.10"
+version = "0.9.11-beta"
 
 val javaVersion: String = JavaVersion.VERSION_11.toString()
 val intellijVersion: String by extra { "2022.2.4" }
-val sinceIdeaVersion: String by extra { "203" }
+val sinceIdeaVersion: String by extra { "220" }
 val untilIdeaVersion: String by extra { "231.*" }
 val userDescription: String by extra {
     """
@@ -46,6 +46,7 @@ val changelog: String by extra {
                 0.9.8 - Add logo.<br>
                 0.9.9 - App creation link in manual auth. Code highlighting. Dependencies update. Fixes.<br>
                 0.9.10 - Workspace selection.<br>
+                0.9.11 - Small Fixes. Dependencies update. IDEA 2023.1 late builds compatibility.<br>
                 <br>
                 """
 }
@@ -70,7 +71,7 @@ allprojects {
         }
 
         detekt {
-            config = files("$rootDir/detekt.yml")
+            config.setFrom(files("$rootDir/detekt.yml"))
             buildUponDefaultConfig = true
         }
     }
