@@ -1,12 +1,12 @@
 package me.bors.slack.share.service
 
-import me.bors.slack.share.auth.AutomaticAuthenticator
-import me.bors.slack.share.ui.settings.WorkspaceSettingsComponent
-import me.bors.slack.share.ui.settings.WorkspaceSettingsComponentAutomatic
 import java.awt.event.ActionEvent
+import me.bors.slack.share.auth.AutomaticAuthenticator
+import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
+import me.bors.slack.share.ui.settings.WorkspaceSettingsComponentAutomatic
 
 class SettingsServiceAutomatic : SettingsService() {
-    override val settingsComponent: WorkspaceSettingsComponent = WorkspaceSettingsComponentAutomatic(
+    override val settingsComponent: WorkspaceSettingsComponentAutomatic = WorkspaceSettingsComponentAutomatic(
         getManualActionListener(),
         getAutomaticActionListener(),
         getRemoveTokenListener(),
@@ -18,7 +18,15 @@ class SettingsServiceAutomatic : SettingsService() {
 
     private fun getAutomaticActionListener(): (ActionEvent) -> Unit {
         return {
-            addToken((authenticator as AutomaticAuthenticator).authAutomatically())
+            if ((initializationService as InitializationServiceAutomatic).initializedProperly) {
+                addToken((authenticator as AutomaticAuthenticator).authAutomatically())
+            } else {
+                ErrorDialogWrapper(
+                    "Plugin data was corrupted. <br>" +
+                        "Sorry. You wouldn't be able to authenticate in Slack automatically. <br>" +
+                        "You can try using 'Reload Caches' button in plugin settings or reinstalling the plugin from Store. <br>"
+                ).showAndGet()
+            }
         }
     }
 

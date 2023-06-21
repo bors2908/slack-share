@@ -3,12 +3,15 @@ package me.bors.slack.share.service
 import me.bors.slack.share.secret.SecretImporter
 
 class InitializationServiceAutomatic : InitializationService() {
+    var initializedProperly: Boolean = false
+        private set
+
     override fun beforeInit() {
-        SecretImporter.checkAndImport()
+        initializedProperly = SecretImporter.checkAndImport()
     }
 
     override fun reloadCaches() {
-        SecretImporter.checkAndImport(force = true)
+        initializedProperly = SecretImporter.checkAndImport(force = true)
 
         super.reloadCaches()
     }

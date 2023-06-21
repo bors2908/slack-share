@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.11"
+version = "0.9.12"
 
 val javaVersion: String = JavaVersion.VERSION_11.toString()
 val intellijVersion: String by extra { "2022.2.4" }
@@ -41,6 +41,7 @@ val changelog: String by extra {
                 0.9.9 - App creation link in manual auth. Code highlighting. Dependencies update. Fixes.<br>
                 0.9.10 - Workspace selection.<br>
                 0.9.11 - Small Fixes. Dependencies update. IDEA 2023.1 late builds compatibility.<br>
+                0.9.12 - Error reporting enhancements. Stability improvements.<br>
                 <br>
                 """
 }
