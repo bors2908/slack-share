@@ -8,10 +8,10 @@ plugins {
 group = "me.bors"
 version = "0.9.12"
 
-val javaVersion: String = JavaVersion.VERSION_11.toString()
+val javaVersion: String = JavaVersion.VERSION_17.toString()
 val intellijVersion: String by extra { "2022.2.4" }
-val sinceIdeaVersion: String by extra { "220" }
-val untilIdeaVersion: String by extra { "231.*" }
+val sinceIdeaVersion: String by extra { "222" }
+val untilIdeaVersion: String by extra { "232.*" }
 val userDescription: String by extra {
     """
         Plugin to share code snippets and files in Slack.
