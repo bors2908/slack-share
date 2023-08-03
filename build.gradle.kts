@@ -1,23 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-@Suppress(
-    "DSL_SCOPE_VIOLATION",
-    "MISSING_DEPENDENCY_CLASS",
-    "UNRESOLVED_REFERENCE_WRONG_RECEIVER",
-    "FUNCTION_CALL_EXPECTED"
-)
 plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin.jvm)
 }
 
 group = "me.bors"
-version = "0.9.11"
+version = "0.9.12"
 
-val javaVersion: String = JavaVersion.VERSION_11.toString()
+val javaVersion: String = JavaVersion.VERSION_17.toString()
 val intellijVersion: String by extra { "2022.2.4" }
-val sinceIdeaVersion: String by extra { "220" }
-val untilIdeaVersion: String by extra { "231.*" }
+val sinceIdeaVersion: String by extra { "222" }
+val untilIdeaVersion: String by extra { "232.*" }
 val userDescription: String by extra {
     """
         Plugin to share code snippets and files in Slack.
@@ -47,6 +41,7 @@ val changelog: String by extra {
                 0.9.9 - App creation link in manual auth. Code highlighting. Dependencies update. Fixes.<br>
                 0.9.10 - Workspace selection.<br>
                 0.9.11 - Small Fixes. Dependencies update. IDEA 2023.1 late builds compatibility.<br>
+                0.9.12 - Error reporting enhancements. Stability improvements.<br>
                 <br>
                 """
 }
@@ -56,6 +51,11 @@ allprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    detekt {
+        config.setFrom(files("$rootDir/detekt.yml"))
+        buildUponDefaultConfig = true
     }
 
     tasks {
@@ -68,11 +68,6 @@ allprojects {
             kotlinOptions {
                 jvmTarget = javaVersion
             }
-        }
-
-        detekt {
-            config.setFrom(files("$rootDir/detekt.yml"))
-            buildUponDefaultConfig = true
         }
     }
 }

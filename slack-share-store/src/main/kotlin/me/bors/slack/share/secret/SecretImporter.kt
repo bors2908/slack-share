@@ -1,22 +1,23 @@
 package me.bors.slack.share.secret
 
-import me.bors.slack.share.error.SlackShareBundledFileException
-import me.bors.slack.share.persistence.ShareClientId
-import me.bors.slack.share.persistence.SlackShareBasicSecret
-import org.refcodes.properties.ext.obfuscation.ObfuscationPropertiesSugar
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.util.*
+import me.bors.slack.share.persistence.ShareClientId
+import me.bors.slack.share.persistence.SlackShareBasicSecret
+import org.refcodes.properties.ext.obfuscation.ObfuscationPropertiesSugar
 
 // No fancy-pants encryption. Simple obfuscation to prevent automatic grabbing.
 object SecretImporter {
-    fun checkAndImport(force: Boolean = false) {
-        if (ShareClientId.exists() && SlackShareBasicSecret.exists() && !force) return
+    fun checkAndImport(force: Boolean = false): Boolean {
+        if (ShareClientId.exists() && SlackShareBasicSecret.exists() && !force) return true
 
         val fullPath = SecretImporter::class.java.getResource("SecretImporter.class")?.toURI().toString()
 
-        val decoded = String(Base64.getDecoder().decode(readFileContent(fullPath)))
+        val fileContent = readFileContent(fullPath) ?: return false
+
+        val decoded = String(Base64.getDecoder().decode(fileContent))
 
         val delimiters = arrayOf("=")
 
@@ -39,9 +40,11 @@ object SecretImporter {
 
         ShareClientId.set(decrypted["client_id"])
         SlackShareBasicSecret.set(decrypted["secret"])
+
+        return true
     }
 
-    private fun readFileContent(path: String): String {
+    private fun readFileContent(path: String): String? {
         return if (path.startsWith("jar:")) {
             readFileContentJar()
         } else {
@@ -61,11 +64,12 @@ object SecretImporter {
         return file.readText(Charsets.UTF_8)
     }
 
-    private fun readFileContentJar(): String {
-        return (javaClass.getResourceAsStream("/data.bin") ?: throw SlackShareBundledFileException())
-            .use {
+    private fun readFileContentJar(): String? {
+        return javaClass.getResourceAsStream("/data.bin")
+            ?.use {
                 val bufferedReader = BufferedReader(InputStreamReader(it))
                 bufferedReader.readLines()
-            }.joinToString(System.lineSeparator())
+            }
+            ?.joinToString(System.lineSeparator())
     }
 }

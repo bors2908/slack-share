@@ -4,7 +4,6 @@ import com.intellij.openapi.components.Service
 import me.bors.slack.share.client.SlackWorkspaceClient
 import me.bors.slack.share.entity.Workspace
 import me.bors.slack.share.persistence.PersistentState
-import me.bors.slack.share.persistence.SlackUserTokenBasicSecretState
 import me.bors.slack.share.persistence.WorkspaceSecretState
 import me.bors.slack.share.persistence.WorkspaceSecretState.Companion.MAX_ACCOUNTS
 import java.util.*
@@ -17,15 +16,6 @@ class WorkspaceService {
 
     init {
         refresh()
-
-        // TODO To be removed in a couple of updates
-        if (workspaces.isEmpty() && SlackUserTokenBasicSecretState.exists()) {
-            addToken(SlackUserTokenBasicSecretState.get()!!)
-
-            SlackUserTokenBasicSecretState.remove()
-
-            persist()
-        }
 
         val existingIds = getExistingIds()
 
