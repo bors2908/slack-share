@@ -2,6 +2,7 @@ package me.bors.slack.share
 
 import com.slack.api.methods.request.conversations.ConversationsHistoryRequest
 import com.slack.api.methods.response.conversations.ConversationsHistoryResponse
+import java.lang.Thread.sleep
 import me.bors.slack.share.client.SlackClientBase
 import me.bors.slack.share.entity.Workspace
 import java.time.Instant
@@ -13,7 +14,10 @@ class TestClient : SlackClientBase() {
         channel: String,
         after: Instant = Instant.now().minus(1, ChronoUnit.MINUTES),
         limit: Int = 10
-    ): ConversationsHistoryResponse? {
+    ): ConversationsHistoryResponse {
+        //Small wait to avoid catching previous messages.
+        sleep(100)
+
         val token = workspace.state.get() ?: throw AssertionError("Token is absent.")
 
         val conversationsHistoryRequest = ConversationsHistoryRequest.builder()
@@ -23,7 +27,9 @@ class TestClient : SlackClientBase() {
             .limit(limit)
             .build()
 
-        return slack.methods(token).conversationsHistory(conversationsHistoryRequest)
-            .processErrors()
+        return wrapOfflineException {
+            slack.methods(token).conversationsHistory(conversationsHistoryRequest)
+                .processErrors()
+        } ?: throw AssertionError("Offline.")
     }
 }

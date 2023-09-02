@@ -15,7 +15,9 @@ class MessageProcessorTest : SlackShareTestBase() {
     fun test() {
         val workspace = workspaceService.getAvailableWorkspaces().first()
 
-        val conversation = conversationsClient.getChannels(workspace.state.get()!!, ConversationType.values().toList()).first()
+        val conversation = (conversationsClient.getChannels(workspace.state.get()!!, ConversationType.values().toList())
+            ?: throw AssertionError("Offline."))
+            .first()
 
         val classResource: URL = MessageProcessorTest::class.java.classLoader.getResource(".")
             ?: throw AssertionError("Null class resource.")

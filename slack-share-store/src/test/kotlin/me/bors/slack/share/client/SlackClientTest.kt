@@ -25,7 +25,10 @@ open class SlackClientTest : SlackShareTestBase() {
 
         assertNotEmpty(conversationsClient.getMultiUserGroupMembers(token, channels.first { it.isMpim }.id))
 
-        assertTrue(conversationsClient.getUserName(token, channels.first { it.isIm && it.user != null }.user).isNotBlank())
+        val userName = conversationsClient.getUserName(token, channels.first { it.isIm && it.user != null }.user)
+            ?: throw AssertionError("Offline.")
+
+        assertTrue(userName.isNotBlank())
     }
 
 
@@ -75,7 +78,7 @@ open class SlackClientTest : SlackShareTestBase() {
     fun testWorkspaceClient() {
         val token = workspaceService.getAvailableWorkspaces().first().state.get()!!
 
-        val validation = workspaceClient.validate(token)
+        val validation = workspaceClient.validate(token) ?: throw AssertionError("Offline.")
 
         assertNull(validation.error)
         assertTrue(validation.slackId.isNotBlank())
@@ -86,6 +89,6 @@ open class SlackClientTest : SlackShareTestBase() {
         return conversationsClient.getChannels(
             token,
             ConversationType.values().toList()
-        )
+        ) ?: throw AssertionError("Offline.")
     }
 }

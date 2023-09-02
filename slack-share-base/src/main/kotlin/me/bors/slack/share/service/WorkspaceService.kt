@@ -59,7 +59,7 @@ class WorkspaceService {
     }
 
     fun addToken(token: String): String? {
-        val result = client.validate(token)
+        val result = client.validate(token) ?: return null
 
         if (result.error != null) {
             return result.error
@@ -107,7 +107,7 @@ class WorkspaceService {
 
                 val token = state.get() ?: return@mapNotNull null
 
-                val result = client.validate(token)
+                val result = client.validate(token) ?: return@mapNotNull null
 
                 if (result.error == null) {
                     Workspace(it, result.slackId, result.name)

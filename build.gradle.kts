@@ -6,12 +6,12 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.12"
+version = "0.9.13"
 
 val javaVersion: String = JavaVersion.VERSION_17.toString()
 val intellijVersion: String by extra { "2022.2.4" }
 val sinceIdeaVersion: String by extra { "222" }
-val untilIdeaVersion: String by extra { "232.*" }
+val untilIdeaVersion: String by extra { "233.*" }
 val userDescription: String by extra {
     """
         Plugin to share code snippets and files in Slack.
@@ -42,6 +42,7 @@ val changelog: String by extra {
                 0.9.10 - Workspace selection.<br>
                 0.9.11 - Small Fixes. Dependencies update. IDEA 2023.1 late builds compatibility.<br>
                 0.9.12 - Error reporting enhancements. Stability improvements.<br>
+                0.9.13 - Offline exception fixes. Dependency update. <br>
                 <br>
                 """
 }

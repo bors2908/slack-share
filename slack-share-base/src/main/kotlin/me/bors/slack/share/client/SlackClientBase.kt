@@ -3,6 +3,7 @@ package me.bors.slack.share.client
 import com.intellij.openapi.diagnostic.Logger
 import com.slack.api.Slack
 import com.slack.api.methods.SlackApiTextResponse
+import java.net.UnknownHostException
 import me.bors.slack.share.error.SlackClientException
 
 open class SlackClientBase {
@@ -46,6 +47,15 @@ open class SlackClientBase {
         }
 
         return this
+    }
+
+    @Suppress("SwallowedException")
+    protected inline fun <reified T> wrapOfflineException(exec: () -> T?): T? {
+        return try {
+            exec.invoke()
+        } catch (e: UnknownHostException) {
+            null
+        }
     }
 
     companion object {
