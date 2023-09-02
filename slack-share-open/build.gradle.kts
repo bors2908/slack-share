@@ -3,7 +3,6 @@ import me.bors.slack.share.logo.ExportLogoTask
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.intellij)
-    java
 }
 
 val intellijVersion: String by rootProject.extra
