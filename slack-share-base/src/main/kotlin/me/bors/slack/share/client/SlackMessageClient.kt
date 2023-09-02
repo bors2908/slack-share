@@ -7,12 +7,12 @@ open class SlackMessageClient : SlackClientBase() {
     fun sendMessage(token: String, requestBuilder: ChatPostMessageRequestBuilder) {
         val request = requestBuilder.token(token).build()
 
-        wrapOfflineException { slack.methods(token).chatPostMessage(request).processErrors() }
+        slack.methods(token).chatPostMessage(request).processErrors()
     }
 
     fun sendFile(token: String, requestBuilder: FilesUploadRequestBuilder) {
         val request = requestBuilder.token(token).build()
 
-        wrapOfflineException { slack.methods(token).filesUpload(request).processErrors() }
+        slack.methods(token).filesUpload(request).processErrors()
     }
 }
