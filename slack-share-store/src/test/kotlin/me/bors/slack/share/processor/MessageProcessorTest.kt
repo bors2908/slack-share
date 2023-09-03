@@ -15,7 +15,7 @@ class MessageProcessorTest : SlackShareTestBase() {
     fun test() {
         val workspace = workspaceService.getAvailableWorkspaces().first()
 
-        val conversation = conversationsClient.getChannels(workspace.state.get()!!, ConversationType.values().toList()).first()
+        val conversation = conversationsClient.getChannels(workspace.state.get()!!, ConversationType.entries).first()
 
         val classResource: URL = MessageProcessorTest::class.java.classLoader.getResource(".")
             ?: throw AssertionError("Null class resource.")
@@ -42,7 +42,7 @@ class MessageProcessorTest : SlackShareTestBase() {
 
         val messageText = getRandomPayload()
 
-        MessageStyle.values().forEach { style ->
+        MessageStyle.entries.forEach { style ->
             processor.sendMessage(workspace, conversation.id, messageText, style, "")
 
             val lastMessage2 = testClient.getLastMessages(workspace, conversation.id).getLastMessage()

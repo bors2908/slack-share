@@ -260,7 +260,7 @@ class ShareDialogWrapper(
         val extensionLabel = JLabel("Highlighting format:")
         extensionLabel.isVisible = false
 
-        messageFormatComboBox = ComboBox(DefaultComboBoxModel(MessageStyle.values()))
+        messageFormatComboBox = ComboBox(DefaultComboBoxModel(MessageStyle.entries.toTypedArray()))
         messageFormatComboBox.toolTipText = "Message style"
         messageFormatComboBox.maximumSize = Dimension(1000, 30)
         messageFormatComboBox.preferredSize = Dimension(150, 30)

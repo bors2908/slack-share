@@ -6,12 +6,12 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.12"
+version = "0.9.13"
 
-val javaVersion: String = JavaVersion.VERSION_17.toString()
+val javaVersion: JavaVersion = JavaVersion.VERSION_17
 val intellijVersion: String by extra { "2022.2.4" }
 val sinceIdeaVersion: String by extra { "222" }
-val untilIdeaVersion: String by extra { "232.*" }
+val untilIdeaVersion: String by extra { "233.*" }
 val userDescription: String by extra {
     """
         Plugin to share code snippets and files in Slack.
@@ -42,12 +42,14 @@ val changelog: String by extra {
                 0.9.10 - Workspace selection.<br>
                 0.9.11 - Small Fixes. Dependencies update. Batched file bug fix.<br>
                 0.9.12 - Error handling improvements. IDEA 2023.2 Support.<br>
+                0.9.13 - Offline exception fixes. Dependency update. <br>
                 <br>
                 """
 }
 
 allprojects {
     apply(plugin = "io.gitlab.arturbosch.detekt")
+    apply(plugin = "java")
 
     repositories {
         mavenCentral()
@@ -58,15 +60,15 @@ allprojects {
         buildUponDefaultConfig = true
     }
 
-    tasks {
-        withType<JavaCompile> {
-            sourceCompatibility = javaVersion
-            targetCompatibility = javaVersion
-        }
+    java {
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
+    }
 
+    tasks {
         withType<KotlinCompile> {
             kotlinOptions {
-                jvmTarget = javaVersion
+                jvmTarget = javaVersion.toString()
             }
         }
     }

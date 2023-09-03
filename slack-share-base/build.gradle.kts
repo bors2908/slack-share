@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.intellij)
-    java
 }
 
 group = rootProject.group

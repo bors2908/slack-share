@@ -85,7 +85,7 @@ open class SlackClientTest : SlackShareTestBase() {
     private fun getChannels(token: String): List<Conversation> {
         return conversationsClient.getChannels(
             token,
-            ConversationType.values().toList()
+            ConversationType.entries
         )
     }
 }

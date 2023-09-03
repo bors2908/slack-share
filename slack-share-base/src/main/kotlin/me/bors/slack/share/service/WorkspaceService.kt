@@ -1,12 +1,13 @@
 package me.bors.slack.share.service
 
 import com.intellij.openapi.components.Service
+import java.util.*
+import me.bors.slack.share.client.SlackConnectionTester
 import me.bors.slack.share.client.SlackWorkspaceClient
 import me.bors.slack.share.entity.Workspace
 import me.bors.slack.share.persistence.PersistentState
 import me.bors.slack.share.persistence.WorkspaceSecretState
 import me.bors.slack.share.persistence.WorkspaceSecretState.Companion.MAX_ACCOUNTS
-import java.util.*
 
 @Service
 class WorkspaceService {
@@ -15,15 +16,17 @@ class WorkspaceService {
     private var workspaces: MutableList<Workspace> = mutableListOf()
 
     init {
-        refresh()
+        if (SlackConnectionTester.isSlackAccessible()) {
+            refresh()
 
-        val existingIds = getExistingIds()
+            val existingIds = getExistingIds()
 
-        // Removes non-saved credentials to keep states clean.
-        getAllowedIds()
-            .filter { !existingIds.contains(it) }
-            .map { WorkspaceSecretState(it) }
-            .forEach { it.remove() }
+            // Removes non-saved credentials to keep states clean.
+            getAllowedIds()
+                .filter { !existingIds.contains(it) }
+                .map { WorkspaceSecretState(it) }
+                .forEach { it.remove() }
+        }
     }
 
     fun getAllWorkspaces(): List<Workspace> {
