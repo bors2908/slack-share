@@ -7,8 +7,6 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import java.util.concurrent.Executors
-import kotlinx.coroutines.asCoroutineDispatcher
 import me.bors.slack.share.service.ActionService
 
 @Suppress("ComponentNotRegistered")

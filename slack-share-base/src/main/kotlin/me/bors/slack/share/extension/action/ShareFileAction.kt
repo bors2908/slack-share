@@ -7,7 +7,6 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.VirtualFile
-import java.util.concurrent.Executors
 import me.bors.slack.share.service.ActionService
 
 @Suppress("ComponentNotRegistered")

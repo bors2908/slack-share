@@ -22,7 +22,7 @@ abstract class SettingsService {
 
     protected val workspaceService: WorkspaceService = service()
 
-    protected val application: Application = ApplicationManager.getApplication()
+    private val application: Application = ApplicationManager.getApplication()
 
     private var previousState: List<Workspace> = workspaceService.getAllWorkspaces()
 

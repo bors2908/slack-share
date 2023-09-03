@@ -46,9 +46,9 @@ class WorkspaceServiceTest : SlackShareTestBase() {
 
         val moving = workspaces.first()
 
-        (0..20).forEach { workspaceService.moveDown(moving) }
+        (0..20).forEach { _ -> workspaceService.moveDown(moving) }
 
-        (0..20).forEach { workspaceService.moveUp(moving) }
+        (0..20).forEach { _ -> workspaceService.moveUp(moving) }
     }
 
     fun testRemove() {

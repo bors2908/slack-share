@@ -7,7 +7,6 @@ import java.io.File
 import me.bors.slack.share.client.SlackConnectionTester
 import me.bors.slack.share.entity.FileExclusion
 import me.bors.slack.share.ui.dialog.ShareDialogWrapper
-import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
 import me.bors.slack.share.ui.dialog.error.SlackOfflineErrorDialogWrapper
 
 @Service

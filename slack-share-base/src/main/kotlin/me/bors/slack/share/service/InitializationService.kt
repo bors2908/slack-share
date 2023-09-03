@@ -3,7 +3,6 @@ package me.bors.slack.share.service
 import com.intellij.openapi.components.service
 import me.bors.slack.share.client.SlackConnectionTester
 import me.bors.slack.share.processor.MessageProcessor
-import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
 
 open class InitializationService {
     val messageProcessor: MessageProcessor = MessageProcessor()

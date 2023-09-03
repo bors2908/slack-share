@@ -1,14 +1,13 @@
 package me.bors.slack.share.service
 
 import com.intellij.openapi.components.Service
+import java.util.*
+import me.bors.slack.share.client.SlackConnectionTester
 import me.bors.slack.share.client.SlackWorkspaceClient
 import me.bors.slack.share.entity.Workspace
 import me.bors.slack.share.persistence.PersistentState
 import me.bors.slack.share.persistence.WorkspaceSecretState
 import me.bors.slack.share.persistence.WorkspaceSecretState.Companion.MAX_ACCOUNTS
-import java.util.*
-import me.bors.slack.share.client.SlackConnectionTester
-import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
 
 @Service
 class WorkspaceService {
