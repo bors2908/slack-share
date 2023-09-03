@@ -40,8 +40,8 @@ val changelog: String by extra {
                 0.9.8 - Add logo.<br>
                 0.9.9 - App creation link in manual auth. Code highlighting. Dependencies update. Fixes.<br>
                 0.9.10 - Workspace selection.<br>
-                0.9.11 - Small Fixes. Dependencies update. IDEA 2023.1 late builds compatibility.<br>
-                0.9.12 - Error reporting enhancements. Stability improvements.<br>
+                0.9.11 - Small Fixes. Dependencies update. Batched file bug fix.<br>
+                0.9.12 - Error handling improvements. IDEA 2023.2 Support.<br>
                 0.9.13 - Offline exception fixes. Dependency update. <br>
                 <br>
                 """
