@@ -1,15 +1,19 @@
 package me.bors.slack.share.service
 
+import com.intellij.openapi.application.Application
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.ProjectManager
+import java.awt.event.ActionEvent
 import me.bors.slack.share.auth.Authenticator
+import me.bors.slack.share.client.SlackConnectionTester
 import me.bors.slack.share.entity.Workspace
 import me.bors.slack.share.ui.dialog.error.OpenSettingsErrorDialogWrapper
+import me.bors.slack.share.ui.dialog.error.SlackOfflineErrorDialogWrapper
 import me.bors.slack.share.ui.dialog.error.TokenErrorDialogWrapper
 import me.bors.slack.share.ui.settings.WorkspaceSettingsComponent
 import me.bors.slack.share.ui.settings.WorkspaceSettingsConfigurable
-import java.awt.event.ActionEvent
 
 abstract class SettingsService {
     protected val authenticator: Authenticator = service()
@@ -17,6 +21,8 @@ abstract class SettingsService {
     protected val initializationService: InitializationService = service()
 
     protected val workspaceService: WorkspaceService = service()
+
+    protected val application: Application = ApplicationManager.getApplication()
 
     private var previousState: List<Workspace> = workspaceService.getAllWorkspaces()
 
@@ -41,8 +47,13 @@ abstract class SettingsService {
 
     protected fun getManualActionListener(): (ActionEvent) -> Unit {
         return {
-            addToken(authenticator.authManually())
+            if (!SlackConnectionTester.isSlackAccessible()) {
+                SlackOfflineErrorDialogWrapper().showAndGet()
+            } else {
+                addToken(authenticator.authManually())
+            }
         }
+
     }
 
     protected fun getRemoveTokenListener(): (ActionEvent) -> Unit {
@@ -94,14 +105,21 @@ abstract class SettingsService {
     }
 
     fun apply() {
-        workspaceService.persist()
+        application.executeOnPooledThread {
+            if (SlackConnectionTester.isSlackAccessible()) {
+                workspaceService.persist()
+            }
+        }
     }
 
     fun refresh() {
-        workspaceService.refresh()
+        application.executeOnPooledThread {
+            if (SlackConnectionTester.isSlackAccessible()) {
+                workspaceService.refresh()
+            }
+        }
 
         refreshWorkspacesList()
     }
-
 }
 

@@ -1,7 +1,9 @@
 package me.bors.slack.share.service
 
 import com.intellij.openapi.components.service
+import me.bors.slack.share.client.SlackConnectionTester
 import me.bors.slack.share.processor.MessageProcessor
+import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
 
 open class InitializationService {
     val messageProcessor: MessageProcessor = MessageProcessor()
@@ -14,7 +16,9 @@ open class InitializationService {
         @Suppress("LeakingThis")
         beforeInit()
 
-        conversationsService.refresh()
+        if (SlackConnectionTester.isSlackAccessible()) {
+            conversationsService.refresh()
+        }
     }
 
     open fun beforeInit() {
@@ -22,8 +26,10 @@ open class InitializationService {
     }
 
     open fun reloadCaches() {
-        workspaceService.refresh()
+        if (SlackConnectionTester.isSlackAccessible()) {
+            workspaceService.refresh()
 
-        conversationsService.forceRefresh()
+            conversationsService.forceRefresh()
+        }
     }
 }

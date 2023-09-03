@@ -1,19 +1,28 @@
 package me.bors.slack.share.extension.action
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.VirtualFile
+import java.util.concurrent.Executors
 import me.bors.slack.share.service.ActionService
 
 @Suppress("ComponentNotRegistered")
 class ShareFileAction : AnAction() {
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
+    }
+
     override fun actionPerformed(e: AnActionEvent) {
         val files = (getVirtualFiles(e) ?: emptyArray()).asList()
             .map { it.toNioPath().toFile() }
 
-        service<ActionService>().shareFileAction(files)
+        ApplicationManager.getApplication().executeOnPooledThread {
+            service<ActionService>().shareFileAction(files)
+        }
     }
 
     override fun update(e: AnActionEvent) {

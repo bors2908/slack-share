@@ -7,6 +7,8 @@ import me.bors.slack.share.persistence.PersistentState
 import me.bors.slack.share.persistence.WorkspaceSecretState
 import me.bors.slack.share.persistence.WorkspaceSecretState.Companion.MAX_ACCOUNTS
 import java.util.*
+import me.bors.slack.share.client.SlackConnectionTester
+import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
 
 @Service
 class WorkspaceService {
@@ -15,15 +17,17 @@ class WorkspaceService {
     private var workspaces: MutableList<Workspace> = mutableListOf()
 
     init {
-        refresh()
+        if (SlackConnectionTester.isSlackAccessible()) {
+            refresh()
 
-        val existingIds = getExistingIds()
+            val existingIds = getExistingIds()
 
-        // Removes non-saved credentials to keep states clean.
-        getAllowedIds()
-            .filter { !existingIds.contains(it) }
-            .map { WorkspaceSecretState(it) }
-            .forEach { it.remove() }
+            // Removes non-saved credentials to keep states clean.
+            getAllowedIds()
+                .filter { !existingIds.contains(it) }
+                .map { WorkspaceSecretState(it) }
+                .forEach { it.remove() }
+        }
     }
 
     fun getAllWorkspaces(): List<Workspace> {

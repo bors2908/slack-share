@@ -8,14 +8,15 @@ import com.slack.api.model.ConversationType.IM
 import com.slack.api.model.ConversationType.MPIM
 import com.slack.api.model.ConversationType.PRIVATE_CHANNEL
 import com.slack.api.model.ConversationType.PUBLIC_CHANNEL
+import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingQueue
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import me.bors.slack.share.client.SlackConnectionTester
 import me.bors.slack.share.client.SlackConversationsClient
 import me.bors.slack.share.entity.SlackConversation
 import me.bors.slack.share.entity.Workspace
-import java.util.concurrent.Executors
-import java.util.concurrent.LinkedBlockingQueue
 
 @Service
 class ConversationsService {
@@ -23,14 +24,18 @@ class ConversationsService {
 
     private val workspaceService: WorkspaceService = service()
 
-    private val nameCache: Map<Workspace, Map<String, String>> = slackClient.getNameCache(workspaceService.getAvailableWorkspaces())
+    private val nameCache: Map<Workspace, Map<String, String>> =
+        slackClient.getNameCache(workspaceService.getAvailableWorkspaces())
 
-    private val cache: MutableMap<Workspace, Map<ConversationType, MutableMap<String, SlackConversation>>> = mutableMapOf()
+    private val cache: MutableMap<Workspace, Map<ConversationType, MutableMap<String, SlackConversation>>> =
+        mutableMapOf()
 
     private val dispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
 
     init {
-        updateCache(true)
+        if (SlackConnectionTester.isSlackAccessible()) {
+            updateCache(true)
+        }
     }
 
     fun getConversations(workspace: Workspace): List<SlackConversation> {
@@ -158,7 +163,8 @@ class ConversationsService {
     }
 
     private fun getMultiUserGroupName(workspace: Workspace, id: String) =
-        slackClient.getMultiUserGroupMembers(workspace.state.get()!!, id).joinToString(", ") { getUserName(workspace, it) }
+        slackClient.getMultiUserGroupMembers(workspace.state.get()!!, id)
+            .joinToString(", ") { getUserName(workspace, it) }
 
     private fun getUserName(workspace: Workspace, userId: String): String {
         return nameCache[workspace]?.get(userId) ?: slackClient.getUserName(workspace.state.get()!!, userId)

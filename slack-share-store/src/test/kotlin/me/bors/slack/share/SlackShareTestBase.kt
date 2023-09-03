@@ -10,6 +10,7 @@ import java.io.File
 import java.net.URL
 import java.nio.file.Files
 import java.util.*
+import me.bors.slack.share.client.SlackConnectionTester
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 abstract class SlackShareTestBase : BasePlatformTestCase() {
@@ -29,6 +30,10 @@ abstract class SlackShareTestBase : BasePlatformTestCase() {
         conversationsService = service()
         workspaceService = service()
         testClient = TestClient()
+
+        if (!SlackConnectionTester.isSlackAccessible()) {
+            throw AssertionError("Offline.")
+        }
 
         tokens.forEach { workspaceService.addToken(it) }
     }
