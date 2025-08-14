@@ -138,8 +138,6 @@ class ConversationsService {
                     it.priority ?: 0.0
                 )
             }
-
-            else -> emptyList()
         }
     }
 

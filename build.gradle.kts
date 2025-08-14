@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -6,12 +7,12 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.14"
+version = "0.9.15"
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_17
 val intellijVersion: String by extra { "2023.3.6" }
 val sinceIdeaVersion: String by extra { "233" }
-val untilIdeaVersion: String by extra { "243.*" }
+val untilIdeaVersion: String by extra { "252.*" }
 val userDescription: String by extra {
     """
         Plugin to share code snippets and files in Slack.
@@ -43,6 +44,8 @@ val changelog: String by extra {
                 0.9.11 - Small Fixes. Dependencies update. Batched file bug fix.<br>
                 0.9.12 - Error handling improvements. IDEA 2023.2 Support.<br>
                 0.9.13 - Offline exception fixes. Dependency update. <br>
+                0.9.14 - Dependency updates. <br>
+                0.9.15 - Dependency updates. <br>
                 <br>
                 """
 }
@@ -65,11 +68,9 @@ allprojects {
         targetCompatibility = javaVersion
     }
 
-    tasks {
-        withType<KotlinCompile> {
-            kotlinOptions {
-                jvmTarget = javaVersion.toString()
-            }
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
         }
     }
 }

@@ -7,6 +7,9 @@ version = rootProject.version
 
 dependencies {
     implementation(libs.intellij.remote.robot)
+
+    testImplementation(kotlin("test"))
+    implementation(kotlin("stdlib"))
 }
 
 repositories {

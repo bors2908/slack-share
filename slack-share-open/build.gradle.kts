@@ -22,7 +22,10 @@ dependencies {
     implementation(projects.slackShareBase)
 }
 
-task<ExportLogoTask>("exportLogo")
+tasks.register<ExportLogoTask>("exportLogo") {
+    originalFile.set(rootProject.layout.projectDirectory.file("logo/logo_40x40.svg"))
+    resultingFile.set(rootProject.layout.projectDirectory.file("src/main/resources/META-INF/pluginIcon.svg"))
+}
 
 tasks {
     patchPluginXml {

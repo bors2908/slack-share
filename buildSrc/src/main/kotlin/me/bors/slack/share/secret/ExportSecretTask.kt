@@ -1,14 +1,27 @@
 package me.bors.slack.share.secret
 
+import java.util.*
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.refcodes.properties.PropertiesSugar
 import org.refcodes.properties.ext.obfuscation.ObfuscationPropertiesSugar
-import java.io.File
-import java.util.*
 
 // No fancy-pants encryption. Simple obfuscation to prevent automatic grabbing.
-open class ExportSecretTask : DefaultTask() {
+abstract class ExportSecretTask : DefaultTask() {
+
+    @get:InputFile
+    abstract val originalFile: RegularFileProperty
+
+    @get:OutputFile
+    abstract val obfuscatedFile: RegularFileProperty
+
+    @get:org.gradle.api.tasks.OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
     init {
         group = "secret"
         description = "export-secret"
@@ -16,29 +29,15 @@ open class ExportSecretTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        val l = System.getProperty("file.separator")
+        val originalPath = originalFile.get().asFile
+        originalPath.setReadOnly()
 
-        val originalPath = "${project.rootDir}${l}secrets${l}secret.properties"
-
-        val originalFile = File(originalPath)
-
-        originalFile.setReadOnly()
-
-        val properties = PropertiesSugar.seekFromJavaProperties(originalPath)
-
+        val properties = PropertiesSugar.seekFromJavaProperties(originalPath.absolutePath)
         val originalProps = properties.entries.associate { it.key to it.value }
 
-        val dirPath = "${project.projectDir}${l}build${l}classes${l}kotlin${l}main"
-
-        val dir = File(dirPath)
-
-        dir.mkdirs()
-
-        val path = "$dirPath${l}data.bin"
-
-        val file = File(path)
-
-        file.createNewFile()
+        outputDir.get().asFile.mkdirs()
+        val targetFile = obfuscatedFile.get().asFile
+        targetFile.createNewFile()
 
         val obfuscateProperties = ObfuscationPropertiesSugar.obfuscate(
             properties,
@@ -55,8 +54,8 @@ open class ExportSecretTask : DefaultTask() {
         val bytes = Base64.getEncoder()
             .encode(obfuscatedMap.toString().encodeToByteArray())
 
-        file.writeBytes(bytes)
+        targetFile.writeBytes(bytes)
 
-        originalFile.setWritable(true)
+        originalPath.setWritable(true)
     }
 }
