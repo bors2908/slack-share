@@ -1,23 +1,23 @@
 [versions]
-kotlin = "1.9.23"
-junit = "5.10.2"
+kotlin = "2.2.10"
+junit = "5.13.4"
 
 [libraries]
-intellij-remote-robot = "com.intellij.remoterobot:remote-robot:0.11.22"
+intellij-remote-robot = "com.intellij.remoterobot:remote-robot:0.11.23"
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
 junit-vintage = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit" }
 junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.10.2"
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
-kotlinx-serialization-json-jvm = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3"
-mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:5.2.1"
-okhttp-tls = "com.squareup.okhttp3:okhttp-tls:4.12.0"
-refcodes-obfuscation = "org.refcodes:refcodes-properties-ext-obfuscation:3.3.5"
-slack-api-client = "com.slack.api:slack-api-client:1.38.3"
-slf4j-api = "org.slf4j:slf4j-api:2.0.12"
+kotlinx-serialization-json-jvm = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
+mockito-kotlin = "org.mockito.kotlin:mockito-kotlin:6.0.0"
+okhttp-tls = "com.squareup.okhttp3:okhttp-tls:5.1.0"
+refcodes-obfuscation = "org.refcodes:refcodes-properties-ext-obfuscation:3.4.1"
+slack-api-client = "com.slack.api:slack-api-client:1.45.3"
+slf4j-api = "org.slf4j:slf4j-api:2.0.17"
 
 [bundles]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.5" }
-intellij = { id = "org.jetbrains.intellij", version = "1.17.2" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.8" }
+intellij = { id = "org.jetbrains.intellij", version = "1.17.4" }

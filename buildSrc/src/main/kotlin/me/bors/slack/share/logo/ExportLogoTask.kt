@@ -1,10 +1,21 @@
 package me.bors.slack.share.logo
 
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import java.io.File
 
-open class ExportLogoTask : DefaultTask() {
+abstract class ExportLogoTask : DefaultTask() {
+
+    @get:InputFile
+    abstract val originalFile: RegularFileProperty
+
+    @get:OutputFile
+    abstract val resultingFile: RegularFileProperty
+
     init {
         group = "logo"
         description = "export-logo"
@@ -12,16 +23,10 @@ open class ExportLogoTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        val l = System.getProperty("file.separator")
-
-        val originalPath = "${project.rootDir}${l}logo${l}logo_40x40.svg"
-
-        val originalFile = File(originalPath)
-
-        val resultingPath = "${project.projectDir}${l}src${l}main${l}resources${l}META-INF${l}pluginIcon.svg"
-
-        val resultingFile = File(resultingPath)
-
-        originalFile.copyTo(resultingFile, true)
+        Files.copy(
+            originalFile.get().asFile.toPath(),
+            resultingFile.get().asFile.toPath(),
+            StandardCopyOption.REPLACE_EXISTING
+        )
     }
 }

@@ -30,9 +30,20 @@ dependencies {
     testImplementation(libs.junit.platform.launcher)
 }
 
+tasks.register<ExportLogoTask>("exportLogo") {
+    originalFile.set(rootProject.layout.projectDirectory.file("logo/logo_40x40.svg"))
+    resultingFile.set(rootProject.layout.projectDirectory.file("src/main/resources/META-INF/pluginIcon.svg"))
+}
 
-task<ExportLogoTask>("exportLogo")
-task<ExportSecretTask>("exportSecret")
+tasks.register<ExportSecretTask>("exportSecret") {
+    originalFile.set(rootProject.layout.projectDirectory.file("secrets/secret.properties"))
+    outputDir.set(layout.buildDirectory.dir("classes/kotlin/main"))
+    obfuscatedFile.set(outputDir.file("data.bin"))
+}
+
+tasks.named("instrumentCode") {
+    dependsOn("exportSecret")
+}
 
 tasks {
     test {
