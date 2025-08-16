@@ -1,15 +1,14 @@
 package me.bors.slack.share.processor
 
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
-import com.slack.api.methods.request.files.FilesUploadRequest
-import com.slack.api.methods.request.files.FilesUploadRequest.FilesUploadRequestBuilder
+import com.slack.api.methods.request.files.FilesUploadV2Request
 import com.slack.api.model.block.SectionBlock
 import com.slack.api.model.block.composition.MarkdownTextObject
+import java.io.File
 import me.bors.slack.share.client.SlackMessageClient
 import me.bors.slack.share.entity.MessageStyle
 import me.bors.slack.share.entity.Workspace
 import me.bors.slack.share.ui.dialog.error.ErrorDialogWrapper
-import java.io.File
 
 class MessageProcessor {
     private val client = SlackMessageClient()
@@ -59,7 +58,13 @@ class MessageProcessor {
             }
 
             MessageStyle.CODE_SNIPPET -> {
-                sendSingleFile(token, userId, text.toByteArray(), "snippet.$resultingFileExtension", FilesUploadRequest.builder())
+                sendSingleFile(
+                    token,
+                    userId,
+                    text.toByteArray(),
+                    "snippet.$resultingFileExtension",
+                    FilesUploadV2Request.builder()
+                )
 
                 return
             }
@@ -85,7 +90,7 @@ class MessageProcessor {
         }
 
         for (file: File in files) {
-            val builder = FilesUploadRequest.builder()
+            val builder = FilesUploadV2Request.builder()
 
             if (text.isNotEmpty() && !tagged) {
                 builder.initialComment(text)
@@ -102,13 +107,13 @@ class MessageProcessor {
         userId: String,
         fileBytes: ByteArray,
         fileName: String,
-        builder: FilesUploadRequestBuilder
+        builder: FilesUploadV2Request.FilesUploadV2RequestBuilder
     ) {
         builder
             .channels(listOf(userId))
             .fileData(fileBytes)
             .filename(fileName)
-            .filetype("auto")
+            .snippetType("auto")
 
         client.sendFile(token, builder)
     }

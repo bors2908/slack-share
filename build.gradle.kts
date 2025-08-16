@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "me.bors"
-version = "0.9.15"
+version = "0.9.16"
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_17
 val intellijVersion: String by extra { "2023.3.6" }
@@ -46,6 +46,7 @@ val changelog: String by extra {
                 0.9.13 - Offline exception fixes. Dependency update. <br>
                 0.9.14 - Dependency updates. <br>
                 0.9.15 - Dependency updates. <br>
+                0.9.16 - Dependency updates. <br>
                 <br>
                 """
 }

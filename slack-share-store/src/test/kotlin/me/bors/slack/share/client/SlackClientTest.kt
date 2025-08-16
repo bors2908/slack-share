@@ -1,11 +1,11 @@
 package me.bors.slack.share.client
 
 import com.slack.api.methods.request.chat.ChatPostMessageRequest
-import com.slack.api.methods.request.files.FilesUploadRequest
+import com.slack.api.methods.request.files.FilesUploadV2Request
 import com.slack.api.model.Conversation
 import com.slack.api.model.ConversationType
-import me.bors.slack.share.SlackShareTestBase
 import java.nio.charset.Charset
+import me.bors.slack.share.SlackShareTestBase
 
 open class SlackClientTest : SlackShareTestBase() {
     private var conversationsClient = SlackConversationsClient()
@@ -25,7 +25,9 @@ open class SlackClientTest : SlackShareTestBase() {
 
         assertNotEmpty(conversationsClient.getMultiUserGroupMembers(token, channels.first { it.isMpim }.id))
 
-        assertTrue(conversationsClient.getUserName(token, channels.first { it.isIm && it.user != null }.user).isNotBlank())
+        assertTrue(
+            conversationsClient.getUserName(token, channels.first { it.isIm && it.user != null }.user).isNotBlank()
+        )
     }
 
 
@@ -55,13 +57,13 @@ open class SlackClientTest : SlackShareTestBase() {
 
         messageClient.sendFile(
             token,
-            FilesUploadRequest.builder()
+            FilesUploadV2Request.builder()
                 .channels(listOf(channel.id))
                 .fileData(
                     filePayload.toByteArray(Charset.defaultCharset())
                 )
                 .filename(fileName)
-                .filetype("auto")
+                .snippetType("auto")
         )
 
         val lastMessage2 = testClient.getLastMessages(workspace, channel.id).getLastMessage()
